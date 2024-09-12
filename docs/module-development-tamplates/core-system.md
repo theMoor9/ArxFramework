@@ -1,5 +1,13 @@
 # Tameplates
 
+| Modulo       | Linguaggio Principale | Linguaggio di Supporto | CLI | Framework/Librerie Principali | Considerazioni per lo Sviluppo<br> |
+| ------------ | --------------------- | ---------------------- | --- | ----------------------------- | ---------------------------------- |
+| Core Sistema | Rust                  |                        | Sì  | tokio (async runtime)         | Ottimizzazione per concorre        |
+
+---
+
+## Moduli Layer 1 per Code Base `main.rs`
+
 `system_core.rs`:
 
 ```Rust
@@ -124,6 +132,3 @@ impl MemoryManager {
     }
 }
 ```
-
----
-

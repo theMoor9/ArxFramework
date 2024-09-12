@@ -1,6 +1,36 @@
-# Scope
+# README
 
-## Type of Applications:
+## Introduction
+ArxFramework è un framework modulare e flessibile progettato per supportare lo sviluppo di diverse tipologie di applicazioni, tra cui applicazioni web, API backend, applicazioni desktop, sistemi di automazione e scripting, e sistemi embedded.
+
+Caratteristiche principali:
+
+1. Architettura Modulare: Composto da moduli specializzati come core system, autenticazione, CRUD, gestione file, monitoraggio e altri, ciascuno ottimizzato per il proprio dominio.
+2. Multilingua: Principalmente implementato in Rust per prestazioni e sicurezza, con integrazioni Python per flessibilità e machine learning.
+3. Versatilità: Supporta cinque tipi principali di applicazioni, adattandosi alle esigenze specifiche di ciascuna.
+4. Core System Robusto: Un sistema centrale in Rust che gestisce operazioni fondamentali come la gestione della memoria e la concorrenza.
+5. CLI Configurabile: Un'interfaccia a linea di comando per una facile configurazione e inizializzazione del sistema.
+6. Integrazione Frontend: Supporto per frontend dinamici utilizzando Svelte.
+7. Capacità Avanzate: Include moduli per machine learning, integrazione blockchain e automazione dei task.
+8. Logging e Monitoraggio: Sistema integrato per il logging e il monitoraggio delle prestazioni.
+9. Gestione File e Risorse: Modulo dedicato per operazioni efficienti su file e risorse.
+10. Documentazione e Template: Include documentazione completa e template per diversi tipi di applicazioni.
+
+ArxFramework mira a fornire una base solida e flessibile per lo sviluppo di applicazioni, combinando l'efficienza di Rust con la versatilità di Python e altri strumenti moderni. È progettato per essere facilmente estensibile e adattabile a diverse esigenze di progetto, dalla prototipazione rapida allo sviluppo di sistemi complessi e ad alte prestazioni.
+
+---
+
+**Table of contents**
+
+- [Type of Applications](#Type-of-Applications)
+- [Functionality and Unique Technologies](#Functionality-and-Unique-Technologies)
+- [Folders](#Folders)
+- [Scope](#Scope)
+- [HOW to USE](#HOW-to-USE)
+
+---
+
+# Type of Applications
 
 1. **Applicazioni Web**: App che girano su browser, possono essere single-page applications (SPA) o app multi-pagina.
 2. **API Backend**: Servizi che forniscono dati e funzioni ad altre applicazioni (mobile, web, desktop) tramite un'API REST o GraphQL.
@@ -32,21 +62,24 @@ Legenda:
 - ✓ : Modulo tipicamente utilizzato in questa soluzione
 - ○ : Modulo opzionale o utilizzato in base a requisiti specifici
 
+### CLI setup
+Il cli sarà responsabile  della configurazione del tipo di applicazione tramite la variabile di config nel main. Da cui dipenderanno i seguenti moduli:
 
-## Dettagli Espansi dei Moduli per lo Sviluppo
+### Dettagli Espansi dei Moduli per lo Sviluppo
 
-| Modulo                     | Linguaggio Principale | Linguaggio di Supporto | Wrapping | Framework/Librerie Principali | Considerazioni per lo Sviluppo                              |
-| -------------------------- | --------------------- | ---------------------- | -------- | ----------------------------- | ----------------------------------------------------------- |
-| Core Sistema               | Rust                  | -                      | -        | tokio (async runtime)         | Ottimizzazione per concorrenza e gestione risorse           |
-| Autenticazione e Sicurezza | Rust                  | Python                 | Sì       | jsonwebtoken, bcrypt          | Implementare OAuth2, gestione sessioni                      |
-| Gestione CRUD              | Rust                  | -                      | -        | diesel (ORM)                  | Design pattern Repository, astrazione del database          |
-| API Layer                  | Rust (warp/actix-web) | Python (FastAPI)       | No       | serde (serializzazione)       | API versioning, documentazione con OpenAPI                  |
-| Gestione file/risorse      | Rust                  | -                      | -        | std::fs, tokio::fs            | Gestione concorrente di I/O, caching                        |
-| Monitoraggio e logging     | Rust                  | -                      | -        | tracing, prometheus           | Implementare trace distribuiti, metriche personalizzate     |
-| Task Automation            | Rust                  | Python                 | Sì       | rayon (parallelismo)          | Progettare per scalabilità, gestione errori robusti         |
-| Frontend Dinamico          | Svelte (TypeScript)   | -                      | -        | SvelteKit, TailwindCSS        | State management, SSR, ottimizzazione bundle                |
-| Integrazione Blockchain    | Rust                  | -                      | -        | web3                          | Gestione delle transazioni asincrone, sicurezza             |
-| Machine Learning           | Python                | Rust                   | Sì       | PyTorch, scikit-learn         | Ottimizzazione modelli, integrazione con Rust per inferenza |
+| Modulo                     | Linguaggio Principale | Linguaggio di Supporto | Wrapping | Framework/Librerie Principali |
+| -------------------------- | --------------------- | ---------------------- | -------- | ----------------------------- |
+| Core Sistema               | Rust                  | -                      | -        | tokio (async runtime)         |
+| Autenticazione e Sicurezza | Rust                  | Python                 | Sì       | jsonwebtoken, bcrypt          |
+| Gestione CRUD              | Rust                  | -                      | -        | diesel (ORM)                  |
+| API Layer                  | Rust (warp/actix-web) | Python (FastAPI)       | No       | serde (serializzazione)       |
+| Gestione file/risorse      | Rust                  | -                      | -        | std::fs, tokio::fs            |
+| Monitoraggio e logging     | Rust                  | -                      | -        | tracing, prometheus           |
+| Task Automation            | Rust                  | Python                 | Sì       | rayon (parallelismo)          |
+| Frontend Dinamico          | Svelte (TypeScript)   | -                      | -        | SvelteKit, TailwindCSS        |
+| Integrazione Blockchain    | Rust                  | Python                 | Sì       | Solana web3                   |
+| Machine Learning           | Python                | Rust                   | Sì       | PyTorch, scikit-learn         |
+
 
 Note Aggiuntive:
 
@@ -55,7 +88,8 @@ Note Aggiuntive:
 - Implementare un sistema di configurazione flessibile per ciascun modulo.
 - Considerare l'uso di container Docker per la standardizzazione dell'ambiente di sviluppo e deployment.
 
-## Distinzione tra Approcci Wrapping e Non-Wrapping
+## Linguaggi di Supporto
+### Distinzione tra Approcci Wrapping e Non-Wrapping
 
 1. **Approccio Wrapping** (es. Autenticazione e Sicurezza): Il codice Rust viene incapsulato in funzioni Python per un uso più agevole. Esempio Rust (con PyO3):
     
@@ -78,7 +112,7 @@ Note Aggiuntive:
 		return verify_password(password, stored_hash)
 	```
 	    
-1. **Approccio Non-Wrapping** (es. Task Automation): Rust e Python cooperano, con Python che orchestra e chiama funzioni Rust quando necessario. Esempio Rust (con PyO3):
+1. **Approccio Unwrapped** (es. Task Automation): Rust e Python cooperano, con Python che orchestra e chiama funzioni Rust quando necessario. Esempio Rust (con PyO3):
     
     ```Rust
 	#[pyfunction] 
@@ -107,7 +141,7 @@ Note Aggiuntive:
 
 ---
 
-# Folder
+# Folders
 
 ```sh
 ArxFramework/
@@ -124,7 +158,7 @@ ArxFramework/
 ├── templates/            # Template per le 5 tipologie di applicazioni
 ├── docs/                 # Documentazione del framework
 ├── config/               # Configurazioni globali
-├── scripts/              # Script di utilità per build, deploy, etc.
+├── src/ 
 └── README.md             # Documentazione principale del framework
 ```
 
@@ -166,8 +200,26 @@ ArxFramework/
     - File di documentazione per ogni modulo
 - **config/**
     - File di configurazione per l'intero framework
-- **scripts/**
-    - Script per build, deploy e altri task di sviluppo
+- **src/**
+	- `main.rs` Main function
+	- `lib.rs` File di contenimento dei crate
+    - `cli.rs` Command line interface program per setup iniziale.
+    - Altri file di setup
+
+### src
+
+- `main.rs` Il main è costruito in gran parte dagli elementi  delle standard procedures riportate nella sezione [Scope](#Scope)
+- `cli.rs` [Link al tameplate del CLI](./module-tameplates/cli.md)
+- `lib.rs` Qui sono riportate tutte le cartelle( *crates* ) contenenti moduli:
+
+```Rust
+mod core
+mod auth 
+mod crud
+mod api
+mod file_management
+mod ...
+```
 
 ---
 
@@ -180,8 +232,9 @@ ArxFramework/
 
 Questo file contiene le strutture e le funzioni principali per l'inizializzazione e il controllo del core del sistema. Definisce i tipi di applicazione supportati, gestisce la configurazione globale, implementa il logging di base e fornisce un'interfaccia per le operazioni di sistema che si adattano al tipo di applicazione in uso. È il punto di entrata principale per l'interazione con il core del framework.
 
-[Tameplate](ArxFramework/tameplates/core-system.md)
-[Standard Procedure](./standard-procedures/core-system.md)
+[Development](ArxFramework/module-development-tamplates/core-system.md)
+
+[Main Integration](ArxFramework/main-integration-procedures/core-system.md)
 
 ## 2. Autenticazione e Sicurezza 2 Versioni
 >Pertinente per: Web App, API Backend, App Desktop
@@ -224,6 +277,13 @@ Questo file contiene le strutture e le funzioni principali per l'inizializzazion
 
 >Pertinente per: Web App, API Backend, Automazione e Scripting, Sistemi Embedded
 
+
+---
+
+# HOW to USE
+
+1. Accedi al CLI e imposta l' ambiente iniziale con ...
+2. 
 
 ---
 	

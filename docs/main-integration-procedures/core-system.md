@@ -1,10 +1,12 @@
 # Standard Procedure
 
-Procedura Standard d'Uso per `system_core.rs` e `memory_management.rs`:
+>Procedura Standard d'Uso per `system_core.rs` e `memory_management.rs`:
 
-# `main.rs`
+---
 
-Inizializzazione:
+## Layer 1 Code Base `main.rs`
+
+**Inizializzazione**:
 
 - Importare i moduli necessari:
 
@@ -13,16 +15,23 @@ use crate::core::{system_core, memory_management};
 ```
     
 - Creare la configurazione del core:
+	
+> La variabile `config` ospiterà gli elementi necessari a tutti i moduli in maniera comune.
     
 ```Rust
 let config = system_core::CoreConfig {     
 	app_type: system_core::ApplicationType::WebApp, 
 	// O altro tipo di applicazione    
 	max_threads: 4,    
-	log_level: system_core::LogLevel::Info, 
+	log_level: logger::LogLevel::Info, // Modulo logger *
+	/*
+	... Altri tipi di configurazioni per altri moduli
+	*/
 };
 ```
-    
+	
+`log_level: logger::LogLevel::Info,` [Modulo Logger](ArxFramework/module-development-tamplates/logging.md) 
+	
 - Inizializzare il CoreSystem:
 	
 ```Rust
@@ -86,3 +95,5 @@ La procedura garantisce che:
 - Il sistema venga chiuso correttamente al termine dell'applicazione
 
 Questa standardizzazione facilita l'uso coerente del Core Sistema attraverso diverse tipologie di applicazioni, mantenendo al contempo la flessibilità necessaria per adattarsi a requisiti specifici.
+
+---
