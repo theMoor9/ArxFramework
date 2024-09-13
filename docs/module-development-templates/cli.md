@@ -5,7 +5,9 @@
 ```Rust
 use clap::{App, Arg, ArgMatches};
 use crate::config::global_config::{CoreConfig,ApplicationType};
-use crate::monitoring::logger::LogLevel;
+use crate::monitoring::logger::{Log,LogLevel};
+const LOGGER = Log::new(LogLevel::Info, "cli");
+	
 /*
 Dentro lib.rs in src sono contenuti i crate
 in questo caso `pub mod core` che da accesso a system_core.rs
@@ -33,19 +35,11 @@ pub fn parse_config_cli() -> CoreConfig {
             .help("Sets the maximum number of threads")
             .takes_value(true)
             .default_value("4"))
-        .arg(Arg::with_name("log-level")
-            .long("log-level")
-            .value_name("LEVEL")
-            .help("Sets the log level")
-            .takes_value(true)
-            .default_value("info")
-            .possible_values(&["debug", "info", "warning", "error"]))
         .get_matches();
 
     CoreConfig {
         app_type: parse_app_type(&matches),
         max_threads: parse_max_threads(&matches),
-        log_level: parse_log_level(&matches),
     }
 }
 
@@ -58,6 +52,7 @@ fn parse_app_type(matches: &ArgMatches) -> ApplicationType {
         "embedded" => ApplicationType::EmbeddedSystem,
         _ => unreachable!(),
     }
+    
 }
 
 fn parse_max_threads(matches: &ArgMatches) -> usize {
@@ -65,15 +60,5 @@ fn parse_max_threads(matches: &ArgMatches) -> usize {
         .unwrap()
         .parse()
         .expect("Failed to parse max-threads")
-}
-
-fn parse_log_level(matches: &ArgMatches) -> LogLevel {
-    match matches.value_of("log-level").unwrap() {
-        "debug" => LogLevel::Debug,
-        "info" => LogLevel::Info,
-        "warning" => LogLevel::Warning,
-        "error" => LogLevel::Error,
-        _ => unreachable!(),
-    }
 }
 ```

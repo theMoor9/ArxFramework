@@ -14,7 +14,6 @@
 mod cli;
 use crate::core::{system_core, memory_management};
 use crate::config::global_config;
-use crate::monitoring::logger::LogLevel;
 ```
     
 - Creare la configurazione del core:
@@ -25,8 +24,6 @@ use crate::monitoring::logger::LogLevel;
 let config = cli::parse_config_cli();
 ```
 	
-`log_level: logger::LogLevel::Info,` [Modulo Logger](ArxFramework/module-development-templates/logging.md) 
-	
 - Inizializzare il CoreSystem:
 	
 ```Rust
@@ -34,11 +31,6 @@ let core_system = system_core::CoreSystem::new(config).expect("Failed to initial
 ```
 	
 Utilizzo del Core System:
-- Logging:
-	
-```Rust
-
-```
 	
 - Esecuzione di operazioni di sistema:	
 	

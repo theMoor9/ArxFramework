@@ -2,8 +2,8 @@
 
 - [ ]  `system_core.rs`: Gestione centrale del sistema implementata.
 	- [ ] Main integration Logger
-- [ ]  `memory_management.rs`: Ottimizzazione della memoria gestita correttamente.
-	- [ ] 
+- [x]  `memory_management.rs`: Ottimizzazione della memoria gestita correttamente.
+
 
 ### **auth/**
 

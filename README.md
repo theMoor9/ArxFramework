@@ -1,4 +1,4 @@
-# README
+# ArxFramework
 
 ## Introduction
 ArxFramework è un framework modulare e flessibile progettato per supportare lo sviluppo di diverse tipologie di applicazioni, tra cui applicazioni web, API backend, applicazioni desktop, sistemi di automazione e scripting, e sistemi embedded.
@@ -151,6 +151,7 @@ ArxFramework/
 ├── api/                  # API Layer (Rust primario, Python FastAPI opzionale)
 ├── file_management/      # Gestione file/risorse (Rust)
 ├── monitoring/           # Monitoraggio e logging (Rust)
+| └── logs/               # Cartella dei log
 ├── task_automation/      # Task Automation (Rust primario, Python secondario)
 ├── blockchain/           # Integrazione Blockchain (Rust)
 ├── frontend/             # Frontend dinamico (Svelte - TypeScript/JavaScript)
@@ -184,6 +185,7 @@ ArxFramework/
 - `resource_manager.rs`: Gestione risorse
 
 **monitoring/**
+- **logs/**: Contiene tutti i file di log dei rispettivi moduli
 - `logger.rs`: Sistema di logging
 - `metrics.rs`: Raccolta e reporting metriche
 
@@ -197,7 +199,7 @@ ArxFramework/
 
 **frontend/**
 - `App.svelte`: Componente root Svelte
-- `main.js`: Entry point dell'applicazione
+- `index.js`: Entry point dell'applicazione
 - `components/`: Cartella componenti riutilizzabili
 
 **ml/**

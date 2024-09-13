@@ -1,8 +1,8 @@
 # Tameplates
 
-| Modulo       | Linguaggio Principale | Linguaggio di Supporto | CLI | Framework/Librerie Principali | Considerazioni per lo Sviluppo<br> |
-| ------------ | --------------------- | ---------------------- | --- | ----------------------------- | ---------------------------------- |
-| Core Sistema | Rust                  |                        | Sì  | tokio (async runtime)         | Ottimizzazione per concorre        |
+| Modulo       | Linguaggio Principale | Linguaggio di Supporto | Wrapping | Framework/Librerie Principali | Considerazioni per lo Sviluppo<br> |
+| ------------ | --------------------- | ---------------------- | -------- | ----------------------------- | ---------------------------------- |
+| Core Sistema | Rust                  | -                      | -        | tokio (async runtime)         | Ottimizzazione per concorre        |
 
 ---
 
@@ -15,13 +15,14 @@
 
 use crate::config::global_config::{CoreConfig,ApplicationType}; 
 use crate::memory::MemoryManager;
+use crate::monitoring::logger::{Log,LogLevel};
+const LOGGER = Log::new(LogLevel::Info, "sytem_core");
 
 /*
  * From config
 pub struct CoreConfig {
     pub app_type: ApplicationType,
     pub max_threads: usize,
-    pub log_level: CoreLogLevel, // From monitoring::CoreLogLevel;
 }
 */
 pub enum CoreError {
