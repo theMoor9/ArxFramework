@@ -162,56 +162,62 @@ ArxFramework/
 └── README.md             # Documentazione principale del framework
 ```
 
-- **core/**
-    - `system_core.rs`: Gestione centrale del sistema
-    - `memory_management.rs`: Ottimizzazione della memoria
-- **auth/**
-    - `auth_core.rs`: Funzionalità core di autenticazione
-    - `auth_wrapper.py`: Wrapper Python per integrazioni
-- **crud/**
-    - `crud_operations.rs`: Operazioni CRUD generiche
-    - `models.rs`: Definizioni dei modelli dati
-- **api/**
-    - `api_server.rs`: Server API principale
-    - `routes.rs`: Definizione dei percorsi API
-    - `fastapi_integration.py`: Integrazione con FastAPI
-- **file_management/**
-    - `file_ops.rs`: Operazioni su file
-    - `resource_manager.rs`: Gestione risorse
-- **monitoring/**
-    - `logger.rs`: Sistema di logging
-    - `metrics.rs`: Raccolta e reporting metriche
-- **task_automation/**
-    - `task_core.rs`: Funzioni core per automazione
-    - `automation_scripts.py`: Script di automazione Python
-- **blockchain/**
-    - `blockchain_integration.rs`: Interfaccia blockchain
-    - `smart_contracts.rs`: Gestione smart contract
-- **frontend/**
-    - `App.svelte`: Componente root Svelte
-    - `main.js`: Entry point dell'applicazione
-    - `components/`: Cartella componenti riutilizzabili
-- **ml/**
-    - `ml_models.py`: Implementazione modelli ML
-    - `data_processing.rs`: Elaborazione dati performante
-- **templates/**
-    - Vari file template per diverse tipologie di applicazioni
-- **docs/**
-    - File di documentazione per ogni modulo
-- **config/**
-    - File di configurazione per l'intero framework
-- **src/**
-	- `main.rs` Main function
-	- `lib.rs` File di contenimento dei crate
-    - `cli.rs` Command line interface program per setup iniziale.
-    - Altri file di setup
+**core/**
+- `system_core.rs`: Gestione centrale del sistema
+- `memory_management.rs`: Ottimizzazione della memoria
 
-### src
+**auth/**
+- `auth_core.rs`: Funzionalità core di autenticazione
+- `auth_wrapper.py`: Wrapper Python per integrazioni
 
+**crud/**
+- `crud_operations.rs`: Operazioni CRUD generiche
+- `models.rs`: Definizioni dei modelli dati
+
+**api/**
+- `api_server.rs`: Server API principale
+- `routes.rs`: Definizione dei percorsi API
+- `fastapi_integration.py`: Integrazione con FastAPI
+
+**file_management/**
+- `file_ops.rs`: Operazioni su file
+- `resource_manager.rs`: Gestione risorse
+
+**monitoring/**
+- `logger.rs`: Sistema di logging
+- `metrics.rs`: Raccolta e reporting metriche
+
+**task_automation/**
+- `task_core.rs`: Funzioni core per automazione
+- `automation_scripts.py`: Script di automazione Python
+
+**blockchain/**
+- `blockchain_integration.rs`: Interfaccia blockchain
+- `smart_contracts.rs`: Gestione smart contract
+
+**frontend/**
+- `App.svelte`: Componente root Svelte
+- `main.js`: Entry point dell'applicazione
+- `components/`: Cartella componenti riutilizzabili
+
+**ml/**
+- `ml_models.py`: Implementazione modelli ML
+- `data_processing.rs`: Elaborazione dati performante
+
+**templates/**
+- Vari file template per diverse tipologie di applicazioni
+
+**docs/**
+- File di documentazione per ogni modulo
+
+**config/**
+- `global_config.rs`File di configurazione per l'intero framework
+
+**src/**
 - `main.rs` Il main è costruito in gran parte dagli elementi  delle standard procedures riportate nella sezione [Scope](#Scope)
-- `cli.rs` [Link al tameplate del CLI](./module-tameplates/cli.md)
+- `cli.rs` [Link al tameplate del CLI](./main-integration-procedures/cli.md)
 - `lib.rs` Qui sono riportate tutte le cartelle( *crates* ) contenenti moduli:
-
+	
 ```Rust
 mod core
 mod auth 
@@ -230,9 +236,10 @@ mod ...
 ## 1. Core Sistema
 >Pertinente per: Tutte le applicazioni
 
+**CAMBIARE**
 Questo file contiene le strutture e le funzioni principali per l'inizializzazione e il controllo del core del sistema. Definisce i tipi di applicazione supportati, gestisce la configurazione globale, implementa il logging di base e fornisce un'interfaccia per le operazioni di sistema che si adattano al tipo di applicazione in uso. È il punto di entrata principale per l'interazione con il core del framework.
 
-[Development](ArxFramework/module-development-tamplates/core-system.md)
+[Development](ArxFramework/module-development-templates/core-system.md)
 
 [Main Integration](ArxFramework/main-integration-procedures/core-system.md)
 
