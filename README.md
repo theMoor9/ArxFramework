@@ -76,7 +76,7 @@ Il cli sarà responsabile  della configurazione del tipo di applicazione tramite
 | Gestione file/risorse      | Rust                  | -                      | -        | std::fs, tokio::fs            |
 | Monitoraggio e logging     | Rust                  | -                      | -        | tracing, prometheus           |
 | Task Automation            | Rust                  | Python                 | Sì       | rayon (parallelismo)          |
-| Frontend Dinamico          | Svelte (TypeScript)   | -                      | -        | SvelteKit, TailwindCSS        |
+| Frontend Dinamico          | Svelte (TypeScript)   | -                      | -        | SvelteKit, DaisyUI(CSS)       |
 | Integrazione Blockchain    | Rust                  | Python                 | Sì       | Solana web3                   |
 | Machine Learning           | Python                | Rust                   | Sì       | PyTorch, scikit-learn         |
 
@@ -225,6 +225,15 @@ mod crud
 mod api
 mod file_management
 mod ...
+```
+
+```Rust
+// In .toml
+
+[lib]
+name = "lib"
+path = "src/lib.rs" // Oppuere path relativo al .tompl
+
 ```
 
 ---
