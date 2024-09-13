@@ -1,6 +1,6 @@
 # Standard Procedure
 
->Procedura Standard d'Uso per `system_core.rs` e `memory_management.rs`:
+>Procedura Standard d'Uso per `system_core.rs` e `memory_management.rs`
 
 ---
 
@@ -11,26 +11,21 @@
 - Importare i moduli necessari:
 
 ```Rust
+mod cli;
 use crate::core::{system_core, memory_management};
+use crate::config::global_config;
+use crate::monitoring::logger::LogLevel;
 ```
     
 - Creare la configurazione del core:
 	
-> La variabile `config` ospiterà gli elementi necessari a tutti i moduli in maniera comune.
+> La variabile `config` ospiterà gli elementi necessari a tutti i moduli in maniera comune. Qui si definisce
     
 ```Rust
-let config = system_core::CoreConfig {     
-	app_type: system_core::ApplicationType::WebApp, 
-	// O altro tipo di applicazione    
-	max_threads: 4,    
-	log_level: logger::LogLevel::Info, // Modulo logger *
-	/*
-	... Altri tipi di configurazioni per altri moduli
-	*/
-};
+let config = cli::parse_config_cli();
 ```
 	
-`log_level: logger::LogLevel::Info,` [Modulo Logger](ArxFramework/module-development-tamplates/logging.md) 
+`log_level: logger::LogLevel::Info,` [Modulo Logger](ArxFramework/module-development-templates/logging.md) 
 	
 - Inizializzare il CoreSystem:
 	
@@ -42,7 +37,7 @@ Utilizzo del Core System:
 - Logging:
 	
 ```Rust
-core_system.log(system_core::LogLevel::Info, "Application started");
+
 ```
 	
 - Esecuzione di operazioni di sistema:	

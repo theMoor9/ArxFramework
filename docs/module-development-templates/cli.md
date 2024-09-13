@@ -4,8 +4,8 @@
 
 ```Rust
 use clap::{App, Arg, ArgMatches};
-use serde::{Serialize, Deserialize};
-use crate::core::system_core::{ApplicationType, LogLevel}; 
+use crate::config::global_config::{CoreConfig,ApplicationType};
+use crate::monitoring::logger::LogLevel;
 /*
 Dentro lib.rs in src sono contenuti i crate
 in questo caso `pub mod core` che da accesso a system_core.rs
@@ -15,7 +15,7 @@ in questo caso `pub mod core` che da accesso a system_core.rs
 /*
 OCCORRE PERSONALIZARE I MESSAGGI DEL CLI
 */
-pub fn parse_cli() -> ConfigWrapper {
+pub fn parse_config_cli() -> CoreConfig {
     let matches = App::new("ArxFramework CLI")
         .version("1.0")
         .author("Your Name")
@@ -42,7 +42,7 @@ pub fn parse_cli() -> ConfigWrapper {
             .possible_values(&["debug", "info", "warning", "error"]))
         .get_matches();
 
-    ConfigWrapper {
+    CoreConfig {
         app_type: parse_app_type(&matches),
         max_threads: parse_max_threads(&matches),
         log_level: parse_log_level(&matches),

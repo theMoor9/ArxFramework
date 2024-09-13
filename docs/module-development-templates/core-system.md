@@ -13,22 +13,17 @@
 ```Rust
 // system_core.rs
 
-pub enum ApplicationType {
-    WebApp,
-    ApiBackend,
-    DesktopApp,
-    AutomationScript,
-    EmbeddedSystem,
-}
+use crate::config::global_config::{CoreConfig,ApplicationType}; 
+use crate::memory::MemoryManager;
 
+/*
+ * From config
 pub struct CoreConfig {
     pub app_type: ApplicationType,
     pub max_threads: usize,
-    pub log_level: LogLevel,
+    pub log_level: CoreLogLevel, // From monitoring::CoreLogLevel;
 }
-
-pub enum LogLevel { Debug, Info, Warning, Error }
-
+*/
 pub enum CoreError {
     InitializationError(String),
     ResourceAllocationError,
@@ -40,6 +35,11 @@ pub trait SystemComponent {
     fn initialize(&mut self) -> Result<(), CoreError>;
     fn shutdown(&mut self);
 }
+/* Il trait SystemComponent è progettato per essere implementato da vari componenti del sistema che richiedono inizializzazione e chiusura controllata. Uso futuro: 
+
+1. Implementazione per moduli specifici: Ogni modulo principale (come AuthModule, DatabaseModule, etc.) dovrebbe implementare questo trait. 
+
+2. Gestione uniforme dei componenti: Permette al CoreSystem di gestire diversi componenti in modo uniforme, indipendentemente dalla loro implementazione specifica.*/
 
 pub struct CoreSystem {
     config: CoreConfig,
@@ -52,24 +52,20 @@ impl CoreSystem {
         Ok(CoreSystem { config, memory_manager })
     }
 
-    pub fn log(&self, level: LogLevel, message: &str) {
-        // Implementazione logging adattiva basata su ApplicationType
-    }
-
     pub fn perform_operation(&self, operation: SystemOperation) -> Result<(), CoreError> {
         // Esegue operazioni di sistema in base al tipo di applicazione
         match self.config.app_type {
             ApplicationType::WebApp | ApplicationType::ApiBackend => {
-                // Operazioni ottimizzate per server
+                // Operazioni ottimizzate per server ottieni Consulta per le implemetazioni
             },
             ApplicationType::DesktopApp => {
-                // Operazioni per app desktop
+                // Operazioni per app desktop ottieni Consulta per le implemetazioni
             },
             ApplicationType::AutomationScript => {
-                // Operazioni per script di automazione
+                // Operazioni per script di automazione ottieni Consulta per le implemetazioni
             },
             ApplicationType::EmbeddedSystem => {
-                // Operazioni ottimizzate per sistemi embedded
+                // Operazioni ottimizzate per sistemi embedded ottieni Consulta per le implemetazioni
             },
         }
         Ok(())
@@ -86,8 +82,8 @@ pub enum SystemOperation {
 
 ```Rust
 // memory_management.rs
-
-use super::system_core::{ApplicationType, CoreError};
+use crate::config::global_config::{ApplicationType}; 
+use super::system_core::{CoreError};
 
 pub struct MemoryManager {
     allocation_strategy: AllocationStrategy,
