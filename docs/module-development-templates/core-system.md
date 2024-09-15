@@ -3,10 +3,18 @@
 | Modulo       | Linguaggio Principale | Linguaggio di Supporto | Wrapping | Framework/Librerie Principali | Considerazioni per lo Sviluppo<br> |
 | ------------ | --------------------- | ---------------------- | -------- | ----------------------------- | ---------------------------------- |
 | Core Sistema | Rust                  | -                      | -        | tokio (async runtime)         | Ottimizzazione per concorre        |
+|              |                       |                        |          |                               |                                    |
 
 ---
 
-## Moduli Layer 1 per Code Base `main.rs`
+## Moduli Layer 1 per Code Base 
+
+### Istruzioni e note
+Dentro lib.rs in src sono contenuti i crate
+in questo caso `pub mod core` che da accesso a system_core.rs
+
+**Attenzione**: Occorre personalizzare le informazioni riportate dalle funzioni di logging e implementare le operazioni per ogni tipo di applicazione in `perfom_operation` e le corrispettive informazioni di logging.
+
 
 `system_core.rs`:
 
@@ -49,11 +57,14 @@ pub struct CoreSystem {
 
 impl CoreSystem {
     pub fn new(config: CoreConfig) -> Result<Self, CoreError> {
+	    // logger.info("Informazioni sul una nuova inizializzazione del core")
         let memory_manager = MemoryManager::new(config.app_type)?;
         Ok(CoreSystem { config, memory_manager })
     }
 
     pub fn perform_operation(&self, operation: SystemOperation) -> Result<(), CoreError> {
+	    // logger.info("Informazioni sul'inizio delle oprazioni")
+	    
         // Esegue operazioni di sistema in base al tipo di applicazione
         match self.config.app_type {
             ApplicationType::WebApp | ApplicationType::ApiBackend => {
@@ -69,12 +80,14 @@ impl CoreSystem {
                 // Operazioni ottimizzate per sistemi embedded ottieni Consulta per le implemetazioni
             },
         }
+        // logger.info("Informazioni su sulla fine invocazione delle operazioni")
         Ok(())
     }
 }
 
 pub enum SystemOperation {
     // Definire qui le varie operazioni di sistema
+    // logger.info("Informazioni su la fine delle definizioni delle operazioni di sistama")
 }
 ```
 
@@ -98,6 +111,7 @@ enum AllocationStrategy {
 
 impl MemoryManager {
     pub fn new(app_type: ApplicationType) -> Result<Self, CoreError> {
+	    // logger.info("Informazioni su l' inizializzazione del memory management")
         let strategy = match app_type {
             ApplicationType::WebApp | ApplicationType::ApiBackend => AllocationStrategy::PoolBased,
             ApplicationType::DesktopApp => AllocationStrategy::Standard,
@@ -108,6 +122,7 @@ impl MemoryManager {
     }
 
     pub fn allocate(&self, size: usize) -> Result<*mut u8, CoreError> {
+	    // logger.info("Informazioni sull' allocazione della memoria ")
         // Implementazione dell'allocazione di memoria basata sulla strategia
         match self.allocation_strategy {
             AllocationStrategy::Standard => {
@@ -121,10 +136,13 @@ impl MemoryManager {
             },
         }
         Ok(std::ptr::null_mut()) // Placeholder
+        // logger.info("Informazioni su la corretta allocazione")
     }
 
     pub fn deallocate(&self, ptr: *mut u8) -> Result<(), CoreError> {
+	    // logger.info("Informazioni sulla deallocazione della memoria")
         // Implementazione della deallocazione di memoria
+        // logger.info("Informazioni sulla corretta deallocazione della memoria")
         Ok(())
     }
 }

@@ -1,6 +1,15 @@
-# Command Line Interface
+# Tameplates
 
-## Tameplate
+---
+
+## Moduli Layer 1 per Code Base 
+### Istruzioni e note
+Dentro lib.rs in src sono contenuti i crate
+in questo caso `pub mod cli` che da accesso a cli.rs
+
+**Attenzione**: Occorre personalizzare i messaggi del CLI e le informazioni riportate dalle funzioni di logging.
+
+`cli.rs`:
 
 ```Rust
 use clap::{App, Arg, ArgMatches};
@@ -8,16 +17,11 @@ use crate::config::global_config::{CoreConfig,ApplicationType};
 use crate::monitoring::logger::{Log,LogLevel};
 const LOGGER = Log::new(LogLevel::Info, "cli");
 	
-/*
-Dentro lib.rs in src sono contenuti i crate
-in questo caso `pub mod core` che da accesso a system_core.rs
-*/ 
+
 
 // Viene restituito il config file
-/*
-OCCORRE PERSONALIZARE I MESSAGGI DEL CLI
-*/
 pub fn parse_config_cli() -> CoreConfig {
+	// logger.info("Informazioni sull inizializzazzione dei logger")
     let matches = App::new("ArxFramework CLI")
         .version("1.0")
         .author("Your Name")
@@ -36,7 +40,7 @@ pub fn parse_config_cli() -> CoreConfig {
             .takes_value(true)
             .default_value("4"))
         .get_matches();
-
+	// logger.info("Informazioni sul ritorno del Core config")
     CoreConfig {
         app_type: parse_app_type(&matches),
         max_threads: parse_max_threads(&matches),
@@ -44,6 +48,7 @@ pub fn parse_config_cli() -> CoreConfig {
 }
 
 fn parse_app_type(matches: &ArgMatches) -> ApplicationType {
+	// logger.info("Informazioni sul parsing dell tipo di applicazione")
     match matches.value_of("app-type").unwrap() {
         "webapp" => ApplicationType::WebApp,
         "api" => ApplicationType::ApiBackend,
@@ -56,6 +61,7 @@ fn parse_app_type(matches: &ArgMatches) -> ApplicationType {
 }
 
 fn parse_max_threads(matches: &ArgMatches) -> usize {
+	// logger.info("Informazioni sul parsing dei thread massimi imposti")
     matches.value_of("max-threads")
         .unwrap()
         .parse()
