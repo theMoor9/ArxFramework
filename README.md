@@ -283,9 +283,13 @@ Questo file contiene le strutture e le funzioni principali per l'inizializzazion
 
 # HOW to USE
 
-1. Accedi al CLI e imposta l' ambiente iniziale con ...
+1. Tramite il cli si configura la stuttura base per una delle applicazioni disponibili
 2. 
 
 ---
 	
-**Author:** Kenneth Boldrini
+# Author
+Kenneth Boldrini
+
+# License
+This repository is licensed. See the [LICENSE](./LICENSE) file for more details.
