@@ -1,7 +1,7 @@
 # ArxFramework
 
 ## Introduction
-ArxFramework è un framework modulare e flessibile progettato per supportare lo sviluppo di diverse tipologie di applicazioni, tra cui applicazioni web, API backend, applicazioni desktop, sistemi di automazione e scripting, e sistemi embedded.
+ArxFramework è una struttura modulare e flessibile progettato per supportare lo sviluppo di diverse tipologie di applicazioni, tra cui applicazioni web, API backend, applicazioni desktop, sistemi di automazione e scripting, e sistemi embedded.
 
 Caratteristiche principali:
 
