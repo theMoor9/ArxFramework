@@ -154,12 +154,12 @@ ArxFramework/
 | └── logs/               # Cartella dei log
 ├── task_automation/      # Task Automation (Rust primario, Python secondario)
 ├── blockchain/           # Integrazione Blockchain (Rust)
-├── frontend/             # Frontend dinamico (Svelte - TypeScript/JavaScript)
+├── frontend/             # Ospita il front end
 ├── ml/                   # Machine Learning (Python primario, Rust secondario)
-├── templates/            # Template per le 5 tipologie di applicazioni
 ├── docs/                 # Documentazione del framework
 ├── config/               # Configurazioni globali
 ├── src/ 
+├── tests/                # Test unitari 
 └── README.md             # Documentazione principale del framework
 ```
 
@@ -198,6 +198,7 @@ ArxFramework/
 - `smart_contracts.rs`: Gestione smart contract
 
 **frontend/**
+Ospita il frontend
 - `App.svelte`: Componente root Svelte
 - `index.js`: Entry point dell'applicazione
 - `components/`: Cartella componenti riutilizzabili
@@ -206,11 +207,11 @@ ArxFramework/
 - `ml_models.py`: Implementazione modelli ML
 - `data_processing.rs`: Elaborazione dati performante
 
-**templates/**
-- Vari file template per diverse tipologie di applicazioni
-
 **docs/**
 - File di documentazione per ogni modulo
+
+**tests/**
+- Contiene i test unitari.
 
 **config/**
 - `global_config.rs`File di configurazione per l'intero framework
@@ -218,26 +219,8 @@ ArxFramework/
 **src/**
 - `main.rs` Il main è costruito in gran parte dagli elementi  delle standard procedures riportate nella sezione [Scope](#Scope)
 - `cli.rs` [Link al tameplate del CLI](./main-integration-procedures/cli.md)
-- `lib.rs` Qui sono riportate tutte le cartelle( *crates* ) contenenti moduli:
+- `lib.rs` Qui sono riportate tutte le cartelle( *crates* ) contenenti moduli
 	
-```Rust
-mod core
-mod auth 
-mod crud
-mod api
-mod file_management
-mod ...
-```
-
-```Rust
-// In .toml
-
-[lib]
-name = "lib"
-path = "src/lib.rs" // Oppuere path relativo al .tompl
-
-```
-
 ---
 
 # Scope
@@ -252,7 +235,7 @@ Questo file contiene le strutture e le funzioni principali per l'inizializzazion
 
 [Development](ArxFramework/module-development-templates/core-system.md)
 
-[Main Integration](ArxFramework/main-integration-procedures/core-system.md)
+[Customization]()
 
 ## 2. Autenticazione e Sicurezza 2 Versioni
 >Pertinente per: Web App, API Backend, App Desktop

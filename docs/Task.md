@@ -1,13 +1,65 @@
+#  Steps
+
+### **A. Implementazione dei Moduli Esterni**
+
+- **Sviluppare i Moduli `auth`, `crud`, `api_layer`, ecc.**:
+    - Implementare i moduli esterni secondo l'interfaccia definita dal trait `SystemComponent`.
+    - Assicurarsi che ogni modulo gestisca correttamente l'inizializzazione, lo shutdown e la gestione degli errori.
+
+### **B. Test e Validazione**
+
+- **Scrivere Test Unitari e di Integrazione**:
+    
+    - Verificare il corretto funzionamento dei moduli implementati.
+    - Assicurarsi che le diverse strategie di allocazione della memoria funzionino come previsto.
+- **Verificare il Comportamento in Ambienti Multi-Thread**:
+    
+    - Testare il `MemoryManager` e il logger in contesti multi-thread per assicurarsi che il locking funzioni correttamente.
+
+### **C. Ottimizzazione e Pulizia del Codice**
+
+- **Migliorare l'Efficienza del `MemoryManager`**:
+    
+    - Valutare se il pool di memoria può essere ottimizzato, ad esempio implementando dimensioni variabili dei buffer o meccanismi di riciclo più sofisticati.
+- **Refactoring e Miglioramento della Manutenibilità**:
+    
+    - Rivedere il codice per individuare possibili miglioramenti o semplificazioni.
+    - Assicurarsi che il codice sia ben documentato e conforme alle best practice di Rust.
+
+### **D. Documentazione e Guide**
+
+- **Arricchire la Documentazione**:
+    
+    - Aggiungere esempi d'uso, guide e spiegazioni dettagliate per gli sviluppatori che utilizzeranno il framework.
+- **Generare Documentazione Automatica**:
+    
+    - Utilizzare `rustdoc` per generare la documentazione a partire dai commenti `///` presenti nel codice.
+
+### **E. Gestione delle Configurazioni**
+
+- **Estendere `global_config.rs`**:
+    - Aggiungere configurazioni specifiche per i moduli esterni, come `ApiConfig`, `AuthConfig`, ecc.
+    - Implementare meccanismi per caricare configurazioni da file o variabili d'ambiente.
+
+### **F. Considerazioni sulla Sicurezza**
+
+- **Validazione degli Input e Gestione delle Eccezioni**:
+    - Assicurarsi che il sistema gestisca correttamente input non validi o malformati.
+    - Implementare controlli di sicurezza nei moduli critici, come l'autenticazione e l'accesso ai dati.
+
+---
+# Elementi
+
 ### **core/**
 
 - [x]  `system_core.rs`: Gestione centrale del sistema implementata.
-	- [x] Main integration
+	- [ ] Main integration
 	- [x] template
 	- [x] Logger
 - [x]  `memory_management.rs`: Ottimizzazione della memoria gestita correttamente.
-	- [ ] Main intergration
+	- [ ] Main integration
 	- [x] template 
-		- [ ] Revisione
+		- [x] Revisione
 	- [x] Logger
 
 
@@ -130,7 +182,7 @@
 
 - [ ]  `global_config.rs`: File di configurazione globale completo e configurato.
 	- [ ] Main integration
-	- [ ] template
+	- [x] template
 	- [ ] Logger
 
 ### **src/**
@@ -139,7 +191,7 @@
 	- [ ] Main integration
 	- [ ] Logger
 - [x]  `cli.rs`: CLI sviluppato e collegato al main.
-	- [x] main integration per global config
+	- [ ] main integration per global config
 	- [x] template
 	- [x] logging
 - [x]  `lib.rs`: Tutte le crates e moduli inclusi e collegati correttamente.
