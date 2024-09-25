@@ -21,6 +21,7 @@ impl MemoryManager {
     pub fn new(app_type: ApplicationType, memory_config: MemoryConfig) -> Result<Self, CoreError> {
         info!("Inizializzazione del MemoryManager...");
 
+        // Scelta della strategia statica
         let strategy = match app_type {
             ApplicationType::WebApp | ApplicationType::ApiBackend => AllocationStrategy::PoolBased,
             ApplicationType::DesktopApp => AllocationStrategy::Standard,

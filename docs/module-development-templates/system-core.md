@@ -28,8 +28,7 @@ use crate::memory::MemoryManager;
 use log::{info, error};
 use once_cell::sync::Lazy;
 
-#[cfg(feature = "core_system")]
-use crate::core_system;
+// Import ottimizzato a compile time
 #[cfg(feature = "auth")]
 use crate::auth;
 #[cfg(feature = "crud")]
@@ -134,6 +133,11 @@ impl CoreSystem {
 ### USO
 
 ```Rust
+// Inizializza il CoreSystem con la configurazione ricevuta
+let core_system = CoreSystem::new(config).expect("Errore nell'inizializzazione del Core System");
+    
+// Esegui il core system
+core_system.run()?;
 ```
 
 ---
@@ -163,7 +167,8 @@ pub struct MemoryManager {
 impl MemoryManager {
     pub fn new(app_type: ApplicationType, memory_config: MemoryConfig) -> Result<Self, CoreError> {
         info!("Inizializzazione del MemoryManager...");
-
+        
+		// Scelta della strategia statica
         let strategy = match app_type {
             ApplicationType::WebApp | ApplicationType::ApiBackend => AllocationStrategy::PoolBased,
             ApplicationType::DesktopApp => AllocationStrategy::Standard,

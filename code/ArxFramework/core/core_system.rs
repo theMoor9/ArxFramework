@@ -6,8 +6,7 @@ use crate::monitoring::logger;
 use log::{info, error};
 use once_cell::sync::Lazy;
 
-#[cfg(feature = "core_system")]
-use crate::core_system;
+// Import ottimizzato a compile time
 #[cfg(feature = "auth")]
 use crate::auth;
 #[cfg(feature = "crud")]
@@ -74,60 +73,45 @@ impl CoreSystem {
     }
 
     /// Funzione per eseguire le operazioni in base al tipo di applicazione.
+    /// Ottimizzazione run time
     pub fn run(&self) -> Result<(), CoreError> {
         match self.config.app_type {
             ApplicationType::WebApp => {
                 info!("Configurazione per WebApp");
-                self.initialize_module("Core System", || core_system::initialize())?;
-                logger::monitor_module_status("Core System", true); // Modulo operativo
                 self.initialize_module("Authentication", || auth::initialize())?;
                 logger::monitor_module_status("Authentication", true);
                 self.initialize_module("CRUD", || crud::initialize())?;
                 logger::monitor_module_status("CRUD", true);
                 self.initialize_module("API Layer", || api_layer::initialize())?;
                 logger::monitor_module_status("API Layer", true);
-                self.initialize_module("Monitoring", || monitoring::initialize())?;
-                logger::monitor_module_status("Monitoring", true);
                 self.initialize_module("Frontend", || frontend::initialize())?;
                 logger::monitor_module_status("Frontend", true);
             }
 
             ApplicationType::ApiBackend => {
                 info!("Configurazione per API Backend");
-                self.initialize_module("Core System", || core_system::initialize())?;
-                logger::monitor_module_status("Core System", true); // Modulo operativo
                 self.initialize_module("Authentication", || auth::initialize())?;
                 logger::monitor_module_status("Authentication", true);
                 self.initialize_module("CRUD", || crud::initialize())?;
                 logger::monitor_module_status("CRUD", true);
                 self.initialize_module("API Layer", || api_layer::initialize())?;
                 logger::monitor_module_status("API Layer", true);
-                self.initialize_module("Monitoring", || monitoring::initialize())?;
-                logger::monitor_module_status("Monitoring", true);
             }
 
             ApplicationType::DesktopApp => {
                 info!("Configurazione per App Desktop");
-                self.initialize_module("Core System", || core_system::initialize())?;
-                logger::monitor_module_status("Core System", true); // Modulo operativo
                 self.initialize_module("Authentication", || auth::initialize())?;
                 logger::monitor_module_status("Authentication", true);
                 self.initialize_module("CRUD", || crud::initialize())?;
                 logger::monitor_module_status("CRUD", true);
                 self.initialize_module("File Management", || file_management::initialize())?;
                 logger::monitor_module_status("File Management", true);
-                self.initialize_module("Monitoring", || monitoring::initialize())?;
-                logger::monitor_module_status("Monitoring", true);
                 self.initialize_module("Frontend", || frontend::initialize())?;
                 logger::monitor_module_status("Frontend", true);
             }
 
             ApplicationType::AutomationScript => {
                 info!("Configurazione per Automazione e Scripting");
-                self.initialize_module("Core System", || core_system::initialize())?;
-                logger::monitor_module_status("Core System", true); // Modulo operativo
-                self.initialize_module("Monitoring", || monitoring::initialize())?;
-                logger::monitor_module_status("Monitoring", true);
                 self.initialize_module("Task Automation", || task_automation::initialize())?;
                 logger::monitor_module_status("Task Automation", true);
                 #[cfg(feature = "file_management")]
@@ -136,11 +120,7 @@ impl CoreSystem {
             }
 
             ApplicationType::EmbeddedSystem => {
-                info!("Configurazione per Sistemi Embedded");
-                self.initialize_module("Core System", || core_system::initialize())?;
-                logger::monitor_module_status("Core System", true); // Modulo operativo
-                self.initialize_module("Monitoring", || monitoring::initialize())?;
-                logger::monitor_module_status("Monitoring", true);
+                info!("Configurazione per Sistemi Embedded");;
                 // Inizializzazione di eventuali moduli embedded-specifici
             }
         }

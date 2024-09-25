@@ -21,6 +21,7 @@ pub enum ApplicationType{
 pub struct CoreConfig {
     pub app_type: ApplicationType,
     pub max_threads: usize,
+    
 }
 
 /// Configurazione della memoria per il sistema.

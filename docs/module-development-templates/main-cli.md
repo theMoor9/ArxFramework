@@ -1,4 +1,4 @@
-# src/main.rs - CLI
+# Main - CLI
 
 **`main.rs`**, viene utilizzato per avviare l'intera applicazione/framework. Il ruolo del **CLI** è di configurare l'ambiente e passare i parametri al **`main`**, che a sua volta delega il resto del lavoro al **`system_core`**.
 
@@ -23,7 +23,9 @@ Il CLI quindi:
 2. **Gestirà la configurazione dell'applicazione** (come i parametri dell'applicazione e la selezione dei moduli) e avvierà il framework in base a tali parametri.
 3. **Richiamerà il  `system core` del framework o altre funzioni importanti del framework** con le giuste variabili di configurazione, avviando il sistema nella cartella progetto.
 
-### Uso
+
+
+# src/`cli.rs`
 Attraverso il CLI saranno personalizzati i seguenti aspetti:
 
 - Tipo di Applicazione.
@@ -33,4 +35,28 @@ Attraverso il CLI saranno personalizzati i seguenti aspetti:
 
 
 ```Rust
+```
+
+
+# src/`main.rs`
+
+### Sequenza chiamata moduli
+
+```Rust
+fn main() -> Result<(), Box<dyn std::error::Error>> {
+    // Inizializza il sistema di logging
+    monitoring::logger::setup_logging().expect("Errore nell'inizializzazione del sistema di logging");
+    
+    // Ottieni la configurazione dall'utente usando il CLI
+    let config = cli::parse_core_config_cli(); 
+    
+    // Inizializza il CoreSystem con la configurazione ricevuta
+    let core_system = CoreSystem::new(config).expect("Errore nell'inizializzazione del Core System");
+    
+    // Esegui il core system
+    core_system.run()?;
+    
+    Ok(())
+}
+
 ```
