@@ -64,4 +64,9 @@ pub fn monitor_module_status(module_name: &str, status: bool) {
 ### USO
 
 ```Rust
+info!("Allocazione di {} byte di memoria...", size);
+error!("...",);
+warn!("...");
+
+logger::monitor_module_status("Authentication", true);
 ```

@@ -12,13 +12,11 @@
 
 
 ### Istruzioni e note
-Dentro lib.rs in src sono contenuti i crate
-in questo caso `pub mod core` che da accesso a system_core.rs
 
-**Attenzione**: Occorre personalizzare le informazioni riportate dalle funzioni di logging.
+**Attenzione**: Occorre personalizzare le informazioni riportate dalle funzioni di logging e gli elementi riguardanti i sistemi embedded.
 
 
-`system_core.rs`:
+# `system_core.rs`
 
 ```Rust
 //! Modulo core del sistema per la gestione delle operazioni principali.
@@ -99,13 +97,14 @@ impl CoreSystem {
         match self.config.app_type {
             ApplicationType::WebApp => {
                 info!("Configurazione per WebApp");
-                self.initialize_module("Core System", || core_system::initialize())?;
-                logging::monitor_module_status("Core System", true); // Modulo operativo
                 self.initialize_module("Authentication", || auth::initialize())?;
+                //Poi loggare
                 self.initialize_module("CRUD", || crud::initialize())?;
+                //Poi loggare
                 self.initialize_module("API Layer", || api_layer::initialize())?;
-                self.initialize_module("Monitoring", || monitoring::initialize())?;
+                //Poi loggare
                 self.initialize_module("Frontend", || frontend::initialize())?;
+                //Poi loggare
             }
             ApplicationType::ApiBackend => {
                //Init moduli
@@ -138,11 +137,14 @@ let core_system = CoreSystem::new(config).expect("Errore nell'inizializzazione d
     
 // Esegui il core system
 core_system.run()?;
+
 ```
 
 ---
 
- `memory_management.rs`:
+# `memory_management.rs`
+
+`memory_manager::new()` che imposta semplicemente il tipo di strategia per l'applicazione in questione Poi alla chiamata di `memory_manager::allocate(...)` o `deallocate(...)` il modulo imposta le variabili per restituire un buffer che il componente usa come memoria privata.
 
 ```Rust
 //! Modulo per la gestione della memoria in base al tipo di applicazione.
@@ -250,6 +252,38 @@ impl MemoryManager {
 
 ### USO
 
-```Rust
+- `system_core.rs`
 
+```Rust
+impl CoreSystem {
+    pub fn run_task(&mut self) -> Result<(), CoreError> {
+        let buffer_size = 512; // Ad esempio, 512 byte di memoria per una task di sistema
+        let memory = self.memory_manager.allocate(buffer_size)?;
+
+        // Esegui la task utilizzando il buffer
+        // ...
+
+        // Al termine, dealloca il buffer
+        self.memory_manager.deallocate(memory)?;
+        Ok(())
+    }
+}
+```
+
+- `memory_manager.rs`
+
+```Rust
+impl ApiLayer {
+    pub fn handle_request(&mut self) -> Result<(), CoreError> {
+        let buffer_size = 1024; // Buffer per memorizzare la richiesta ricevuta
+        let memory = self.memory_manager.allocate(buffer_size)?;
+
+        // Esegui operazioni sulla richiesta
+        // ...
+
+        // Dealloca il buffer alla fine
+        self.memory_manager.deallocate(memory)?;
+        Ok(())
+    }
+}
 ```
