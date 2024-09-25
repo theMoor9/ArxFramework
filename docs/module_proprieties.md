@@ -9,7 +9,7 @@
 
 #### b. `memory_management.rs` - Ottimizzazione della memoria
 
-- **Tipo**: **Statico**
+- **Tipo**: **Statico con personalizzazione**
 - **Motivazione**: Fornisce meccanismi per la gestione efficiente della memoria, che sono generali e utili in vari contesti applicativi. È un componente che può essere utilizzato così com'è dagli utenti.
 - **Scelta della strategia**: **statica** - code line: 24
 

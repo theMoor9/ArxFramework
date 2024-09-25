@@ -94,13 +94,13 @@ Per **ogni modello** avremo le seguenti operazioni:
 	- [ ] integration
 	- [x] template
 	- [x] Logger
-	- [ ] In-code Documentation
+	- [x] In-code Documentation
 - [x]  `memory_management.rs`: Ottimizzazione della memoria gestita correttamente.
 	- [ ] integration
 	- [x] template 
 		- [x] Revisione
 	- [x] Logger
-	- [ ] In-code Documentation
+	- [x] In-code Documentation
 
 
 ### **auth/**
