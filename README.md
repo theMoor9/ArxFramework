@@ -1,22 +1,21 @@
 # ArxFramework
 
 ## Introduction
-ArxFramework è una struttura modulare e flessibile progettato per supportare lo sviluppo di diverse tipologie di applicazioni, tra cui applicazioni web, API backend, applicazioni desktop, sistemi di automazione e scripting, e sistemi embedded.
+ArxFramework è un framework modulare e flessibile progettato per supportare lo sviluppo di diverse tipologie di applicazioni, tra cui applicazioni web, API backend, applicazioni desktop, sistemi di automazione e scripting, e sistemi embedded.
 
 Caratteristiche principali:
 
 1. Architettura Modulare: Composto da moduli specializzati come core system, autenticazione, CRUD, gestione file, monitoraggio e altri, ciascuno ottimizzato per il proprio dominio.
 2. Multilingua: Principalmente implementato in Rust per prestazioni e sicurezza, con integrazioni Python per flessibilità e machine learning.
 3. Versatilità: Supporta cinque tipi principali di applicazioni, adattandosi alle esigenze specifiche di ciascuna.
-4. Core System Robusto: Un sistema centrale in Rust che gestisce operazioni fondamentali come la gestione della memoria e la concorrenza.
-5. CLI Configurabile: Un'interfaccia a linea di comando per una facile configurazione e inizializzazione del sistema.
-6. Integrazione Frontend: Supporto per frontend dinamici utilizzando Svelte.
-7. Capacità Avanzate: Include moduli per machine learning, integrazione blockchain e automazione dei task.
-8. Logging e Monitoraggio: Sistema integrato per il logging e il monitoraggio delle prestazioni.
-9. Gestione File e Risorse: Modulo dedicato per operazioni efficienti su file e risorse.
-10. Documentazione e Template: Include documentazione completa e template per diversi tipi di applicazioni.
+4. Core System Robusto: Un sistema centrale in Rust che gestisce operazioni fondamentali come la gestione della memoria e la concorrenza. 
+5. Integrazione Frontend: Supporto per frontend dinamici utilizzando Svelte.
+6. Capacità Avanzate: Include moduli per machine learning, integrazione blockchain e automazione dei task.
+7. Logging e Monitoraggio: Sistema integrato per il logging e il monitoraggio delle prestazioni.
+8. Gestione File e Risorse: Modulo dedicato per operazioni efficienti su file e risorse.
+9. Documentazione e Template: Include documentazione completa e template per diversi tipi di applicazioni.
 
-ArxFramework mira a fornire una base solida e flessibile per lo sviluppo di applicazioni, combinando l'efficienza di Rust con la versatilità di Python e altri strumenti moderni. È progettato per essere facilmente estensibile e adattabile a diverse esigenze di progetto, dalla prototipazione rapida allo sviluppo di sistemi complessi e ad alte prestazioni.
+ArxFramework mira a fornire una base solida e flessibile per lo sviluppo di applicazioni, combinando l'efficienza di Rust con la versatilità di Python e altri strumenti moderni. È progettato per essere facilmente estensibile e adattabile a diverse esigenze di progetto, dalla prototipazione rapida allo sviluppo di sistemi complessi e ad alte prestazioni utilizzando un CLI per facilitarne l'uso. 
 
 ---
 
@@ -62,8 +61,6 @@ Legenda:
 - ✓ : Modulo tipicamente utilizzato in questa soluzione
 - ○ : Modulo opzionale o utilizzato in base a requisiti specifici
 
-### CLI setup
-Il cli sarà responsabile  della configurazione del tipo di applicazione tramite la variabile di config nel main. Da cui dipenderanno i seguenti moduli:
 
 ### Dettagli Espansi dei Moduli per lo Sviluppo
 
@@ -88,7 +85,7 @@ Note Aggiuntive:
 - Implementare un sistema di configurazione flessibile per ciascun modulo.
 - Considerare l'uso di container Docker per la standardizzazione dell'ambiente di sviluppo e deployment.
 
-## Linguaggi di Supporto
+## Linguaggi di Supporto (Opzionale)
 ### Distinzione tra Approcci Wrapping e Non-Wrapping
 
 1. **Approccio Wrapping** (es. Autenticazione e Sicurezza): Il codice Rust viene incapsulato in funzioni Python per un uso più agevole. Esempio Rust (con PyO3):
@@ -158,7 +155,7 @@ ArxFramework/
 ├── ml/                   # Machine Learning (Python primario, Rust secondario)
 ├── docs/                 # Documentazione del framework
 ├── config/               # Configurazioni globali
-├── src/ 
+├── src/                  # Source
 ├── tests/                # Test unitari 
 └── README.md             # Documentazione principale del framework
 ```
@@ -214,82 +211,25 @@ Ospita il frontend
 - Contiene i test unitari.
 
 **config/**
-- `global_config.rs`File di configurazione per l'intero framework
+- `global_config.rs`: File di configurazione per l'intero framework
 
 **src/**
-- `main.rs` Il main è costruito in gran parte dagli elementi  delle standard procedures riportate nella sezione [Scope](#Scope)
-- `cli.rs` [Link al tameplate del CLI](./main-integration-procedures/cli.md)
-- `lib.rs` Qui sono riportate tutte le cartelle( *crates* ) contenenti moduli
+- `main.rs`: Punto d'ingresso del framework e incapsulatore del CLI.
+- `lib.rs`: Qui sono riportate tutte le cartelle( *crates* ) contenenti moduli
 	
 ---
 
-# Scope
+# Guidelines
 
->Ogni modulo ha il compito di processare task in base ad un input restituendo un output di status di avvenuta operazione al fine di avere uno script collettore delle operazioni.
-
-## 1. Core Sistema
->Pertinente per: Tutte le applicazioni
-
-**CAMBIARE**
-Questo file contiene le strutture e le funzioni principali per l'inizializzazione e il controllo del core del sistema. Definisce i tipi di applicazione supportati, gestisce la configurazione globale, implementa il logging di base e fornisce un'interfaccia per le operazioni di sistema che si adattano al tipo di applicazione in uso. È il punto di entrata principale per l'interazione con il core del framework.
-
-[Development](ArxFramework/module-development-templates/core-system.md)
-
-[Customization]()
-
-## 2. Autenticazione e Sicurezza 2 Versioni
->Pertinente per: Web App, API Backend, App Desktop
-
-
-## 3. Gestione CRUD 2 Versioni
->Pertinente per: Web App, API Backend, App Desktop
-
-
-## 4. API Layer 3 Versioni
-
->Pertinente per: Web App, API Backend, App Desktop, Sistemi Embedded
-
-
-## 5. Gestione File/Risorse 3 Versioni
-
->Pertinente per: Tutte le applicazioni
-
-## 6. Monitoraggio e Logging 2 Versioni
-
->Pertinente per: Tutte le applicazioni
-
-
-## 7. Task Automation 2 Versioni
-
->Pertinente per: Automazione e Scripting, Sistemi Embedded
-
-
-## 8. Integrazione Blockchain 2 Versioni
-
->Pertinente per: Web App, API Backend, App Desktop
-
-
-## 9. Frontend Dinamico 2 Versioni
-
->Pertinente per: Web App, App Desktop
-
-
-## 10. Machine Learning 3 Versioni
-
->Pertinente per: Web App, API Backend, Automazione e Scripting, Sistemi Embedded
-
+[Linee Guida Generali per Tutti i Moduli](./docs/development_guide_lines.md)
 
 ---
 
 # HOW to USE
 
-1. Tramite il cli si configura la stuttura base per una delle applicazioni disponibili
+1. 
 2. 
 
 ---
 	
-# Author
-Kenneth Boldrini
-
-# License
-This repository is licensed. See the [LICENSE](./LICENSE) file for more details.
+**Autore:** Kenneth Boldrini

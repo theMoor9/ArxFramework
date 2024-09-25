@@ -6,6 +6,44 @@
     - Implementare i moduli esterni secondo l'interfaccia definita dal trait `SystemComponent`.
     - Assicurarsi che ogni modulo gestisca correttamente l'inizializzazione, lo shutdown e la gestione degli errori.
 
+---
+### CRUD
+
+#### CRUD Models
+##### **1. Web App**
+User, Article/Blog Post, Comment, Category, Tag, File/Image, Page
+##### **2. API Backend**
+User, API Key, Token, Request Log, Endpoint, Permission, Rate Limit Rule
+##### **3. Desktop App**
+User, Settings, Document, File, Preferences, Task, Project
+##### **4. Automazione e Scripting**
+Script, Task, Execution Log, Schedule, Configuration, Job, Macro
+##### **5. Sistemi Embedded**
+Device, Sensor Data, Configuration, Firmware Version, Log/Event, Command, Task
+
+#### CRUD Operations
+Per **ogni modello** avremo le seguenti operazioni:
+
+- **Create**: Crea un nuovo elemento nel database.
+- **Read**: Legge un elemento specifico dal database.
+- **Update**: Aggiorna i dati di un elemento esistente.
+- **Delete**: Elimina un elemento specifico dal database.
+- **List**: Restituisce una lista di tutti gli elementi o una selezione.
+- **Search**: (Facoltativa) Ricerca avanzata di elementi nel database.
+- **Revoke**: (Facoltativa) Invalida o revoca un elemento (usata per chiavi API o token).
+
+#####  Operazioni CRUD Applicabili ai Modelli
+
+- **Create**: User, Article, Comment, Category, Tag, File/Image, Page, API Key, Token, Request Log, Endpoint, Permission, Rate Limit Rule, Settings, Document, Preferences, Task, Project
+- **Read**: User, Article, Comment, Category, Tag, File/Image, Page, API Key, Token, Request Log, Endpoint, Permission, Rate Limit Rule, Settings, Document, Preferences, Task, Project
+- **Update**: User, Article, Comment, Category, Tag, File/Image, Page, Endpoint, Permission, Rate Limit Rule, Settings, Document, Preferences, Task, Project
+- **Delete**: User, Article, Comment, Category, Tag, File/Image, Page, API Key, Token, Request Log, Endpoint, Permission, Rate Limit Rule, Settings, Document, Preferences, Task, Project
+- **List**: User, Article, Comment, Category, Tag, File/Image, Page, API Key, Token, Request Log, Endpoint, Permission, Rate Limit Rule, Settings, Document, Preferences, Task, Project
+- **Search**: Article, Comment, File/Image, Page, Document
+- **Revoke**: API Key, Token
+
+---
+
 ### **B. Test e Validazione**
 
 - **Scrivere Test Unitari e di Integrazione**:
@@ -190,8 +228,4 @@
 - [ ]  `main.rs`: Main costruito con standard procedures.
 	- [ ] Main integration
 	- [ ] Logger
-- [x]  `cli.rs`: CLI sviluppato e collegato al main.
-	- [ ] main integration per global config
-	- [x] template
-	- [x] logging
 - [x]  `lib.rs`: Tutte le crates e moduli inclusi e collegati correttamente.
