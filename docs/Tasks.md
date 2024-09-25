@@ -94,11 +94,13 @@ Per **ogni modello** avremo le seguenti operazioni:
 	- [ ] integration
 	- [x] template
 	- [x] Logger
+	- [ ] In-code Documentation
 - [x]  `memory_management.rs`: Ottimizzazione della memoria gestita correttamente.
 	- [ ] integration
 	- [x] template 
 		- [x] Revisione
 	- [x] Logger
+	- [ ] In-code Documentation
 
 
 ### **auth/**
@@ -107,10 +109,12 @@ Per **ogni modello** avremo le seguenti operazioni:
 	- [ ] integration
 	- [ ] template
 	- [ ] Logger
+	- [ ] In-code Documentation
 - [ ]  `auth_wrapper.py`: Wrapper Python per integrazioni funzionante.
 	- [ ] integration
 	- [ ] template
 	- [ ] Logger
+	- [ ] In-code Documentation
 
 ### **crud/**
 
@@ -118,10 +122,12 @@ Per **ogni modello** avremo le seguenti operazioni:
 	- [ ] integration
 	- [x] template
 	- [x] Logger
+	- [ ] In-code Documentation
 - [ ]  `models.rs`: Modelli dati definiti e mappati correttamente.
 	- [ ] integration
 	- [x] template
 	- [x] Logger
+	- [x] In-code Documentation
 
 ### **api/**
 
@@ -129,14 +135,17 @@ Per **ogni modello** avremo le seguenti operazioni:
 	- [ ] integration
 	- [ ] template
 	- [ ] Logger
+	- [ ] In-code Documentation
 - [ ]  `routes.rs`: Percorsi API definiti e mappati correttamente.
 	- [ ] integration
 	- [ ] template
 	- [ ] Logger
+	- [ ] In-code Documentation
 - [ ]  `fastapi_integration.py`: Integrazione con FastAPI operativa.
 	- [ ] integration
 	- [ ] template
 	- [ ] Logger
+	- [ ] In-code Documentation
 
 ### **file_management/**
 
@@ -144,10 +153,12 @@ Per **ogni modello** avremo le seguenti operazioni:
 	- [ ] integration
 	- [ ] template
 	- [ ] Logger
+	- [ ] In-code Documentation
 - [ ]  `resource_manager.rs`: Gestione risorse ottimizzata.
 	- [ ] integration
 	- [ ] template
 	- [ ] Logger
+	- [ ] In-code Documentation
 
 ### **monitoring/**
 
@@ -155,10 +166,12 @@ Per **ogni modello** avremo le seguenti operazioni:
 	- [ ] integration
 	- [ ] template
 	- [ ] Logger
+	- [ ] In-code Documentation
 - [ ]  `metrics.rs`: Raccolta e reporting delle metriche attivi.
 	- [ ] integration
 	- [ ] template
 	- [ ] Logger
+	- [ ] In-code Documentation
 
 ### **task_automation**
 
@@ -166,10 +179,12 @@ Per **ogni modello** avremo le seguenti operazioni:
 	- [ ] integration
 	- [ ] template
 	- [ ] Logger
+	- [ ] In-code Documentation
 - [ ]  `automation_scripts.py`: Script Python di automazione funzionanti.
 	- [ ] integration
 	- [ ] template
 	- [ ] Logger
+	- [ ] In-code Documentation
 
 ### **blockchain/**
 
@@ -177,10 +192,12 @@ Per **ogni modello** avremo le seguenti operazioni:
 	- [ ] integration
 	- [ ] template
 	- [ ] Logger
+	- [ ] In-code Documentation
 - [ ]  `smart_contracts.rs`: Gestione degli smart contract implementata.
 	- [ ] integration
 	- [ ] template
 	- [ ] Logger
+	- [ ] In-code Documentation
 
 ### **frontend/**
 
@@ -188,14 +205,17 @@ Per **ogni modello** avremo le seguenti operazioni:
 	- [ ] integration
 	- [ ] template
 	- [ ] Logger
+	- [ ] In-code Documentation
 - [ ]  `main.js`: Entry point dell'applicazione frontend configurato correttamente.
 	- [ ] integration
 	- [ ] template
 	- [ ] Logger
+	- [ ] In-code Documentation
 - [ ]  `components/`: Cartella componenti contiene elementi riutilizzabili.
 	- [ ] integration
 	- [ ] template
 	- [ ] Logger
+	- [ ] In-code Documentation
 
 ### **ml/**
 
@@ -203,10 +223,12 @@ Per **ogni modello** avremo le seguenti operazioni:
 	- [ ] integration
 	- [ ] template
 	- [ ] Logger
+	- [ ] In-code Documentation
 - [ ]  `data_processing.rs`: Elaborazione dati performante sviluppata.
 	- [ ] integration
 	- [ ] template
 	- [ ] Logger
+	- [ ] In-code Documentation
 
 ### **architectures/**
 
@@ -221,10 +243,13 @@ Per **ogni modello** avremo le seguenti operazioni:
 - [ ]  `global_config.rs`: File di configurazione globale completo e configurato.
 	- [ ] integration
 	- [x] template
+	- [ ] In-code Documentation
 
 ### **src/**
 
 - [ ]  `main.rs`: Main costruito con standard procedures.
 	- [ ] integration
 	- [ ] Logger
+	- [ ] In-code Documentation
 - [ ]  `lib.rs`: Tutte le crates e moduli inclusi e collegati correttamente.
+	- [ ] In-code Documentation

@@ -1,4 +1,4 @@
-## Linee Guida Generali per Tutti i Moduli
+# Linee Guida Generali per Tutti i Moduli
 
 Prima di entrare nel dettaglio dei singoli moduli, è importante stabilire alcune proprietà e requisiti generali che tutti i moduli devono rispettare:
 
@@ -25,7 +25,7 @@ Prima di entrare nel dettaglio dei singoli moduli, è importante stabilire alcun
 
 ---
 
-## Checklist per Modulo
+## Proprietà per Modulo
 
 ### **1. core/**
 
@@ -413,3 +413,161 @@ Prima di entrare nel dettaglio dei singoli moduli, è importante stabilire alcun
 - **Visibilità**: Definire correttamente la visibilità dei moduli e delle funzioni (`pub`, `pub(crate)`, ecc.), esponendo solo ciò che è necessario.
     
 - **Documentazione**: Fornire una panoramica del framework e delle sue funzionalità principali.
+
+---
+
+## Allocazione della memoria
+
+### **1. core/**
+
+#### a. `system_core.rs` - Gestione Centrale del Sistema
+
+- **Allocazione di Memoria**: Potrebbe fare uso di `MemoryManager` per allocare e deallocare risorse durante il runtime.
+
+#### b. `memory_management.rs` - Ottimizzazione della Memoria
+
+- **Allocazione di Memoria**: Sì, è il modulo principale per gestire l'allocazione e la deallocazione della memoria.
+
+---
+
+### **2. auth/**
+
+#### a. `auth_core.rs` - Funzionalità Core di Autenticazione
+
+- **Allocazione di Memoria**: Potrebbe fare uso della memoria in operazioni di gestione delle credenziali e sessioni.
+
+#### b. `auth_wrapper.py` - Wrapper Python per Integrazioni
+
+- **Allocazione di Memoria**: No.
+
+---
+
+### **3. crud/**
+
+#### a. `crud_operations.rs` - Operazioni CRUD Generiche
+
+- **Allocazione di Memoria**: Sì, potrebbe fare uso di allocazione per gestire buffer temporanei per operazioni CRUD su database.
+
+#### b. `models.rs` - Definizioni dei Modelli Dati
+
+- **Allocazione di Memoria**: Sì, potrebbe fare uso di memoria per allocare le entità in memoria.
+
+---
+
+### **4. api/**
+
+#### a. `api_server.rs` - Server API Principale
+
+- **Allocazione di Memoria**: Potrebbe fare uso di memoria per allocare risorse legate alle richieste HTTP e gestione dei dati delle API.
+
+#### b. `routes.rs` - Definizione dei Percorsi API
+
+- **Allocazione di Memoria**: Sì, per la gestione delle richieste e risposte HTTP.
+
+---
+
+### **5. file_management/**
+
+#### a. `file_ops.rs` - Operazioni su File
+
+- **Allocazione di Memoria**: Potrebbe fare uso di memoria per gestire buffer di lettura/scrittura dei file.
+
+#### b. `resource_manager.rs` - Gestione Risorse
+
+- **Allocazione di Memoria**: Sì, per tenere traccia delle risorse utilizzate e gestire buffer di dati.
+
+---
+
+### **6. monitoring/**
+
+#### a. **logs/** - Contiene Tutti i File di Log
+
+- **Allocazione di Memoria**: Potrebbe fare uso di memoria per gestire buffer di scrittura dei log.
+
+#### b. `logger.rs` - Sistema di Logging
+
+- **Allocazione di Memoria**: Sì, per gestire i buffer di log sia per la console che per i file.
+
+#### c. `metrics.rs` - Raccolta e Reporting Metriche
+
+- **Allocazione di Memoria**: Sì, per memorizzare e aggregare le metriche raccolte.
+
+---
+
+### **7. task_automation/**
+
+#### a. `task_core.rs` - Funzioni Core per Automazione
+
+- **Allocazione di Memoria**: Potrebbe fare uso di memoria per gestire la coda di task in esecuzione.
+
+#### b. `automation_scripts.py` - Script di Automazione Python
+
+- **Allocazione di Memoria**: No.
+
+---
+
+### **8. blockchain/**
+
+#### a. `blockchain_integration.rs` - Interfaccia Blockchain
+
+- **Allocazione di Memoria**: Potrebbe fare uso di memoria per gestire le transazioni e le interazioni con la blockchain.
+
+#### b. `smart_contracts.rs` - Gestione Smart Contract
+
+- **Allocazione di Memoria**: Sì, per allocare i dati e gestire l'interazione con gli smart contract.
+
+---
+
+### **9. frontend/**
+
+#### a. `App.svelte` - Componente Root Svelte
+
+- **Allocazione di Memoria**: Potrebbe fare uso di memoria per gestire lo stato e i dati dell'applicazione.
+
+#### b. `index.js` - Entry Point dell'Applicazione
+
+- **Allocazione di Memoria**: Potrebbe fare uso di memoria per gestire l'inizializzazione dell'app e le dipendenze.
+
+#### c. `components/` - Cartella Componenti Riutilizzabili
+
+- **Allocazione di Memoria**: Potrebbe fare uso di memoria per gestire lo stato locale e globale dei componenti.
+
+---
+
+### **10. ml/**
+
+#### a. `ml_models.py` - Implementazione Modelli ML
+
+- **Allocazione di Memoria**: Sì, per gestire i modelli ML e il training su dataset.
+
+#### b. `data_processing.rs` - Elaborazione Dati Performante
+
+- **Allocazione di Memoria**: Sì, per gestire l'elaborazione e il pre-processing dei dati.
+
+---
+
+### **11. docs/**
+
+- **Allocazione di Memoria**: No.
+
+---
+
+### **12. tests/**
+
+- **Allocazione di Memoria**: Potrebbe fare uso di memoria per gestire test di carico o complessi test d'integrazione.
+
+---
+
+### **13. config/**
+
+#### a. `global_config.rs` - File di Configurazione per l'Intero Framework
+
+- **Allocazione di Memoria**: Potrebbe fare uso di memoria per gestire le configurazioni in memoria.
+
+---
+
+### **14. src/**
+
+#### a. `lib.rs` - Esportazione dei Moduli
+
+- **Allocazione di Memoria**: No, questo file gestisce solo le esportazioni.

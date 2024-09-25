@@ -15,7 +15,9 @@ Caratteristiche principali:
 8. Gestione File e Risorse: Modulo dedicato per operazioni efficienti su file e risorse.
 9. Documentazione e Template: Include documentazione completa e template per diversi tipi di applicazioni.
 
-ArxFramework mira a fornire una base solida e flessibile per lo sviluppo di applicazioni, combinando l'efficienza di Rust con la versatilità di Python e altri strumenti moderni. È progettato per essere facilmente estensibile e adattabile a diverse esigenze di progetto, dalla prototipazione rapida allo sviluppo di sistemi complessi e ad alte prestazioni utilizzando un CLI per facilitarne l'uso. 
+#### SCOPE
+
+ArxFramework mira a fornire una base solida e flessibile per lo sviluppo di applicazioni, combinando l'efficienza di Rust con la versatilità di Python e altri strumenti moderni. È progettato per essere facilmente estensibile e adattabile a diverse esigenze di progetto, dalla prototipazione rapida allo sviluppo di sistemi complessi e ad alte prestazioni utilizzando un CLI per facilitarne l'uso e template per l'integrazione di moduli personalizzati per aumentarne il potenziale. 
 
 ---
 
@@ -53,8 +55,8 @@ ArxFramework mira a fornire una base solida e flessibile per lo sviluppo di appl
 | Monitoraggio e logging     | ✓       | ✓           | ✓           | ✓                       | ✓                |
 | Task Automation            | ○       | ○           | ○           | ✓                       | ○                |
 | Frontend Dinamico          | ✓       | ○           | ✓           | ○                       | ○                |
-| Integrazione Blockchain    | ○       | ○           | ○           | ○                       | ○                |
-| Machine Learning           | ○       | ○           | ○           | ○                       | ○                |
+| Integrazione Blockchain    | ✓       | ✓           | ✓           | ✓                       | ✓                |
+| Machine Learning           | ✓       | ✓           | ✓           | ✓                       | ✓                |
 
 Legenda:
 
@@ -222,6 +224,7 @@ Ospita il frontend
 # Guidelines
 
 [Linee Guida Generali per Tutti i Moduli](./docs/development_guide_lines.md)
+[Proprietà dei modelli](./docs/module_proprieties.md)
 
 ---
 
