@@ -6,10 +6,10 @@
     - Implementare i moduli esterni secondo l'interfaccia definita dal trait `SystemComponent`.
     - Assicurarsi che ogni modulo gestisca correttamente l'inizializzazione, lo shutdown e la gestione degli errori.
 
----
-### CRUD
+### crud/
 
-#### CRUD Models
+####  CRUD Models
+- [x]  
 ##### **1. Web App**
 User, Article/Blog Post, Comment, Category, Tag, File/Image, Page
 ##### **2. API Backend**
@@ -22,6 +22,7 @@ Script, Task, Execution Log, Schedule, Configuration, Job, Macro
 Device, Sensor Data, Configuration, Firmware Version, Log/Event, Command, Task
 
 #### CRUD Operations
+- [ ] 
 Per **ogni modello** avremo le seguenti operazioni:
 
 - **Create**: Crea un nuovo elemento nel database.
@@ -41,6 +42,9 @@ Per **ogni modello** avremo le seguenti operazioni:
 - **List**: User, Article, Comment, Category, Tag, File/Image, Page, API Key, Token, Request Log, Endpoint, Permission, Rate Limit Rule, Settings, Document, Preferences, Task, Project
 - **Search**: Article, Comment, File/Image, Page, Document
 - **Revoke**: API Key, Token
+
+### auth/
+
 
 ---
 
@@ -66,11 +70,9 @@ Per **ogni modello** avremo le seguenti operazioni:
 
 ### **D. Documentazione e Guide**
 
-- **Arricchire la Documentazione**:
-    
-    - Aggiungere esempi d'uso, guide e spiegazioni dettagliate per gli sviluppatori che utilizzeranno il framework.
+- **Refattorizzare la Documentazione**:
+    - Refattorizzare esempi d'uso, guide e spiegazioni dettagliate per gli sviluppatori che utilizzeranno il framework su obsidian.
 - **Generare Documentazione Automatica**:
-    
     - Utilizzare `rustdoc` per generare la documentazione a partire dai commenti `///` presenti nel codice.
 
 ### **E. Gestione delle Configurazioni**
@@ -243,7 +245,7 @@ Per **ogni modello** avremo le seguenti operazioni:
 - [ ]  `global_config.rs`: File di configurazione globale completo e configurato.
 	- [ ] integration
 	- [x] template
-	- [ ] In-code Documentation
+	- [x] In-code Documentation
 
 ### **src/**
 
@@ -252,4 +254,8 @@ Per **ogni modello** avremo le seguenti operazioni:
 	- [ ] Logger
 	- [ ] In-code Documentation
 - [ ]  `lib.rs`: Tutte le crates e moduli inclusi e collegati correttamente.
+	- [x] In-code Documentation
+- [ ] `cli.rs`: Command Line Interface per facilitare il setup
+	- [ ] integration
+	- [ ] Logger
 	- [ ] In-code Documentation
