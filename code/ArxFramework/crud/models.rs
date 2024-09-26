@@ -3,26 +3,6 @@
 //! Questo file contiene i modelli base per le diverse applicazioni supportate da ArxFramework.
 //! I modelli sono definiti in base alle specifiche di ciascuna applicazione (WebApp, API Backend, Desktop, ecc.).
 //! Puoi estendere questi modelli o aggiungerne di nuovi seguendo alcune semplici linee guida per garantire la compatibilità con il sistema.
-//! 
-//! # Aggiunta di Nuovi Modelli
-//! 
-//! Per aggiungere nuovi modelli:
-//! 
-//! 1. Definisci una nuova `struct` con i campi necessari.
-//! 2. Implementa i `trait` derivabili come `Debug`, `Clone`, e qualsiasi altro `trait` necessario.
-//! 3. Usa i `cfg(feature = "...")` per abilitare il modello solo per specifiche applicazioni.
-//! 4. Se necessario, crea nuove funzioni o moduli per la gestione del nuovo modello.
-//! 
-//! Nota: Assicurati di mantenere coerenza nei nomi dei campi e tipi per evitare conflitti.
-//! 
-//! # Estensione dei Modelli Esistenti
-//! 
-//! Per estendere i modelli esistenti:
-//! 
-//! 1. Aggiungi nuovi campi alla `struct` desiderata.
-//! 2. Documenta il nuovo campo e spiega come viene utilizzato.
-//! 3. Usa i `cfg(feature = "...")` per abilitare il campo solo per specifiche applicazioni, se applicabile.
-//! 4. Aggiorna eventuali funzioni che utilizzano il modello per includere la logica aggiuntiva.
 
 use chrono::{DateTime, Utc};
 
@@ -252,3 +232,61 @@ pub enum CommandStatus {
     Executed,
     Failed,
 }
+
+// ----------------------------
+// Modelli Base per Automazione e Scripting
+// ----------------------------
+
+#[cfg(feature = "automation")]
+#[derive(Debug, Clone)]
+/// Modello per script di automazione.
+pub struct Script {
+    pub id: u64,
+    pub name: String,
+    pub content: String,
+    pub created_at: DateTime<Utc>,
+    pub updated_at: DateTime<Utc>,
+}
+
+#[cfg(feature = "automation")]
+#[derive(Debug, Clone)]
+/// Modello per la gestione dei task di automazione.
+pub struct Task {
+    pub id: u64,
+    pub script_id: u64,
+    pub schedule: String,
+    pub last_run: DateTime<Utc>,
+    pub next_run: DateTime<Utc>,
+}
+
+#[cfg(feature = "automation")]
+#[derive(Debug, Clone)]
+/// Modello per i log delle esecuzioni di script.
+pub struct ExecutionLog {
+    pub id: u64,
+    pub script_id: u64,
+    pub start_time: DateTime<Utc>,
+    pub end_time: DateTime<Utc>,
+    pub status: String,
+    pub output: String,
+}
+
+/// # Aggiunta di Nuovi Modelli
+/// 
+/// Per aggiungere nuovi modelli:
+/// 
+/// 1. Definisci una nuova `struct` con i campi necessari.
+/// 2. Implementa i `trait` derivabili come `Debug`, `Clone`, e qualsiasi altro `trait` necessario.
+/// 3. Usa i `cfg(feature = "...")` per abilitare il modello solo per specifiche applicazioni.
+/// 4. Se necessario, crea nuove funzioni o moduli per la gestione del nuovo modello.
+/// 
+/// Nota: Assicurati di mantenere coerenza nei nomi dei campi e tipi per evitare conflitti.
+/// 
+/// # Estensione dei Modelli Esistenti
+/// 
+/// Per estendere i modelli esistenti:
+/// 
+/// 1. Aggiungi nuovi campi alla `struct` desiderata.
+/// 2. Documenta il nuovo campo e spiega come viene utilizzato.
+/// 3. Usa i `cfg(feature = "...")` per abilitare il campo solo per specifiche applicazioni, se applicabile.
+/// 4. Aggiorna eventuali funzioni che utilizzano il modello per includere la logica aggiuntiva.

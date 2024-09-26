@@ -1,16 +1,16 @@
-/// Modulo core del sistema per la gestione delle operazioni principali.
-///
-/// Questo modulo è responsabile della gestione e dell'orchestrazione dei vari moduli
-/// in base al tipo di applicazione. Gestisce l'inizializzazione dei moduli richiesti
-/// e assicura che siano eseguiti correttamente. La memoria è gestita tramite un 
-/// `MemoryManager`, che seleziona la strategia di allocazione più adatta.
-///
-/// Nota: Il modulo `system_core.rs` è statico per tutte le applicazioni tranne per i sistemi embedded.
-/// Per i sistemi embedded, il modulo fornisce un'infrastruttura di base ma permette personalizzazioni
-/// a livello di codice, per consentire compatibilità con hardware specifico e ambienti con risorse limitate.
-///
-/// La struttura del framework garantisce la compatibilità con la maggior parte delle applicazioni standard (WebApp, API Backend, Desktop App, ecc.),
-/// eseguendo in modo sicuro e centralizzato tutti i moduli, mentre per gli ambienti embedded offre flessibilità per le personalizzazioni richieste.
+//! Modulo core del sistema per la gestione delle operazioni principali.
+//!
+//! Questo modulo è responsabile della gestione e dell'orchestrazione dei vari moduli
+//! in base al tipo di applicazione. Gestisce l'inizializzazione dei moduli richiesti
+//! e assicura che siano eseguiti correttamente. La memoria è gestita tramite un 
+//! `MemoryManager`, che seleziona la strategia di allocazione più adatta.
+//!
+//! Nota: Il modulo `system_core.rs` è statico per tutte le applicazioni tranne per i sistemi embedded.
+//! Per i sistemi embedded, il modulo fornisce un'infrastruttura di base ma permette personalizzazioni
+//! a livello di codice, per consentire compatibilità con hardware specifico e ambienti con risorse limitate.
+//!
+//! La struttura del framework garantisce la compatibilità con la maggior parte delle applicazioni standard (WebApp, API Backend, Desktop App, ecc.),
+//! eseguendo in modo sicuro e centralizzato tutti i moduli, mentre per gli ambienti embedded offre flessibilità per le personalizzazioni richieste.
 
 use crate::config::global_config::{CoreConfig, ApplicationType};
 use crate::memory::MemoryManager;
