@@ -1,7 +1,7 @@
 # ArxFramework
 
 ## Introduction
-ArxFramework è una struttura modulare e flessibile progettata per supportare lo sviluppo di diverse tipologie di applicazioni, tra cui applicazioni web, API backend, applicazioni desktop, sistemi di automazione e scripting, e sistemi embedded.
+ArxFramework è un framework modulare e flessibile progettato per supportare lo sviluppo di diverse tipologie di applicazioni, tra cui applicazioni web, API backend, applicazioni desktop, sistemi di automazione e scripting, e sistemi embedded.
 
 Caratteristiche principali:
 
@@ -147,6 +147,7 @@ ArxFramework/
 ├── core/                 # Core Sistema (Rust)
 ├── auth/                 # Autenticazione e Sicurezza (Rust, Python opzionale)
 ├── crud/                 # Gestione CRUD (Rust)
+| └── models/               # Cartella dei modelli
 ├── api/                  # API Layer (Rust primario, Python FastAPI opzionale)
 ├── file_management/      # Gestione file/risorse (Rust)
 ├── monitoring/           # Monitoraggio e logging (Rust)
@@ -171,8 +172,11 @@ ArxFramework/
 - `auth_wrapper.py`: Wrapper Python per integrazioni
 
 **crud/**
-- `crud_operations.rs`: Operazioni CRUD generiche
-- `models.rs`: Definizioni dei modelli dati
+- **models/**: Cartella contenente i modelli .rs costruiti secondo procedura di default per l'integrazione 
+	- `user_model.rs` : modello contente la `struct` che lo definisce e l `enum` che indica le proprietà ereditabili da `crud_ops.rs`.
+	- `article_model.rs`: come detto per `user_model.rs`
+	- altri modelli...
+- `crud_ops.rs`: Operazioni CRUD generiche
 
 **api/**
 - `api_server.rs`: Server API principale
@@ -223,7 +227,7 @@ Ospita il frontend
 
 # Guidelines
 
-[Linee Guida Generali per Tutti i Moduli](./docs/development_guide_lines.md)
+[Linee Guida Generali Moduli](./docs/development_guide_lines.md)
 [Proprietà dei modelli](./docs/module_proprieties.md)
 
 ---

@@ -1,4 +1,4 @@
-# Linee Guida Generali per Tutti i Moduli
+# Linee Guida Generali Moduli
 
 Prima di entrare nel dettaglio dei singoli moduli, è importante stabilire alcune proprietà e requisiti generali che tutti i moduli devono rispettare:
 
