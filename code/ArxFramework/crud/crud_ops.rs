@@ -1,4 +1,4 @@
-// crud_ops.rs
+use crate::models;
 
 pub trait Create<T> {
     fn create(item: T) -> Result<T, String>;
@@ -34,6 +34,10 @@ macro_rules! impl_crud_ops {
         impl Create<$model> for $model {
             fn create(item: $model) -> Result<$model, String> {
                 // Simulazione della logica di creazione (inserimento nel database) per ogni modello che implementa il trait con `match`statement
+                fn hashing_password(password: &str) -> String {
+                    // Simulazione della logica di hashing della password
+                    password.to_string()
+                }
                 Ok(item)
             }
         }

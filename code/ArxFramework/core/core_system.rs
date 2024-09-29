@@ -13,7 +13,7 @@
 //! eseguendo in modo sicuro e centralizzato tutti i moduli, mentre per gli ambienti embedded offre flessibilità per le personalizzazioni richieste.
 
 use crate::config::global_config::{CoreConfig, ApplicationType};
-use crate::memory::MemoryManager;
+use crate::memory_management::MemoryManager;
 use crate::monitoring::logger;
 use log::{info, error};
 use once_cell::sync::Lazy;
