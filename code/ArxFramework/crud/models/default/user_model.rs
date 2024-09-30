@@ -5,6 +5,7 @@ pub struct User {
     pub username: String,
     pub email: String,
     pub password: String,
+    pub store: Allocation,
 }
 
 #[cfg(any(feature = "webapp", feature = "api", feature = "desktop", feature = "automation", feature = "embedded"))]
@@ -14,4 +15,22 @@ pub enum CrudOperations {
     Read,
     Update,
     Delete,
+}
+
+#[derive(Debug)]
+pub enum Allocation {
+    InMemory,
+    Database,
+}
+
+impl user::User {
+    pub fn new(id: u32, username: String, email: String, password: String) -> Self {
+        Self {
+            id,
+            username,
+            email,
+            password,
+            store: Allocation::Database,
+        }
+    }
 }

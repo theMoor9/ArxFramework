@@ -6,6 +6,8 @@
 
 #Modulo-Layer-1-per-Code-Base 
 
+
+
 ---
 # Aggiunta nuovo modello
 
@@ -39,21 +41,44 @@ pub struct Post {
 	    Delete, // solo per api apps
 	}
 	```
+	
+4. **Aggiorna le eventuali implementazioni di conseguenza**: Dopo aver aggiunto il nuovo modello, assicurati di aggiornare le implementazioni esistenti che potrebbero dipendere dal nuovo modello o necessitare di adattamenti per funzionare correttamente con le nuove funzionalità.
+
+	Ad esempio, potresti dover modificare le funzioni CRUD nel sistema per gestire il nuovo modello o aggiornare i riferimenti nei file di configurazione.
+	
+	```Rust
+	impl Post {
+		pub fn new(
+			id: u32,
+			title: String,
+			content: String,
+			#[cfg(feature = "api")] api_specific_field: Option<String>
+		) -> Self {
+			Self {
+				id,
+			    title,
+			    content,
+			    #[cfg(feature = "api")]
+			    api_specific_field, // Campo opzionale per API
+			}
+		}
+	}
+	```
     
-4. **Importa il modello nel sistema CRUD**: Nel file `crud_ops.rs`, usa la macro per implementare le operazioni CRUD per il nuovo modello:
+5. **Importa il modello nel sistema CRUD**: Nel file `crud_ops.rs`, usa la macro per implementare le operazioni CRUD per il nuovo modello:
 
     ```Rust
 	impl_crud_ops!(Post);
 	```
     
-    
 **Compila con la feature desiderata**: Al momento della compilazione il progetto abiliterà automaticamente le feature necessarie con :
 	
     `cargo build --features "webapp"`
 
+
 ---
 
-# `models/userexample_model.rs`
+# `models/dev/userexample_model.rs`
 
 ```Rust
 // Definizione dei modello secondo standard
@@ -79,6 +104,8 @@ pub enum CrudOperations {
 	 // Puoi aggiungere anche altre operazioni come necessario
 }
 ```
+
+### USO
 
 **Aggiungere campi condizionali per una specifica feature**: Per aggiungere campi che devono esistere solo in alcune applicazioni, puoi usare l'attributo `#[cfg(...)]`. Ad esempio, il campo `exclusive_to_api` viene aggiunto solo se la feature `api` è abilitata:
 

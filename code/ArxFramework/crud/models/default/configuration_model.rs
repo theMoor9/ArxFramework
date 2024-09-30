@@ -9,6 +9,7 @@ pub struct Configuration {
     
     pub key: String,
     pub value: String,
+    pub store: Allocation,
 }
 
 #[cfg(any(feature = "automation", feature = "embedded"))]
@@ -18,4 +19,28 @@ pub enum CrudOperations {
     Read,
     Update,
     Delete,
+}
+
+#[derive(Debug)]
+pub enum Allocation {
+    InMemory,
+    Database,
+}
+
+impl Configuration {
+    pub fn new(
+        id: u32,
+        #[cfg(feature = "embedded")] device_id: Option<u32>,
+        key: String,
+        value: String,
+    ) -> Self {
+        Self {
+            id,
+            #[cfg(feature = "embedded")]
+            device_id,
+            key,
+            value,
+            store: Allocation::InMemory,
+        }
+    }
 }

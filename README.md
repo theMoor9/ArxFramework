@@ -1,23 +1,24 @@
 # ArxFramework
 
-## Introduction
-ArxFramework è un framework modulare e flessibile progettato per supportare lo sviluppo di diverse tipologie di applicazioni, tra cui applicazioni web, API backend, applicazioni desktop, sistemi di automazione e scripting, e sistemi embedded.
+## Introduzione
 
-Caratteristiche principali:
+**ArxFramework** è una libreria modulare e flessibile che prende forma come applicazione completa una volta configurata. È progettato per supportare lo sviluppo di diverse tipologie di applicazioni, tra cui applicazioni web, API backend, applicazioni desktop, sistemi di automazione e scripting, e sistemi embedded.
 
-1. Architettura Modulare: Composto da moduli specializzati come core system, autenticazione, CRUD, gestione file, monitoraggio e altri, ciascuno ottimizzato per il proprio dominio.
-2. Multilingua: Principalmente implementato in Rust per prestazioni e sicurezza, con integrazioni Python per flessibilità e machine learning.
-3. Versatilità: Supporta cinque tipi principali di applicazioni, adattandosi alle esigenze specifiche di ciascuna.
-4. Core System Robusto: Un sistema centrale in Rust che gestisce operazioni fondamentali come la gestione della memoria e la concorrenza. 
-5. Integrazione Frontend: Supporto per frontend dinamici utilizzando Svelte.
-6. Capacità Avanzate: Include moduli per machine learning, integrazione blockchain e automazione dei task.
-7. Logging e Monitoraggio: Sistema integrato per il logging e il monitoraggio delle prestazioni.
-8. Gestione File e Risorse: Modulo dedicato per operazioni efficienti su file e risorse.
-9. Documentazione e Template: Include documentazione completa e template per diversi tipi di applicazioni.
+### Caratteristiche principali:
 
-#### SCOPE
+1. **Architettura Modulare**: Composto da moduli specializzati come il core system, autenticazione, CRUD, gestione file, monitoraggio e altri, ciascuno ottimizzato per il proprio dominio e facilmente configurabile.
+2. **Multilingua**: Principalmente implementato in **Rust** per prestazioni e sicurezza, con integrazioni in **Python** per flessibilità, soprattutto nelle operazioni di machine learning.
+3. **Versatilità**: ArxFramework si adatta alle esigenze di cinque principali tipologie di applicazioni, consentendo personalizzazioni specifiche tramite configurazione.
+4. **Core System Robusto**: Un sistema centrale in **Rust** che gestisce operazioni fondamentali come la gestione della memoria, la concorrenza, e altre operazioni di base che possono essere estese.
+5. **Integrazione Frontend**: Supporto per frontend dinamici utilizzando **Svelte**, permettendo di creare interfacce moderne con facilità.
+6. **Capacità Avanzate**: Include moduli per **machine learning**, integrazione **blockchain**, e automazione dei task.
+7. **Logging e Monitoraggio**: Sistema integrato per il **logging** e il monitoraggio delle prestazioni, fondamentale per tracciare il comportamento dell'applicazione.
+8. **Gestione File e Risorse**: Un modulo dedicato alla gestione efficiente di file e risorse, configurabile in base all'applicazione in uso.
+9. **Documentazione e Template**: Fornisce documentazione completa e **template** che agevolano la configurazione dei moduli e l'integrazione di modelli personalizzati.
 
-ArxFramework mira a fornire una base solida e flessibile per lo sviluppo di applicazioni, combinando l'efficienza di Rust con la versatilità di Python e altri strumenti moderni. È progettato per essere facilmente estensibile e adattabile a diverse esigenze di progetto, dalla prototipazione rapida allo sviluppo di sistemi complessi e ad alte prestazioni utilizzando un CLI per facilitarne l'uso e template per l'integrazione di moduli personalizzati per aumentarne il potenziale. 
+### Ambito (SCOPE)
+
+ArxFramework offre una base solida e flessibile per lo sviluppo di applicazioni modulari. Combinando l'efficienza di **Rust** con la versatilità di **Python** e altri strumenti moderni, il framework è progettato per essere facilmente estensibile e adattabile. Grazie alla sua natura configurabile tramite **CLI** e alla presenza di **template**, permette di creare applicazioni su misura, dalla prototipazione rapida alla costruzione di sistemi complessi e ad alte prestazioni, massimizzando il potenziale grazie all'integrazione personalizzata dei moduli.
 
 ---
 

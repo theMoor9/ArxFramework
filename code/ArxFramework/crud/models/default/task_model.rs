@@ -15,6 +15,8 @@ pub struct Task {
     // Campo specifico per `embedded`
     #[cfg(feature = "embedded")]
     pub device_id: Option<u32>,  // Associa il task a un dispositivo
+
+    pub store: Allocation,
 }
 
 #[cfg(any(feature = "automation", feature = "desktop", feature = "embedded"))]
@@ -26,3 +28,25 @@ pub enum CrudOperations {
     Delete,
 }
 
+
+#[derive(Debug)]
+pub enum Allocation {
+    InMemory,
+    Database,
+}
+
+impl Task {
+    pub fn new(id: u32, description: String) -> Self {
+        Task {
+            id,
+            description,
+            #[cfg(feature = "automation")]
+            schedule: None,
+            #[cfg(feature = "desktop")]
+            completed: None,
+            #[cfg(feature = "embedded")]
+            device_id: None,
+            store: Allocation::InMemory,
+        }
+    }
+}
