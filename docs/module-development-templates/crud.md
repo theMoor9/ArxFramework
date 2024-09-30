@@ -6,79 +6,28 @@
 
 #Modulo-Layer-1-per-Code-Base 
 
+Il modulo **CRUD** si trova all'interno della cartella `modules/`, che contiene due sotto-cartelle principali:
 
-
----
-# Aggiunta nuovo modello
-
-Per aggiungere un nuovo modello `.rs` :
-
-1. **Crea il file del modello**: All'interno della cartella `models/`, crea un file `.rs` con il nome del modello, ad esempio `post_model.rs`, `id_model.rs`, `character_model.rs`, ecc... 
+- **`modules/default/`**: Questa cartella contiene i modelli standard predefiniti, necessari al funzionamento di base dell'applicazione. Ogni file all'interno di questa cartella segue la convenzione di essere nomenclato con il suffisso `_model.rs` e definisce i modelli base, come `user_model.rs`, `article_model.rs`, e simili.
     
-2. **Definisci la struct del modello**: Definisci la struttura del modello con i campi necessari. Usa `#[cfg(...)]` per gestire campi specifici per diverse applicazioni (ad esempio, Web App, API, ecc.).
-
-```Rust
-#[cfg(any(feature = "webapp", feature = "api"))]
-#[derive(Debug, Clone)]
-pub struct Post {
-    pub id: u32,
-    pub title: String,
-    pub content: String,
-    #[cfg(feature = "api")]
-    pub api_specific_field: Option<String>,
-}
-```
-
-3. **Aggiungi l'enum CrudOperations**: Definisci un enum `CrudOperations` per indicare le operazioni CRUD supportate dal modello.
-    
-    ```Rust
-	#[cfg(any(feature = "webapp", feature = "api"))] #[derive(Debug)] 
-	pub enum CrudOperations {
-		Create,
-		Read,
-	    Update,
-	    #[cfg(feature = "api")] 
-	    Delete, // solo per api apps
-	}
-	```
-	
-4. **Aggiorna le eventuali implementazioni di conseguenza**: Dopo aver aggiunto il nuovo modello, assicurati di aggiornare le implementazioni esistenti che potrebbero dipendere dal nuovo modello o necessitare di adattamenti per funzionare correttamente con le nuove funzionalità.
-
-	Ad esempio, potresti dover modificare le funzioni CRUD nel sistema per gestire il nuovo modello o aggiornare i riferimenti nei file di configurazione.
-	
-	```Rust
-	impl Post {
-		pub fn new(
-			id: u32,
-			title: String,
-			content: String,
-			#[cfg(feature = "api")] api_specific_field: Option<String>
-		) -> Self {
-			Self {
-				id,
-			    title,
-			    content,
-			    #[cfg(feature = "api")]
-			    api_specific_field, // Campo opzionale per API
-			}
-		}
-	}
-	```
-    
-5. **Importa il modello nel sistema CRUD**: Nel file `crud_ops.rs`, usa la macro per implementare le operazioni CRUD per il nuovo modello:
-
-    ```Rust
-	impl_crud_ops!(Post);
-	```
-    
-**Compila con la feature desiderata**: Al momento della compilazione il progetto abiliterà automaticamente le feature necessarie con :
-	
-    `cargo build --features "webapp"`
-
+- **`modules/dev/`**: Questa cartella è dedicata ai modelli che lo sviluppatore può aggiungere in base alle necessità specifiche del progetto. Questi modelli, anch'essi con suffisso `_model.rs`, possono estendere o personalizzare il comportamento dei modelli predefiniti, o definirne di completamente nuovi.
 
 ---
 
 # `models/dev/userexample_model.rs`
+
+### Struttura dei Modelli
+
+Ogni file `.rs` nella cartella `modules/` ha il compito di:
+
+1. **Definire la struttura dei modelli**: Questi modelli descrivono le entità con cui l'applicazione interagirà. Le strutture definiscono i campi associati a ciascun modello (ad esempio, un utente potrebbe avere un `id`, un `username`, e un `email`).
+    
+2. **Operazioni disponibili**: I modelli includono un enum `CrudOperations` che definisce quali operazioni CRUD (Create, Read, Update, Delete) sono disponibili per ogni specifico modello. Le operazioni possono variare a seconda del contesto (ad esempio, un modello potrebbe avere l'operazione `Delete` solo per le API).
+    
+3. **Tipo di Memoria**: Ogni modello specifica il tipo di memoria in cui deve essere inserito, che può essere:
+    
+    - **Memoria allocata** (`InMemory`): I dati del modello vengono gestiti temporaneamente in memoria, utile per task volatili o temporanei.
+    - **Database**: I dati vengono inseriti e gestiti persistentemente nel database, utile per tutte le entità che necessitano di essere salvate a lungo termine.
 
 ```Rust
 // Definizione dei modello secondo standard
@@ -123,6 +72,17 @@ cargo build --features "api"
 ---
 
 # `crud_op.rs`
+
+Il file **`crud_ops.rs`** contiene la logica che implementa le operazioni CRUD per i modelli definiti in **`modules/`**. Il suo scopo principale è gestire l'inserimento, l'aggiornamento e la cancellazione dei dati nei due tipi di memoria:
+
+- **Memoria allocata (InMemory)**: Le operazioni CRUD interagiscono direttamente con i dati tenuti in memoria durante l'esecuzione dell'applicazione. Questo approccio è utilizzato principalmente per task temporanei o volatili.
+    
+- **Database**: Le operazioni CRUD interagiscono con un database persistente, garantendo che i dati rimangano salvati anche dopo che l'applicazione è stata chiusa o riavviata.
+    
+
+Il modulo **`crud_ops.rs`** si occupa di gestire in maniera centralizzata la logica necessaria per inserire, aggiornare e cancellare i dati in entrambi i contesti, garantendo che il comportamento sia coerente a seconda del tipo di memoria selezionata per ciascun modello.
+
+Inoltre, **`crud_ops.rs`** fa da tramite tra l'interfaccia utente (o l'interfaccia API) e la gestione effettiva dei dati, traducendo gli input dell'utente in azioni concrete sui dati.
 
 ```Rust
 // crud_ops.rs
@@ -247,3 +207,71 @@ fn main() {
 }
 
 ```
+
+
+---
+# Aggiunta nuovo modello
+
+Per aggiungere un nuovo modello `.rs` :
+
+1. **Crea il file del modello**: All'interno della cartella `models/`, crea un file `.rs` con il nome del modello, ad esempio `post_model.rs`, `id_model.rs`, `character_model.rs`, ecc... 
+    
+2. **Definisci la struct del modello**: Definisci la struttura del modello con i campi necessari. Usa `#[cfg(...)]` per gestire campi specifici per diverse applicazioni (ad esempio, Web App, API, ecc.).
+
+```Rust
+#[cfg(any(feature = "webapp", feature = "api"))]
+#[derive(Debug, Clone)]
+pub struct Post {
+    pub id: u32,
+    pub title: String,
+    pub content: String,
+    #[cfg(feature = "api")]
+    pub api_specific_field: Option<String>,
+}
+```
+
+3. **Aggiungi l'enum CrudOperations**: Definisci un enum `CrudOperations` per indicare le operazioni CRUD supportate dal modello.
+    
+    ```Rust
+	#[cfg(any(feature = "webapp", feature = "api"))] #[derive(Debug)] 
+	pub enum CrudOperations {
+		Create,
+		Read,
+	    Update,
+	    #[cfg(feature = "api")] 
+	    Delete, // solo per api apps
+	}
+	```
+	
+4. **Aggiorna le eventuali implementazioni di conseguenza**: Dopo aver aggiunto il nuovo modello, assicurati di aggiornare le implementazioni esistenti che potrebbero dipendere dal nuovo modello o necessitare di adattamenti per funzionare correttamente con le nuove funzionalità.
+
+	Ad esempio, potresti dover modificare le funzioni CRUD nel sistema per gestire il nuovo modello o aggiornare i riferimenti nei file di configurazione.
+	
+	```Rust
+	impl Post {
+		pub fn new(
+			id: u32,
+			title: String,
+			content: String,
+			#[cfg(feature = "api")] api_specific_field: Option<String>
+		) -> Self {
+			Self {
+				id,
+			    title,
+			    content,
+			    #[cfg(feature = "api")]
+			    api_specific_field, // Campo opzionale per API
+			}
+		}
+	}
+	```
+    
+5. **Importa il modello nel sistema CRUD**: Nel file `crud_ops.rs`, usa la macro per implementare le operazioni CRUD per il nuovo modello:
+
+    ```Rust
+	impl_crud_ops!(Post);
+	```
+    
+**Compila con la feature desiderata**: Al momento della compilazione il progetto abiliterà automaticamente le feature necessarie con :
+	
+    `cargo build --features "webapp"`
