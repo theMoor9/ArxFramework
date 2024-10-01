@@ -33,7 +33,7 @@ macro_rules! impl_crud_ops {
     ($model:ty) => {
         impl Create<$model> for $model {
             fn create(item: $model) -> Result<$model, String> {
-                // Simulazione della logica di creazione (inserimento nel database) per ogni modello che implementa il trait con `match`statement
+                // Simulazione della logica di creazione inserimento nel database o in memoria per ogni modello che implementa il trait con `match`statement
                 fn hashing_password(password: &str) -> String {
                     // Simulazione della logica di hashing della password
                     password.to_string()

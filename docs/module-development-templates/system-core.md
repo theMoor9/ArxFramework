@@ -144,7 +144,9 @@ core_system.run()?;
 
 # `memory_management.rs`
 
-`memory_manager::new()` che imposta semplicemente il tipo di strategia per l'applicazione in questione Poi alla chiamata di `memory_manager::allocate(...)` o `deallocate(...)` il modulo imposta le variabili per restituire un buffer che il componente usa come memoria privata.
+`memory_manager::new()` che imposta semplicemente il tipo di strategia per l'applicazione in questione. Poi alla chiamata di `memory_manager::allocate(...)` o `deallocate(...)` il modulo imposta le variabili per restituire un buffer che il componente usa come memoria privata.
+
+**Allocazione in memoria**: Il modulo **`memory_manager.rs`** in gestisce la memoria temporanea tramite **`memory_manager::new()`** in `system_core.rs` e le chiamate **`allocate()`** o **`deallocate()`** vengono usate per allocare o rilasciare memoria privata. Queste operazioni saranno poi integrate nel metodo **`create()`** (per l'allocazione) e **`delete()`** (per il rilascio) di `crud_ops.rs` in 
 
 ```Rust
 //! Modulo per la gestione della memoria in base al tipo di applicazione.

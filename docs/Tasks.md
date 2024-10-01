@@ -43,6 +43,15 @@ Per **ogni modello** avremo le seguenti operazioni:
 - **Search**: Article, Comment, File/Image, Page, Document
 - **Revoke**: API Key, Token
 
+##### Memory integration
+
+- **Per database tradizionale (PostgreSQL)**:
+    - Una libreria Rust come **`sqlx`**.
+    - Un server PostgreSQL locale o remoto. (Dettaglio che andrà sviluppato dinamicamente visto che non riguarda la possibile app)
+- **Per Solana**:
+    - La libreria **`solana-client`** in Rust.
+    - Un nodo RPC o una connessione alla rete Solana
+
 ### auth/
 
 
