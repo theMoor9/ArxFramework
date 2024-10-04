@@ -24,13 +24,13 @@ enum AllocationStrategy {
 /// selezionata dall'applicazione.
 ///
 /// # Campi
-/// - `allocation_strategy`: La strategia di allocazione utilizzata.
+/// - `default_allocation_strategy`: La strategia di allocazione utilizzata.
 /// - `pool`: Un pool di buffer pre-allocati (usato solo nella strategia `PoolBased`).
-/// - `memory_config`: Configurazione della memoria fornita dall'utente.
+/// - `memory_config`: Configurazione della memoria di default fornita dall'utente.
 pub struct MemoryManager {
-    allocation_strategy: AllocationStrategy,
+    default_allocation_strategy: AllocationStrategy,
     pool: Option<VecDeque<Box<[u8]>>>, // Pool per l'allocazione basata su pool
-    memory_config: MemoryConfig,  // Configurazione della memoria
+    memory_config: MemoryConfig,  // Configurazione della memoria di default 
 }
 
 impl MemoryManager {
@@ -64,12 +64,13 @@ impl MemoryManager {
             None
         };
 
-        Ok(MemoryManager { allocation_strategy: strategy, pool, memory_config })
+        Ok(MemoryManager { default_allocation_strategy: strategy, pool, memory_config })
     }
 
     /// Alloca memoria in base alla strategia configurata.
     ///
     /// # Parametri
+    /// - `strategy`: La strategia di allocazione opzionale (`AllocationStrategy`). Se `None`, verrà utilizzata la strategia di default.
     /// - `size`: La quantità di memoria da allocare in byte.
     ///
     /// # Ritorna
@@ -77,11 +78,13 @@ impl MemoryManager {
     ///
     /// # Nota
     /// - La strategia `Standard` alloca dinamicamente la memoria.
-    /// - La strategia `PoolBased` utilizza buffer pre-allocati dal pool.
-    /// - La strategia `CustomEmbedded` utilizza una configurazione fissa per i buffer.
-    pub fn allocate(&mut self, size: usize) -> Result<Box<[u8]>, CoreError> {
-        info!("Allocazione di {} byte di memoria...", size);
-        match self.allocation_strategy {
+    /// - La strategia `PoolBased` utilizza buffer pre-allocati dal pool. Se il pool è esaurito, viene effettuata un'allocazione dinamica.
+    /// - La strategia `CustomEmbedded` utilizza una configurazione fissa per i buffer, che è specificata dalla configurazione della memoria (`memory_config`).
+    pub fn allocate(&mut self, strategy: Option<AllocationStrategy>, size: usize) -> Result<Box<[u8]>, CoreError> {
+        let alloc_strategy = strategy.unwrap_or(self.default_allocation_strategy);
+    
+        info!("Allocazione di {} byte di memoria con strategia {:?}...", size, alloc_strategy);
+        match alloc_strategy {
             AllocationStrategy::Standard => {
                 let buffer = vec![0u8; size].into_boxed_slice();
                 Ok(buffer)
@@ -106,6 +109,7 @@ impl MemoryManager {
             },
         }
     }
+    
 
     /// Dealloca memoria precedentemente allocata.
     ///
@@ -121,7 +125,7 @@ impl MemoryManager {
     /// - Nella strategia `CustomEmbedded`, non è richiesta alcuna azione specifica.
     pub fn deallocate(&mut self, buffer: Box<[u8]>) -> Result<(), CoreError> {
         info!("Deallocazione della memoria...");
-        match self.allocation_strategy {
+        match self.default_allocation_strategy {
             AllocationStrategy::Standard => {
                 // Rust dealloca automaticamente la memoria.
                 Ok(())

@@ -1,4 +1,6 @@
 use crate::models;
+use crate::memory_manager::{AllocationStrategy, memory_manager};
+use log::{info};
 
 pub trait Create<T> {
     fn create(item: T) -> Result<T, String>;
@@ -33,11 +35,80 @@ macro_rules! impl_crud_ops {
     ($model:ty) => {
         impl Create<$model> for $model {
             fn create(item: $model) -> Result<$model, String> {
-                // Simulazione della logica di creazione inserimento nel database o in memoria per ogni modello che implementa il trait con `match`statement
-                fn hashing_password(password: &str) -> String {
-                    // Simulazione della logica di hashing della password
-                    password.to_string()
+                match std::any::type_name::<$model>() {
+
+                    // Task temporanei, quindi la memoria standard va bene per velocità e semplicità
+                    "modules::default::task_model::Task" => {
+                        info!("Allocazione in memoria Standard per Task");
+                        let size = 256; // 256 byte per task temporanei
+                        memory_manager::allocate(Some(AllocationStrategy::Standard), size)?;
+                        Ok(item)
+                    }
+                    
+                    // Configurazioni temporanee, che possono essere più complesse
+                    "modules::default::configuration_model::Configuration" => {
+                        info!("Allocazione in PoolBased per Configuration");
+                        let size = 512; // 512 byte per configurazioni, per includere dati variabili
+                        memory_manager::allocate(Some(AllocationStrategy::PoolBased), size)?;
+                        Ok(item)
+                    }
+
+                    // Device, necessitano di un'allocazione CustomEmbedded
+                    "modules::default::device_model::Device" => {
+                        info!("Allocazione CustomEmbedded per Device");
+                        let size = 1024; // 1 KB per device, dati più dettagliati
+                        memory_manager::allocate(Some(AllocationStrategy::CustomEmbedded), size)?;
+                        Ok(item)
+                    }
+
+                    // Job temporanei, dimensione media, usiamo PoolBased
+                    "modules::default::job_model::Job" => {
+                        info!("Allocazione PoolBased per Job");
+                        let size = 512; // 512 byte per job temporanei
+                        memory_manager::allocate(Some(AllocationStrategy::PoolBased), size)?;
+                        Ok(item)
+                    }
+
+                    // Macro sono generalmente piccole
+                    "modules::default::macro_model::Macro" => {
+                        info!("Allocazione in memoria Standard per Macro");
+                        let size = 128; // 128 byte per macro semplici
+                        memory_manager::allocate(Some(AllocationStrategy::Standard), size)?;
+                        Ok(item)
+                    }
+
+                    // Dati dei sensori possono essere più complessi
+                    "modules::default::sensor_data_model::SensorData" => {
+                        info!("Allocazione CustomEmbedded per Sensor Data");
+                        let size = 2048; // 2 KB per i dati dei sensori in tempo reale
+                        memory_manager::allocate(Some(AllocationStrategy::CustomEmbedded), size)?;
+                        Ok(item)
+                    }
+
+                    // Log/Event richiedono allocazione rapida e ripetuta, PoolBased
+                    "modules::default::log_event_model::LogEvent" => {
+                        info!("Allocazione PoolBased per Log/Event");
+                        let size = 512; // 512 byte per log di eventi
+                        memory_manager::allocate(Some(AllocationStrategy::PoolBased), size)?;
+                        Ok(item)
+                    }
+
+                    // Comandi in tempo reale, CustomEmbedded per ottimizzare l'utilizzo locale
+                    "modules::default::command_model::Command" => {
+                        info!("Allocazione CustomEmbedded per Command");
+                        let size = 256; // 256 byte per i comandi
+                        memory_manager::allocate(Some(AllocationStrategy::CustomEmbedded), size)?;
+                        Ok(item)
+                    }
+
+                    _ => {
+                        info!("Allocazione in memoria Standard per modello non gestito specificamente");
+                        let size = 256; // Default size se non specificato diversamente
+                        memory_manager::allocate(Some(AllocationStrategy::Standard), size)?;
+                        Ok(item)
+                    }
                 }
+                
                 Ok(item)
             }
         }
@@ -96,6 +167,33 @@ macro_rules! impl_search_and_revoke {
 impl_crud_ops!(User);
 impl_crud_ops!(Article);
 impl_crud_ops!(Comment);
+impl_crud_ops!(Category);
+impl_crud_ops!(Tag);
+impl_crud_ops!(ApiKey);
+impl_crud_ops!(Token);
+impl_crud_ops!(RequestLog);
+impl_crud_ops!(Endpoint);
+impl_crud_ops!(Permission);
+impl_crud_ops!(RateLimitRule);
+impl_crud_ops!(Settings);
+impl_crud_ops!(Document);
+impl_crud_ops!(File);
+impl_crud_ops!(Preferences);
+impl_crud_ops!(Task);
+impl_crud_ops!(Project);
+impl_crud_ops!(Script);
+impl_crud_ops!(ExecutionLog);
+impl_crud_ops!(Schedule);
+impl_crud_ops!(Configuration);
+impl_crud_ops!(Job);
+impl_crud_ops!(Macro);
+impl_crud_ops!(Device);
+impl_crud_ops!(SensorData);
+impl_crud_ops!(FirmwareVersion);
+impl_crud_ops!(LogEvent);
+impl_crud_ops!(Command);
+
+
 
 // Aggiungi qui ulteriori modelli per l'applicazione CRUD generica
 

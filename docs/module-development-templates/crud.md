@@ -265,13 +265,35 @@ pub struct Post {
 		}
 	}
 	```
-    
-5. **Importa il modello nel sistema CRUD**: Nel file `crud_ops.rs`, usa la macro per implementare le operazioni CRUD per il nuovo modello:
+
+### In `crud_ops.rs`
+1. L'implementazione è differente per il tipo di allocazione scelta per il modello
+	- Per allocazione **InMemory** occorre personalizzare il tipo di allocazione secondo i criteri di allocazione di `memory_management.rs` in `impl_crud_ops{...}` come segue:
+	
+		 - `allocate()`: Implementare nel `match` di `create()` analogamente.
+		```Rust
+// Task temporanei, quindi la memoria standard va bene per velocità e semplicità
+"modules::default::task_model::Task" => {
+	info!("Allocazione in memoria Standard per Task");
+	let size = 256; // 256 byte per task temporanei
+	memory_manager::allocate(Some(AllocationStrategy::Standard), size)?;
+	Ok(item)
+}
+		```
+			
+		- `deallocate()`
+		```Rust
+		
+		```
+  
+	- Per allocazione **Database** non sono necessarie implementazioni in `impl_crud_ops{...}`
+
+3. **Importa il modello nel sistema CRUD**: Nel file `crud_ops.rs`, usa la macro per implementare le operazioni CRUD per il nuovo modello:
 
     ```Rust
 	impl_crud_ops!(Post);
 	```
     
-**Compila con la feature desiderata**: Al momento della compilazione il progetto abiliterà automaticamente le feature necessarie con :
+**Compila con la feature desiderata**: Ricordati, al momento della compilazione il progetto di abilitare automaticamente le feature necessarie con :
 	
     `cargo build --features "webapp"`
