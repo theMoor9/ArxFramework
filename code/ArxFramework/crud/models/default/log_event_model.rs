@@ -7,6 +7,7 @@ pub struct LogEvent {
     pub timestamp: String,
     pub description: String,
     pub store: Allocation,
+    pub memory: Box<[u8]>,
 }
 
 #[derive(Debug)]
@@ -23,7 +24,14 @@ pub enum Allocation {
 }
 
 impl LogEvent {
-    pub fn new(id: u32, device_id: u32, event_type: String, timestamp: String, description: String) -> LogEvent {
+    pub fn new(
+        id: u32, 
+        device_id: u32, 
+        event_type: String, 
+        timestamp: String, 
+        description: String,
+        memory: Box<[u8]>,
+    ) -> LogEvent {
         LogEvent {
             id,
             device_id,
@@ -31,6 +39,7 @@ impl LogEvent {
             timestamp,
             description,
             store: Allocation::InMemory,
+            memory,
         }
     }
 }

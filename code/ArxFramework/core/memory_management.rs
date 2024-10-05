@@ -13,6 +13,36 @@ use crate::system_core::CoreError;
 use log::{info};
 use std::collections::VecDeque;
 
+// struttura globale TASKS_IN_MEMORY che mantiene tutti i Task in memoria
+use std::sync::Mutex;
+use lazy_static::lazy_static;
+use std::collections::HashMap;
+use crate::modules::default::{
+    task_model::Task,
+    device_model::Device,
+    job_model::Job,
+    macro_model::Macro,
+    sensor_data_model::SensorData,
+    log_event_model::LogEvent,
+    command_model::Command,
+    configuration_model::Configuration,
+};
+
+
+lazy_static! {
+    pub static ref TASKS_IN_MEMORY: Mutex<HashMap<u32, Task>> = Mutex::new(HashMap::new());
+    pub static ref CONFIGURATIONS_IN_MEMORY: Mutex<HashMap<u32, Configuration>> = Mutex::new(HashMap::new());
+    pub static ref DEVICES_IN_MEMORY: Mutex<HashMap<u32, Device>> = Mutex::new(HashMap::new());
+    pub static ref JOBS_IN_MEMORY: Mutex<HashMap<u32, Job>> = Mutex::new(HashMap::new());
+    pub static ref MACROS_IN_MEMORY: Mutex<HashMap<u32, Macro>> = Mutex::new(HashMap::new());
+    pub static ref SENSOR_DATA_IN_MEMORY: Mutex<HashMap<u32, SensorData>> = Mutex::new(HashMap::new());
+    pub static ref LOG_EVENTS_IN_MEMORY: Mutex<HashMap<u32, LogEvent>> = Mutex::new(HashMap::new());
+    pub static ref COMMANDS_IN_MEMORY: Mutex<HashMap<u32, Command>> = Mutex::new(HashMap::new());
+}
+
+
+
+
 /// Enum per rappresentare le diverse strategie di allocazione della memoria.
 enum AllocationStrategy {
     Standard,

@@ -10,6 +10,7 @@ pub struct Configuration {
     pub key: String,
     pub value: String,
     pub store: Allocation,
+    pub memory: Box<[u8]>,
 }
 
 #[cfg(any(feature = "automation", feature = "embedded"))]
@@ -33,6 +34,7 @@ impl Configuration {
         #[cfg(feature = "embedded")] device_id: Option<u32>,
         key: String,
         value: String,
+        memory: Box<[u8]>,
     ) -> Self {
         Self {
             id,
@@ -41,6 +43,7 @@ impl Configuration {
             key,
             value,
             store: Allocation::InMemory,
+            memory,
         }
     }
 }

@@ -5,7 +5,8 @@ pub struct SensorData {
     pub device_id: u32,
     pub timestamp: String,
     pub data: String,  // Puoi specificare il formato dei dati se necessario
-    pub store: Allocation
+    pub store: Allocation,
+    pub memory: Box<[u8]>,
 }
 
 #[derive(Debug)]
@@ -22,13 +23,20 @@ pub enum Allocation {
 }
 
 impl SensorData {
-    pub fn new(id: u32, device_id: u32, timestamp: String, data: String) -> Self {
+    pub fn new(
+        id: u32, 
+        device_id: u32, 
+        timestamp: String, 
+        data: String,
+        memory: Box<[u8]>,
+    ) -> Self {
         Self {
             id,
             device_id,
             timestamp,
             data,
             store: Allocation::InMemory,
+            memory,
         }
     }
 }

@@ -5,6 +5,7 @@ pub struct Job {
     pub name: String,
     pub description: String,
     pub store Allocation,
+    pub memory: Box<[u8]>,
 }
 
 #[derive(Debug)]
@@ -22,12 +23,18 @@ pub enum Allocation {
 }
 
 impl Job {
-    pub fn new(id: u32, name: String, description: String) -> Self {
+    pub fn new(
+        id: u32, 
+        name: String, 
+        description: String,
+        memory: Box<[u8]>,
+    ) -> Self {
         Self {
             id,
             name,
             description,
             store Allocation::InMemory,
-        }
+            memory,
+        }   
     }
 }

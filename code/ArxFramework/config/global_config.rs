@@ -32,6 +32,7 @@ pub struct CoreConfig {
 pub struct MemoryConfig {
     pub pool_size: usize,    // Dimensione del pool di buffer (per PoolBased)
     pub buffer_size: usize,  // Dimensione del buffer (per Embedded)
+    pub memory_scale: f32,   // Scala per la dimensione della memoria dei modelli
 }
 
 /// Implementazione del valore di default per `MemoryConfig`.
@@ -42,6 +43,7 @@ impl Default for MemoryConfig {
         MemoryConfig {
             pool_size: 10,      // Valore di default: 10 buffer per il pool
             buffer_size: 1024,   // Valore di default: 1024 byte per buffer
+            memory_scale: 1.0,  // Valore di default: scala 1.0 per la dimensione della memoria
         }
     }
 }

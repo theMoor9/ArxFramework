@@ -5,6 +5,7 @@ pub struct Macro {
     pub name: String,
     pub commands: Vec<String>,
     pub store Allocation,
+    pub memory: Box<[u8]>,
 }
 
 #[derive(Debug)]
@@ -22,12 +23,18 @@ pub enum Allocation {
 }
 
 impl Macro {
-    pub fn new(id: u32, name: String, commands: Vec<String>) -> Self {
+    pub fn new(
+        id: u32, 
+        name: String, 
+        commands: Vec<String>,
+        memory: Box<[u8]>,
+    ) -> Self {
         Self {
             id,
             name,
             commands,
             store Allocation::InMemory,
+            memory, 
         }
     }
 }

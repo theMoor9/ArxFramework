@@ -1,110 +1,343 @@
 use crate::models;
 use crate::memory_manager::{AllocationStrategy, memory_manager};
+use crate::global_config::MemoryConfig;
+use crate::api_server::connection;
 use log::{info};
 
+// Importazione variabili statiche per mantenere i modelli in memoria
+use crate::memory_management::{
+    TASKS_IN_MEMORY, 
+    CONFIGURATIONS_IN_MEMORY, 
+    DEVICES_IN_MEMORY, 
+    JOBS_IN_MEMORY, 
+    MACROS_IN_MEMORY, 
+    SENSOR_DATA_IN_MEMORY, 
+    LOG_EVENTS_IN_MEMORY, 
+    COMMANDS_IN_MEMORY
+};
+
+/// Variabile globale per la scala della memoria.
+/// 
+/// Questa variabile rappresenta la scala della memoria utilizzata per gestire
+/// le diverse allocazioni di memoria nel sistema. La scala è configurabile tramite
+/// il CLI o utilizza un valore di default definito in `MemoryConfig`.
+/// 
+/// La variabile viene inizializzata con `lazy_static!`, il che garantisce che 
+/// venga allocata solo quando necessaria e che sia thread-safe.
+lazy_static! {
+    static ref STATIC_MEMORY_SCALE: Mutex<f32> = {
+        let config = MemoryConfig::default();
+        Mutex::new(config.memory_scale)
+    };
+}
+
+/// Trait che definisce l'operazione di creazione per un generico tipo `T`.
+/// 
+/// Questo trait implementa la logica per creare un nuovo elemento di tipo `T`,
+/// utilizzando la memoria o il database a seconda della configurazione di allocazione.
 pub trait Create<T> {
     fn create(item: T) -> Result<T, String>;
 }
 
+/// Trait che definisce l'operazione di lettura per un generico tipo `T`.
+/// 
+/// Permette di leggere un elemento dal database o dalla memoria in base al suo ID.
 pub trait Read<T> {
     fn read(id: u64) -> Result<T, String>;
 }
 
+/// Trait che definisce l'operazione di aggiornamento per un generico tipo `T`.
+/// 
+/// Aggiorna un elemento esistente nel database o in memoria.
 pub trait Update<T> {
     fn update(item: T) -> Result<T, String>;
 }
 
+/// Trait che definisce l'operazione di eliminazione.
+/// 
+/// Elimina un elemento dal database o dalla memoria in base al suo ID.
 pub trait Delete {
     fn delete(id: u64) -> Result<(), String>;
 }
 
+/// Trait che definisce l'operazione di elencazione per un generico tipo `T`.
+/// 
+/// Elenca tutti gli elementi presenti in memoria o nel database.
 pub trait List<T> {
     fn list() -> Vec<T>;
 }
 
+/// Trait che definisce l'operazione di ricerca per un generico tipo `T`.
+/// 
+/// Effettua una ricerca tra gli elementi in base a una query specifica.
 pub trait Search<T> {
     fn search(query: &str) -> Vec<T>;
 }
 
+/// Trait che definisce l'operazione di revoca.
+/// 
+/// Revoca un elemento specifico in base al suo ID, come ad esempio un token o un permesso.
 pub trait Revoke {
     fn revoke(id: u64) -> Result<(), String>;
 }
 
-// Macro per implementare i trait CRUD comuni
+/// Macro per implementare le operazioni CRUD comuni.
+/// 
+/// Questa macro implementa automaticamente i metodi CRUD (Create, Read, Update, Delete)
+/// per un tipo specificato. Ogni modello gestisce sia l'allocazione in memoria che
+/// l'inserimento nel database, in base alle preferenze definite per ciascun modello.
 macro_rules! impl_crud_ops {
     ($model:ty) => {
         impl Create<$model> for $model {
             fn create(item: $model) -> Result<$model, String> {
+                let memory_scale = STATIC_MEMORY_SCALE.lock().unwrap();
                 match std::any::type_name::<$model>() {
-
                     // Task temporanei, quindi la memoria standard va bene per velocità e semplicità
                     "modules::default::task_model::Task" => {
-                        info!("Allocazione in memoria Standard per Task");
-                        let size = 256; // 256 byte per task temporanei
-                        memory_manager::allocate(Some(AllocationStrategy::Standard), size)?;
-                        Ok(item)
+                        info!("Allocazione in memoria per Task");
+                
+                        // Determina la dimensione da allocare. Supponiamo di voler allocare 1024 byte.
+                        let size = 1024 * memory_scale;
+                
+                        // Allocazione della memoria per il Task
+                        let task_memory = memory_manager::allocate(Some(AllocationStrategy::Standard), size)?;
+                
+                        // Creazione del Task con i dati ricevuti
+                        let mut task = Task::new(
+                            item.id,
+                            item.description,
+                            #[cfg(feature = "automation")] item.schedule,
+                            #[cfg(feature = "desktop")] item.completed,
+                            #[cfg(feature = "embedded")] item.device_id,
+                            task_memory,
+                        );
+                
+                        // Persistenza del Task
+                        match task.store {
+                            Allocation::InMemory => {
+                                // Memorizza il Task in memoria
+                                let mut tasks = TASKS_IN_MEMORY.lock().map_err(|e| format!("Errore di lock sul mutex: {}", e))?;
+                                tasks.insert(task.id, task.clone());
+                            }
+                            Allocation::Database => {
+                                // Memorizza il Task nel database
+                                sqlx::query!(
+                                    "INSERT INTO tasks (id, description) VALUES ($1, $2)",
+                                    task.id,
+                                    task.description,
+                                )
+                                .execute(&mut connection)  // Connessione a PostgreSQL da gestire nel modulo api_server.rs
+                                .map_err(|e| format!("Errore di inserimento nel database: {}", e))?;
+                            }
+                        }
+                
+                        info!("Allocata memoria di {} byte per il Task con ID: {}", size, task.id);
+                        Ok(task)
                     }
-                    
+                
                     // Configurazioni temporanee, che possono essere più complesse
                     "modules::default::configuration_model::Configuration" => {
                         info!("Allocazione in PoolBased per Configuration");
-                        let size = 512; // 512 byte per configurazioni, per includere dati variabili
-                        memory_manager::allocate(Some(AllocationStrategy::PoolBased), size)?;
-                        Ok(item)
+                        let size = 1024 * memory_scale; // 1 KB per configurazioni temporanee
+                        let config_memory = memory_manager::allocate(Some(AllocationStrategy::PoolBased), size)?;
+                
+                        // Creazione della configurazione
+                        let mut configuration = Configuration::new(item.id, item.key, item.value, config_memory);
+                
+                        // Persistenza della Configurazione
+                        match configuration.store {
+                            Allocation::InMemory => {
+                                let mut configurations = CONFIGURATIONS_IN_MEMORY.lock().map_err(|e| format!("Errore di lock sul mutex: {}", e))?;
+                                configurations.insert(configuration.id, configuration.clone());
+                            }
+                            Allocation::Database => {
+                                sqlx::query!(
+                                    "INSERT INTO configurations (id, key, value) VALUES ($1, $2, $3)",
+                                    configuration.id,
+                                    configuration.key,
+                                    configuration.value,
+                                )
+                                .execute(&mut connection)// Connessione a PostgreSQL da gestire nel modulo api_server.rs
+                                .map_err(|e| format!("Errore di inserimento nel database: {}", e))?;
+                            }
+                        }
+                
+                        info!("Allocata memoria di {} byte per la Configurazione con ID: {}", size, configuration.id);
+                        Ok(configuration)
                     }
-
+                
                     // Device, necessitano di un'allocazione CustomEmbedded
                     "modules::default::device_model::Device" => {
                         info!("Allocazione CustomEmbedded per Device");
-                        let size = 1024; // 1 KB per device, dati più dettagliati
-                        memory_manager::allocate(Some(AllocationStrategy::CustomEmbedded), size)?;
-                        Ok(item)
+                        let size = 1024 * memory_scale; // 1 KB per device
+                        let device_memory = memory_manager::allocate(Some(AllocationStrategy::CustomEmbedded), size)?;
+                
+                        let mut device = Device::new(item.id, item.name, device_memory);
+                
+                        match device.store {
+                            Allocation::InMemory => {
+                                let mut devices = DEVICES_IN_MEMORY.lock().map_err(|e| format!("Errore di lock sul mutex: {}", e))?;
+                                devices.insert(device.id, device.clone());
+                            }
+                            Allocation::Database => {
+                                sqlx::query!(
+                                    "INSERT INTO devices (id, name) VALUES ($1, $2)",
+                                    device.id,
+                                    device.name,
+                                )
+                                .execute(&mut connection)// Connessione a PostgreSQL da gestire nel modulo api_server.rs
+                                .map_err(|e| format!("Errore di inserimento nel database: {}", e))?;
+                            }
+                        }
+                
+                        info!("Allocata memoria di {} byte per il Device con ID: {}", size, device.id);
+                        Ok(device)
                     }
-
+                
                     // Job temporanei, dimensione media, usiamo PoolBased
                     "modules::default::job_model::Job" => {
                         info!("Allocazione PoolBased per Job");
-                        let size = 512; // 512 byte per job temporanei
-                        memory_manager::allocate(Some(AllocationStrategy::PoolBased), size)?;
-                        Ok(item)
+                        let size = 1024 * memory_scale;
+                        let job_memory = memory_manager::allocate(Some(AllocationStrategy::PoolBased), size)?;
+                
+                        let mut job = Job::new(item.id, item.description, job_memory);
+                
+                        match job.store {
+                            Allocation::InMemory => {
+                                let mut jobs = JOBS_IN_MEMORY.lock().map_err(|e| format!("Errore di lock sul mutex: {}", e))?;
+                                jobs.insert(job.id, job.clone());
+                            }
+                            Allocation::Database => {
+                                sqlx::query!(
+                                    "INSERT INTO jobs (id, description) VALUES ($1, $2)",
+                                    job.id,
+                                    job.description,
+                                )
+                                .execute(&mut connection)// Connessione a PostgreSQL da gestire nel modulo api_server.rs
+                                .map_err(|e| format!("Errore di inserimento nel database: {}", e))?;
+                            }
+                        }
+                
+                        info!("Allocata memoria di {} byte per il Job con ID: {}", size, job.id);
+                        Ok(job)
                     }
-
-                    // Macro sono generalmente piccole
+                
+                    // Macro
                     "modules::default::macro_model::Macro" => {
                         info!("Allocazione in memoria Standard per Macro");
-                        let size = 128; // 128 byte per macro semplici
-                        memory_manager::allocate(Some(AllocationStrategy::Standard), size)?;
-                        Ok(item)
+                        let size = 1024 * memory_scale; 
+                        let macro_memory = memory_manager::allocate(Some(AllocationStrategy::Standard), size)?;
+                
+                        let mut macro_task = Macro::new(item.id, item.description, macro_memory);
+                
+                        match macro_task.store {
+                            Allocation::InMemory => {
+                                let mut macros = MACROS_IN_MEMORY.lock().map_err(|e| format!("Errore di lock sul mutex: {}", e))?;
+                                macros.insert(macro_task.id, macro_task.clone());
+                            }
+                            Allocation::Database => {
+                                sqlx::query!(
+                                    "INSERT INTO macros (id, description) VALUES ($1, $2)",
+                                    macro_task.id,
+                                    macro_task.description,
+                                )
+                                .execute(&mut connection)// Connessione a PostgreSQL da gestire nel modulo api_server.rs
+                                .map_err(|e| format!("Errore di inserimento nel database: {}", e))?;
+                            }
+                        }
+                
+                        info!("Allocata memoria di {} byte per la Macro con ID: {}", size, macro_task.id);
+                        Ok(macro_task)
                     }
-
-                    // Dati dei sensori possono essere più complessi
+                
+                    // SensorData
                     "modules::default::sensor_data_model::SensorData" => {
                         info!("Allocazione CustomEmbedded per Sensor Data");
-                        let size = 2048; // 2 KB per i dati dei sensori in tempo reale
-                        memory_manager::allocate(Some(AllocationStrategy::CustomEmbedded), size)?;
-                        Ok(item)
+                        let size = 1024 * memory_scale;
+                        let sensor_data_memory = memory_manager::allocate(Some(AllocationStrategy::CustomEmbedded), size)?;
+
+                        let mut sensor_data = SensorData::new(item.id, item.value, sensor_data_memory);
+
+                        match sensor_data.store {
+                            Allocation::InMemory => {
+                                let mut sensor_data_map = SENSORDATA_IN_MEMORY.lock().map_err(|e| format!("Errore di lock sul mutex: {}", e))?;
+                                sensor_data_map.insert(sensor_data.id, sensor_data.clone());
+                            }
+                            Allocation::Database => {
+                                sqlx::query!(
+                                    "INSERT INTO sensor_data (id, value) VALUES ($1, $2)",
+                                    sensor_data.id,
+                                    sensor_data.value,
+                                )
+                                .execute(&mut connection)// Connessione a PostgreSQL da gestire nel modulo api_server.rs
+                                .map_err(|e| format!("Errore di inserimento nel database: {}", e))?;
+                            }
+                        }
+
+                        info!("Allocata memoria di {} byte per SensorData con ID: {}", size, sensor_data.id);
+                        Ok(sensor_data)
                     }
 
-                    // Log/Event richiedono allocazione rapida e ripetuta, PoolBased
+                    // LogEvent
                     "modules::default::log_event_model::LogEvent" => {
                         info!("Allocazione PoolBased per Log/Event");
-                        let size = 512; // 512 byte per log di eventi
-                        memory_manager::allocate(Some(AllocationStrategy::PoolBased), size)?;
-                        Ok(item)
+                        let size = 1024 * memory_scale;
+                        let log_event_memory = memory_manager::allocate(Some(AllocationStrategy::PoolBased), size)?;
+
+                        let mut log_event = LogEvent::new(item.id, item.message, log_event_memory);
+
+                        match log_event.store {
+                            Allocation::InMemory => {
+                                let mut logs = LOGS_IN_MEMORY.lock().map_err(|e| format!("Errore di lock sul mutex: {}", e))?;
+                                logs.insert(log_event.id, log_event.clone());
+                            }
+                            Allocation::Database => {
+                                sqlx::query!(
+                                    "INSERT INTO log_events (id, message) VALUES ($1, $2)",
+                                    log_event.id,
+                                    log_event.message,
+                                )
+                                .execute(&mut connection)// Connessione a PostgreSQL da gestire nel modulo api_server.rs
+                                .map_err(|e| format!("Errore di inserimento nel database: {}", e))?;
+                            }
+                        }
+
+                        info!("Allocata memoria di {} byte per LogEvent con ID: {}", size, log_event.id);
+                        Ok(log_event)
                     }
 
-                    // Comandi in tempo reale, CustomEmbedded per ottimizzare l'utilizzo locale
+                    // Command
                     "modules::default::command_model::Command" => {
                         info!("Allocazione CustomEmbedded per Command");
-                        let size = 256; // 256 byte per i comandi
-                        memory_manager::allocate(Some(AllocationStrategy::CustomEmbedded), size)?;
-                        Ok(item)
+                        let size = 3072 * memory_scale;
+                        let command_memory = memory_manager::allocate(Some(AllocationStrategy::CustomEmbedded), size)?;
+
+                        let mut command = Command::new(item.id, item.action, command_memory);
+
+                        match command.store {
+                            Allocation::InMemory => {
+                                let mut commands = COMMANDS_IN_MEMORY.lock().map_err(|e| format!("Errore di lock sul mutex: {}", e))?;
+                                commands.insert(command.id, command.clone());
+                            }
+                            Allocation::Database => {
+                                sqlx::query!(
+                                    "INSERT INTO commands (id, action) VALUES ($1, $2)",
+                                    command.id,
+                                    command.action,
+                                )
+                                .execute(&mut connection)// Connessione a PostgreSQL da gestire nel modulo api_server.rs
+                                .map_err(|e| format!("Errore di inserimento nel database: {}", e))?;
+                            }
+                        }
+
+                        info!("Allocata memoria di {} byte per il Command con ID: {}", size, command.id);
+                        Ok(command)
                     }
 
                     _ => {
-                        info!("Allocazione in memoria Standard per modello non gestito specificamente");
-                        let size = 256; // Default size se non specificato diversamente
-                        memory_manager::allocate(Some(AllocationStrategy::Standard), size)?;
+                        info!("Allocazione in memoria di Default per modello non gestito specificamente");
+                        let size = 1024 * memory_scale; // Size per modelli non gestiti dedicati 1024 byte per range applicativo di media 
+                        memory_manager::allocate(None, size)?;
                         Ok(item)
                     }
                 }
@@ -143,19 +376,21 @@ macro_rules! impl_crud_ops {
     };
 }
 
-// Macro per implementare la ricerca e la revoca
+/// Macro per implementare le operazioni di Search e Revoke.
+/// 
+/// Questa macro aggiunge la funzionalità di ricerca e revoca per un tipo specificato.
 macro_rules! impl_search_and_revoke {
     ($model:ty) => {
         impl Search<$model> for $model {
             fn search(query: &str) -> Vec<$model> {
-                // Simulazione della logica di ricerca (filtraggio nel database) per ogni modello che implementa il trait con `match`statement
+                // Simulazione della logica di ricerca nel database o in memoria.
                 vec![]
             }
         }
 
         impl Revoke for $model {
             fn revoke(id: u64) -> Result<(), String> {
-                // Simulazione della logica di revoca (ad esempio, revoca token o permessi) per ogni modello che implementa il trait con `match`statement
+                // Simulazione della logica di revoca, ad esempio per chiavi API o token.
                 Ok(())
             }
         }

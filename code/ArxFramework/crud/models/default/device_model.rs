@@ -5,6 +5,7 @@ pub struct Device {
     pub name: String,
     pub device_type: String,
     pub store: Allocation,
+    pub memory: Box<[u8]>,
 }
 
 #[derive(Debug)]
@@ -22,12 +23,13 @@ pub enum Allocation {
 }
 
 impl Device {
-    pub fn new(id: u32, name: String) -> Self {
+    pub fn new(id: u32, name: String, memory: Box<[u8]> ) -> Self {
         Self { 
             id, 
             name,
             device_type: "default".to_string(),
             store: Allocation::InMemory,
+            memory,
         }
     }
 }

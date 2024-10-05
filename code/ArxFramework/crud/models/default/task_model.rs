@@ -17,6 +17,7 @@ pub struct Task {
     pub device_id: Option<u32>,  // Associa il task a un dispositivo
 
     pub store: Allocation,
+    pub memory: Box<[u8]>,
 }
 
 #[cfg(any(feature = "automation", feature = "desktop", feature = "embedded"))]
@@ -36,17 +37,25 @@ pub enum Allocation {
 }
 
 impl Task {
-    pub fn new(id: u32, description: String) -> Self {
+    pub fn new(
+        id: u32,
+        description: String,
+        #[cfg(feature = "automation")] schedule: Option<String>,
+        #[cfg(feature = "desktop")] completed: Option<bool>,
+        #[cfg(feature = "embedded")] device_id: Option<u32>,
+        memory: Box<[u8]>,
+    ) -> Self {
         Task {
             id,
             description,
             #[cfg(feature = "automation")]
-            schedule: None,
+            schedule,
             #[cfg(feature = "desktop")]
-            completed: None,
+            completed,
             #[cfg(feature = "embedded")]
-            device_id: None,
+            device_id,
             store: Allocation::InMemory,
+            memory,
         }
     }
 }
