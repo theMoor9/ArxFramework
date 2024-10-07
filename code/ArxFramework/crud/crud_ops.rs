@@ -437,3 +437,8 @@ impl_search_and_revoke!(User);
 impl_search_and_revoke!(Article);
 
 // Aggiungi ulteriori modelli se necessario
+
+//Note sviluppo
+// variabile: connection è definita in api_server::connection
+// variabile: STATIC_MEMORY_SCALE è definita in questo file in maniera temporanea
+//            Sarà definita in una variabile di configurazione nel main creata tramite il CLI 

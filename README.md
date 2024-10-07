@@ -228,8 +228,8 @@ Ospita il frontend
 
 # Guidelines
 
-[Linee Guida Generali Moduli](./docs/development_guide_lines.md)
-[Proprietà dei modelli](./docs/module_proprieties.md)
+[Linee Guida Generali Moduli](development_guide_lines.md)
+[Proprietà dei modelli](module_proprieties.md)
 
 ---
 
