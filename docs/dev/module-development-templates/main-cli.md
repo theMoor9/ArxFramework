@@ -1,6 +1,6 @@
 # Main - CLI
 
-**`main.rs`**, viene utilizzato per avviare l'intera applicazione/framework. Il ruolo del **CLI** è di configurare l'ambiente e passare i parametri al **`main`**, che a sua volta delega il resto del lavoro al **`system_core`**.
+**`main.rs`**, viene utilizzato per avviare l'intera applicazione/framework. Il ruolo del **CLI** è di configurare l'ambiente e passare i parametri al **`main`**, che a sua volta configura il resto dei moduli.
 
 ### Struttura del Processo:
 
@@ -81,6 +81,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     /*
     IMPORTANTE DECRETARE LE VARIABILI CHE IL CLI GENERA E RESTITUISCE
     AD UN EVENTUALE VARIABILE `config`NEL MAIN.
+    config = da cli.rs
     */
     
     // Inizializza il CoreSystem con la configurazione ricevuta
