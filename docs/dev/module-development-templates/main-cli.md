@@ -35,6 +35,36 @@ Attraverso il CLI saranno personalizzati i seguenti aspetti:
 
 
 ```Rust
+use clap::{Parser, Subcommand};
+use crate::config::global_config::ApplicationType; 
+
+/// CLI per ArxFramework
+#[derive(Parser)]
+#[command(name = "Arx")]
+#[command(about = "CLI per il framework Arx", long_about = None)]
+pub struct Cli {
+    #[command(subcommand)]
+    pub command: Commands,
+}
+
+/// Comandi supportati da Arx
+#[derive(Subcommand)]
+pub enum Commands {
+    /// Inizializza un nuovo progetto con un tipo di applicazione specifico
+    Init {
+        /// Il tipo di applicazione da inizializzare (WebApp, ApiBackend, DesktopApp, etc.)
+        #[arg(short, long)]
+        app_type: ApplicationType,
+    },
+    /// Mostra informazioni sulla versione del framework
+    Version, // Implementa Version
+    Help, // Implementa Help
+}
+
+/// Parsing degli argomenti e ritorno della configurazione CLI
+pub fn parse_arguments() -> Result<Cli, clap::Error> {
+    Cli::try_parse()
+}
 ```
 
 
@@ -48,7 +78,10 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     monitoring::logger::setup_logging().expect("Errore nell'inizializzazione del sistema di logging");
     
     // Ottieni la configurazione dall'utente usando il CLI
-    let config = cli::parse_core_config_cli(); 
+    /*
+    IMPORTANTE DECRETARE LE VARIABILI CHE IL CLI GENERA E RESTITUISCE
+    AD UN EVENTUALE VARIABILE `config`NEL MAIN.
+    */
     
     // Inizializza il CoreSystem con la configurazione ricevuta
     let core_system = CoreSystem::new(config).expect("Errore nell'inizializzazione del Core System");

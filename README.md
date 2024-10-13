@@ -233,10 +233,144 @@ Ospita il frontend
 
 ---
 
-# HOW to USE
+# Come Utilizzare ArxFramework
 
-1. 
-2. 
+ArxFramework è progettato per aiutarti a creare progetti con template predefiniti per diversi tipi di applicazioni: Web App, API Backend, App Desktop, Automazione e Scripting, e Sistemi Embedded. Segui i passaggi sottostanti per installare e usare il framework in modo efficace.
+
+#### **Passo 1: Installa lo Strumento CLI**
+
+Per iniziare a usare ArxFramework, è necessario installare lo strumento CLI globalmente sul tuo sistema utilizzando Cargo.
+
+```sh
+cargo install arx_framework
+```
+
+Questo comando:
+
+- Scaricherà e costruirà lo strumento CLI di ArxFramework (chiamato `arx`).
+- Installerà il binario `arx` nella directory bin di Cargo (`~/.cargo/bin` su Linux/macOS o `%USERPROFILE%\.cargo\bin` su Windows).
+
+#### **Passo 2: Verifica l'Installazione**
+
+Dopo l'installazione, assicurati che il comando `arx` sia disponibile nel tuo terminale. Potresti dover aggiungere la directory bin di Cargo alla variabile PATH del tuo sistema se non lo è già.
+
+Per verificare se l'installazione è avvenuta correttamente:
+
+```sh
+arx --version
+```
+
+Questo comando stamperà la versione dello strumento CLI `arx` installato.
+
+#### **Passo 3: Inizializza un Nuovo Progetto**
+
+Ora puoi creare un nuovo progetto eseguendo il comando `arx init`. Questo comando imposterà l'intera struttura del framework per il tipo di applicazione che scegli.
+
+1. **Crea una nuova directory per il tuo progetto**:
+    
+    ```sh
+	mkdir mio_nuovo_progetto 
+	cd mio_nuovo_progetto
+	```
+    
+2. **Esegui il comando `arx init`** con il tipo di applicazione (`--AppType`), dove `--AppType` può essere `webapp`, `api_backend`, `desktop_app`, `automation`, o `embedded`:
+    
+    ```sh
+	arx init --AppType webapp
+	```
+    
+    Questo comando genererà la struttura del progetto su misura per il tipo di applicazione specificato.
+    
+
+#### **Passo 4: Struttura del Progetto**
+
+Una volta inizializzato il progetto, avrai una struttura di directory preconfigurata basata sul tipo di applicazione scelto. Ad esempio, per una web app, la struttura potrebbe essere simile a questa:
+
+```sh
+ArxFramework/
+├── core/                 # Core Sistema (Rust)
+├── auth/                 # Autenticazione e Sicurezza (Rust, Python opzionale)
+├── crud/                 # Gestione CRUD (Rust)
+| └── models/               # Cartella dei modelli
+├── api/                  # API Layer (Rust primario, Python FastAPI opzionale)
+├── file_management/      # Gestione file/risorse (Rust)
+├── monitoring/           # Monitoraggio e logging (Rust)
+| └── logs/               # Cartella dei log
+├── task_automation/      # Task Automation (Rust primario, Python secondario)
+├── blockchain/           # Integrazione Blockchain (Rust)
+├── frontend/             # Ospita il front end
+├── ml/                   # Machine Learning (Python primario, Rust secondario)
+├── docs/                 # Documentazione del framework
+├── config/               # Configurazioni globali
+├── src/                  # Source
+├── tests/                # Test unitari 
+└── README.md             # Documentazione principale del framework
+```
+
+Ogni cartella contiene moduli specifici per aiutarti a iniziare lo sviluppo della tua applicazione. 
+
+#### **Passo 5: Configura e Personalizza**
+
+1. **Aggiorna il `Cargo.toml`**: A seconda del progetto, potresti voler personalizzare le dipendenze o le feature all'interno del file `Cargo.toml`.
+    
+2. **Modifica o Aggiungi Funzionalità**:
+    
+    - Puoi modificare o estendere i modelli e i componenti situati nella directory `modules/` per adattarli alle specifiche esigenze della tua applicazione.
+    - Per qualsiasi personalizzazione, segui la struttura documentata all'interno di ciascun modulo.
+    
+3. **Argomenti della Linea di Comando**: Lo strumento CLI ti consente di passare vari argomenti per personalizzare l'inizializzazione del progetto. Consulta la documentazione del CLI (`arx --help`) per esplorare le opzioni disponibili.
+    
+
+#### **Passo 6: Compila ed Esegui**
+
+Una volta configurato e personalizzato il tuo progetto, puoi compilarlo ed eseguirlo utilizzando Cargo:
+
+```sh
+cargo build cargo run
+```
+
+Questo comando compilerà il progetto ed eseguirà l'applicazione in base alla configurazione specificata durante l'inizializzazione.
+
+#### **Passo 7: Aggiungi Altre Funzionalità o Modifica i Componenti**
+
+- Puoi personalizzare ulteriormente il framework aggiungendo nuovi modelli o estendendo quelli esistenti nelle cartelle `crud/` o `core/`.
+- Utilizza le macro fornite all'interno del file `crud_ops.rs` per implementare funzionalità CRUD aggiuntive per i nuovi modelli.
+
+#### **Passo 8: Sviluppo Continuo**
+
+- Usa un sistema di controllo di versione come Git per gestire le modifiche al progetto.
+- Durante lo sviluppo, continua a personalizzare i moduli generati in base alle esigenze della tua applicazione.
+
+---
+
+### Esempio di Workflow
+
+1. **Installa il CLI**:
+        
+    ```sh
+	cargo install arx_framework
+	```
+    
+2. **Crea una nuova directory e inizializza una web app**:
+    
+    ```sh
+	mkdir mia_webapp
+	cd mia_webapp 
+	arx init --AppType webapp
+	```
+    
+3. **Compila ed esegui la tua nuova web app**:
+    
+    ```sh
+	cargo build cargo run
+	```
+    
+
+Questo farà partire la tua applicazione web con la struttura preconfigurata di ArxFramework.
+
+---
+
+Questa procedura fornisce un'esperienza semplificata per gli sviluppatori che usano ArxFramework per creare rapidamente progetti, sfruttando la potenza di Rust e una configurazione modulare e flessibile.
 
 ---
 	

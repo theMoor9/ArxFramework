@@ -19,7 +19,7 @@ path = "src/lib.rs"  # Path relativo per la libreria
 
 # Definizione del binario per il CLI 
 [[bin]] 
-name = "arx_cli" 
+name = "arx" 
 path = "src/main.rs"  # Path del CLI
 
 # Dipendenze comuni a tutti i moduli

@@ -264,7 +264,39 @@ Per **ogni modello** avremo le seguenti operazioni:
     - La libreria **`solana-client`** in Rust.
     - Un nodo RPC o una connessione alla rete Solana
 
-### auth/
+### Integration
+- [ ] 
+#### Passo 1: Integrare il Main e il CLI e la Configurazione del Main
+
+Devi prima finalizzare l'integrazione del **CLI** con il **main.rs** per poter estrarre correttamente le variabili di configurazione. La configurazione includerà:
+
+- Tipo di applicazione (WebApp, API, ecc.).
+- URL del database (o altre configurazioni specifiche per il server).
+- Parametri di memoria (per memory_management.rs).
+
+In questa fase, definisci come le opzioni passate tramite CLI vengono gestite e propagate nel framework.
+
+#### Passo 2: Inizializzare il Sistema (Main + CLI + Configurazione Server)
+
+Il prossimo passo sarà garantire che il **main.rs** inizializzi correttamente il sistema. Devi fare in modo che:
+
+- La connessione al database sia stabilita correttamente.
+- Le configurazioni del sistema siano propagate al resto del framework (es. tipo di applicazione, dimensioni del pool di memoria).
+- Moduli come **memory_management.rs** ricevano la configurazione appropriata.
+
+#### Passo 3: Creare il Modulo per la Connessione Server 
+
+creare un modulo indipendente (es. **server/** o **db_connection/**) che gestisce tutte le connessioni server e di database. Questo modulo si occuperebbe di:
+
+- **Inizializzare** la connessione al database.
+- **Gestire** eventuali configurazioni specifiche (es. pool di connessioni, timeout).
+- **Esportare** una variabile `connection` riutilizzabile da qualsiasi parte del framework, sia che si tratti di un'app API, un'app web, o operazioni CRUD.
+
+#### Passo 4: Finalizzare `crud_ops.rs`
+
+Una volta stabilita la connessione al database e propagata la configurazione, puoi completare **crud_ops.rs** e implementare le operazioni CRUD per i modelli. In questo passaggio, `crud_ops.rs` utilizzerà la connessione centralizzata per eseguire operazioni come `INSERT`, `UPDATE`, `DELETE`, ecc.
+
+
 
 
 ---
