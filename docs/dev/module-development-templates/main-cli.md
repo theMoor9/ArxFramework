@@ -72,9 +72,9 @@ pub fn parse_arguments() -> Result<Cli, clap::Error> {
 
 #### Necessario: 
 
-1. Personalizzare `max_threads` per ogni app specificando nel documento finale in [[ArxFramework/docs/module-tameplates/main-cli|main-cli]] la procedura per personalizzazioni future
+1. Personalizzare `max_threads` per ogni app specificando nel documento finale in [[ArxFramework/docs/module-templates/main-cli|main-cli]] la procedura per personalizzazioni future
 2. Implementare la sezione `Commands::Version` collegandolo alle informazioni del `.toml`
-3. Implementare la sezione `Commands::Help` creando una formattazione adeguata per i messaggi d'uso, includendo  in [[ArxFramework/docs/module-tameplates/main-cli|main-cli]] la procedura per personalizzazioni future
+3. Implementare la sezione `Commands::Help` creando una formattazione adeguata per i messaggi d'uso, includendo  in [[ArxFramework/docs/module-templates/main-cli|main-cli]] la procedura per personalizzazioni future
 
 
 ```Rust
