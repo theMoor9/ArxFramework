@@ -377,9 +377,6 @@ This command will compile the project and run the application based on the confi
 
 This will launch your web application with the pre-configured structure of ArxFramework.
 
----
-
-This process provides a streamlined experience for developers using ArxFramework to quickly create projects, leveraging the power of Rust and a modular, flexible configuration.
 
 ---
 

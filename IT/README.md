@@ -369,9 +369,5 @@ Questo comando compilerà il progetto ed eseguirà l'applicazione in base alla c
 Questo farà partire la tua applicazione web con la struttura preconfigurata di ArxFramework.
 
 ---
-
-Questa procedura fornisce un'esperienza semplificata per gli sviluppatori che usano ArxFramework per creare rapidamente progetti, sfruttando la potenza di Rust e una configurazione modulare e flessibile.
-
----
 	
 **Autore:** Kenneth Boldrini

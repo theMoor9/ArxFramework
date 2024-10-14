@@ -10,7 +10,7 @@ Il .toml fa uso di `features` flags per limitare le librerie necessarie in base 
 ```toml
 [package]
 name = "arx_framework"
-version = "0.1.0"
+version = "0.0.0"
 edition = "2021"
 
 [lib]

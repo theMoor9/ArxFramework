@@ -11,13 +11,13 @@
 - [x]  `system_core.rs`: Gestione centrale del sistema implementata.
 	- [ ] code
 	- [x] dev documentation
-	- [ ] documentation
+	- [x] documentation
 	- [x] Logger
 	- [x] In-code Documentation
 - [x]  `memory_management.rs`: Ottimizzazione della memoria gestita correttamente.
 	- [ ] code
 	- [x] dev documentation
-	- [ ] documentation
+	- [x] documentation
 	- [x] Logger
 	- [x] In-code Documentation
 
@@ -267,7 +267,7 @@ Per **ogni modello** avremo le seguenti operazioni:
 ### Integration
 - [ ] 
 #### Passo 1: Integrare il Main e il CLI e la Configurazione del Main
-
+- [x] 
 Devi prima finalizzare l'integrazione del **CLI** con il **main.rs** per poter estrarre correttamente le variabili di configurazione. La configurazione includerà:
 
 - Tipo di applicazione (WebApp, API, ecc.).

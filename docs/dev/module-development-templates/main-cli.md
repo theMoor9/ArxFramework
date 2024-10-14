@@ -70,27 +70,86 @@ pub fn parse_arguments() -> Result<Cli, clap::Error> {
 
 # src/`main.rs`
 
-### Sequenza chiamata moduli
+#### Necessario: 
+
+1. Personalizzare `max_threads` per ogni app specificando nel documento finale in [[ArxFramework/docs/module-tameplates/main-cli|main-cli]] la procedura per personalizzazioni future
+2. Implementare la sezione `Commands::Version` collegandolo alle informazioni del `.toml`
+3. Implementare la sezione `Commands::Help` creando una formattazione adeguata per i messaggi d'uso, includendo  in [[ArxFramework/docs/module-tameplates/main-cli|main-cli]] la procedura per personalizzazioni future
+
 
 ```Rust
+use crate::core_system::CoreSystem;
+use crate::cli::{parse_arguments, Cli, Commands}; // Assicurati di importare il CLI
+use crate::config::global_config::ApplicationType;
+use log::info;
+
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     // Inizializza il sistema di logging
     monitoring::logger::setup_logging().expect("Errore nell'inizializzazione del sistema di logging");
-    
-    // Ottieni la configurazione dall'utente usando il CLI
-    /*
-    IMPORTANTE DECRETARE LE VARIABILI CHE IL CLI GENERA E RESTITUISCE
-    AD UN EVENTUALE VARIABILE `config`NEL MAIN.
-    config = da cli.rs
-    */
-    
-    // Inizializza il CoreSystem con la configurazione ricevuta
+
+    // Parsing degli argomenti passati dal CLI
+    let cli_args = parse_arguments().expect("Errore nel parsing degli argomenti CLI");
+
+    // Gestione del comando Init
+    let config = match cli_args.command {
+        Commands::Init { app_type } => {
+            // Inizializzazione in base al tipo di applicazione scelto
+            match app_type {
+                ApplicationType::WebApp => {
+                    info!("Inizializzazione del progetto WebApp");
+                    // Genera la configurazione per una WebApp
+                    CoreConfig {
+                        app_type: ApplicationType::WebApp,
+                        max_threads: 4, // esempio di configurazione
+                    }
+                }
+                ApplicationType::ApiBackend => {
+                    info!("Inizializzazione del progetto ApiBackend");
+                    CoreConfig {
+                        app_type: ApplicationType::ApiBackend,
+                        max_threads: 8, // esempio
+                    }
+                }
+                ApplicationType::DesktopApp => {
+                    info!("Inizializzazione del progetto DesktopApp");
+                    CoreConfig {
+                        app_type: ApplicationType::DesktopApp,
+                        max_threads: 2, // esempio
+                    }
+                }
+                ApplicationType::AutomationScript => {
+                    info!("Inizializzazione del progetto AutomationScript");
+                    CoreConfig {
+                        app_type: ApplicationType::AutomationScript,
+                        max_threads: 2, // esempio
+                    }
+                }
+                ApplicationType::EmbeddedSystem => {
+                    info!("Inizializzazione del progetto EmbeddedSystem");
+                    CoreConfig {
+                        app_type: ApplicationType::EmbeddedSystem,
+                        max_threads: 1, // esempio
+                    }
+                }
+            }
+        }
+        // Implementazione per Version e Help
+        Commands::Version => {
+            println!("ArxFramework versione 1.0.0");
+            return Ok(()); // Esce dall'applicazione
+        }
+        Commands::Help => {
+            println!("Esempio di utilizzo: arx init --AppType webapp");
+            return Ok(());
+        }
+    };
+
+    // Inizializza il CoreSystem con la configurazione ottenuta
     let core_system = CoreSystem::new(config).expect("Errore nell'inizializzazione del Core System");
-    
+
     // Esegui il core system
     core_system.run()?;
-    
+
     Ok(())
 }
-
 ```
