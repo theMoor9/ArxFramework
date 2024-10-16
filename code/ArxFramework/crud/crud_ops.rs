@@ -16,21 +16,6 @@ use crate::memory_management::{
     COMMANDS_IN_MEMORY
 };
 
-/// Variabile globale per la scala della memoria.
-/// 
-/// Questa variabile rappresenta la scala della memoria utilizzata per gestire
-/// le diverse allocazioni di memoria nel sistema. La scala è configurabile tramite
-/// il CLI o utilizza un valore di default definito in `MemoryConfig`.
-/// 
-/// La variabile viene inizializzata con `lazy_static!`, il che garantisce che 
-/// venga allocata solo quando necessaria e che sia thread-safe.
-lazy_static! {
-    static ref STATIC_MEMORY_SCALE: Mutex<f32> = {
-        let config = MemoryConfig::default();
-        Mutex::new(config.memory_scale)
-    };
-}
-
 /// Trait che definisce l'operazione di creazione per un generico tipo `T`.
 /// 
 /// Questo trait implementa la logica per creare un nuovo elemento di tipo `T`,
@@ -89,8 +74,25 @@ pub trait Revoke {
 macro_rules! impl_crud_ops {
     ($model:ty) => {
         impl Create<$model> for $model {
-            fn create(item: $model) -> Result<$model, String> {
-                let memory_scale = STATIC_MEMORY_SCALE.lock().unwrap();
+            /// Crea una nuova istanza del modello specificato.
+            ///
+            /// La funzione `create` permette di creare un nuovo record per il modello specificato.
+            /// La memoria allocata per il nuovo record viene determinata in base alla configurazione
+            /// del tipo di modello e della strategia di allocazione, e utilizza il valore di `memory_scale`
+            /// per calcolare la quantità di memoria da allocare.
+            ///
+            /// # Parametri
+            ///
+            /// - `item`: Un'istanza del modello che si desidera creare.
+            /// - `memory_scale`: Un valore `u8` che rappresenta il moltiplicatore di memoria configurato.
+            ///   Questo valore viene utilizzato per determinare quanta memoria deve essere allocata
+            ///   per il modello creato. Più alto è il valore, più grande sarà l'allocazione.
+            ///
+            /// # Restituisce
+            ///
+            /// - `Result<$model, String>`: Restituisce un `Ok($model)` se la creazione è avvenuta con successo,
+            ///   oppure un `Err(String)` con un messaggio di errore nel caso in cui si verifichi un problema.
+            fn create(item: $model, memory_scale: u8) -> Result<$model, String> {
                 match std::any::type_name::<$model>() {
                     // Task temporanei, quindi la memoria standard va bene per velocità e semplicità
                     "modules::default::task_model::Task" => {
