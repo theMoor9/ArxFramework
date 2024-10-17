@@ -17,6 +17,10 @@ use crate::memory_management::MemoryManager;
 use crate::monitoring::logger;
 use log::{info, error};
 use once_cell::sync::Lazy;
+// Importa i modelli dalla cartella dev
+use crate::crud::models::dev::*;
+// Importa i modelli dalla cartella default
+use crate::crud::models::default::*;
 
 #[cfg(feature = "auth")]
 use crate::auth;
@@ -75,13 +79,13 @@ impl CoreSystem {
     ///
     /// # Ritorna
     /// Un'istanza di `CoreSystem` o un errore di inizializzazione (`CoreError`).
-    pub fn new(config: CoreConfig) -> Result<Self, CoreError> {
+    pub fn new(core_config: CoreConfig, memory_config: MemoryConfig) -> Result<Self, CoreError> {
         info!("Inizializzazione del CoreSystem...");
-        let memory_manager = MemoryManager::new(config.app_type).map_err(|e| {
+        let memory_manager = MemoryManager::new(core_config.app_type).map_err(|e| {
             error!("Errore nell'inizializzazione del MemoryManager: {}", e);
             CoreError::InitializationError(e.to_string())
         })?;
-
+        info!("CoreSystem inizializzato con app_type: {:?}", config.app_type);
         Ok(CoreSystem { config, memory_manager })
     }
 

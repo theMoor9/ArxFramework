@@ -11,7 +11,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     let cli_args = parse_arguments().expect("Errore nel parsing degli argomenti CLI");
 
     // Gestione del comando Init
-    let config = match cli_args.command {
+    let config_tuple = = match cli_args.command {
         Commands::Init { app_type, memory_scale, max_threads } => {
             info!("Inizializzazione del progetto con i seguenti parametri:");
             info!("Tipo di applicazione: {:?}", app_type);
@@ -33,7 +33,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 
             info!("Configurazione della memoria completata: pool_size={}, buffer_size={}", memory_config.pool_size, memory_config.buffer_size);
 
-            core_config // Restituisci la configurazione
+            (core_config,memory_config) // Restituisci la configurazione
         },
         Commands::Help => {
             println!("HELP");
@@ -53,7 +53,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     };
 
     // Inizializza il CoreSystem con la configurazione ottenuta
-    let core_system = CoreSystem::new(config).expect("Errore nell'inizializzazione del Core System");
+    let core_system = CoreSystem::new(config_tuple.0, config_tuple.1).expect("Errore nell'inizializzazione del Core System");
 
     // Esegui il core system
     core_system.run()?;

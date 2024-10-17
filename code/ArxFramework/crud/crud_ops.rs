@@ -1,7 +1,8 @@
-use crate::models;
+use crate::models::dev::*;
+use crate::models::default::*;
 use crate::memory_manager::{AllocationStrategy, memory_manager};
 use crate::global_config::MemoryConfig;
-use crate::api_server::connection;
+//use crate::::connection; NECESSARIO PER LA CONNESSIONE AL DATABASE
 use log::{info};
 
 // Importazione variabili statiche per mantenere i modelli in memoria
@@ -349,11 +350,242 @@ macro_rules! impl_crud_ops {
         }
 
         impl Read<$model> for $model {
+            /// Legge un elemento di tipo `$model` in base al suo ID.
+            ///
+            /// La funzione `read` cerca prima l'elemento nella memoria (InMemory), se applicabile,
+            /// e se non lo trova, tenta di recuperarlo dal database.
+            ///
+            /// # Parametri
+            /// - `id`: L'ID dell'elemento che si desidera leggere.
+            ///
+            /// # Ritorna
+            /// - `Ok($model)` se l'elemento è stato trovato in memoria o nel database.
+            /// - `Err(String)` se l'elemento non è stato trovato né in memoria né nel database.
             fn read(id: u64) -> Result<$model, String> {
-                // Simulazione della logica di lettura (recupero dal database) per ogni modello che implementa il trait con `match`statement
-                Err(format!("Elemento con ID {} non trovato", id))
+                match std::any::type_name::<$model>() {
+                    // Task (InMemory)
+                    "modules::default::task_model::Task" => {
+                        let tasks = TASKS_IN_MEMORY.lock().map_err(|e| format!("Errore di lock sul mutex: {}", e))?;
+                        if let Some(task) = tasks.get(&id) {
+                            return Ok(task.clone());
+                        }
+                    }
+
+                    // SensorData (InMemory)
+                    "modules::default::sensor_data_model::SensorData" => {
+                        let sensor_data = SENSOR_DATA_IN_MEMORY.lock().map_err(|e| format!("Errore di lock sul mutex: {}", e))?;
+                        if let Some(data) = sensor_data.get(&id) {
+                            return Ok(data.clone());
+                        }
+                    }
+
+                    // Macro (InMemory)
+                    "modules::default::macro_model::Macro" => {
+                        let macros = MACROS_IN_MEMORY.lock().map_err(|e| format!("Errore di lock sul mutex: {}", e))?;
+                        if let Some(macro_task) = macros.get(&id) {
+                            return Ok(macro_task.clone());
+                        }
+                    }
+
+                    // LogEvent (InMemory)
+                    "modules::default::log_event_model::LogEvent" => {
+                        let log_events = LOG_EVENTS_IN_MEMORY.lock().map_err(|e| format!("Errore di lock sul mutex: {}", e))?;
+                        if let Some(log_event) = log_events.get(&id) {
+                            return Ok(log_event.clone());
+                        }
+                    }
+
+                    // Job (InMemory)
+                    "modules::default::job_model::Job" => {
+                        let jobs = JOBS_IN_MEMORY.lock().map_err(|e| format!("Errore di lock sul mutex: {}", e))?;
+                        if let Some(job) = jobs.get(&id) {
+                            return Ok(job.clone());
+                        }
+                    }
+
+                    // Device (InMemory)
+                    "modules::default::device_model::Device" => {
+                        let devices = DEVICES_IN_MEMORY.lock().map_err(|e| format!("Errore di lock sul mutex: {}", e))?;
+                        if let Some(device) = devices.get(&id) {
+                            return Ok(device.clone());
+                        }
+                    }
+
+                    // Configuration (InMemory)
+                    "modules::default::configuration_model::Configuration" => {
+                        let configurations = CONFIGURATIONS_IN_MEMORY.lock().map_err(|e| format!("Errore di lock sul mutex: {}", e))?;
+                        if let Some(configuration) = configurations.get(&id) {
+                            return Ok(configuration.clone());
+                        }
+                    }
+
+                    // Command (InMemory)
+                    "modules::default::command_model::Command" => {
+                        let commands = COMMANDS_IN_MEMORY.lock().map_err(|e| format!("Errore di lock sul mutex: {}", e))?;
+                        if let Some(command) = commands.get(&id) {
+                            return Ok(command.clone());
+                        }
+                    }
+
+                    // User (Database)
+                    "modules::default::user_model::User" => {
+                        // Recupera l'utente dal database
+                        let user_row = sqlx::query_as!(User, "SELECT id, name FROM users WHERE id = $1", id)
+                            .fetch_one(&mut connection)
+                            .map_err(|e| format!("Errore di lettura dal database: {}", e))?;
+                        
+                        return Ok(user_row);
+                    }
+
+                    // Article (Database)
+                    "modules::default::article_model::Article" => {
+                        let article_row = sqlx::query_as!(Article, "SELECT id, title FROM articles WHERE id = $1", id)
+                            .fetch_one(&mut connection)
+                            .map_err(|e| format!("Errore di lettura dal database: {}", e))?;
+                        
+                        return Ok(article_row);
+                    }
+
+                    // Comment (Database)
+                    "modules::default::comment_model::Comment" => {
+                        let comment_row = sqlx::query_as!(Comment, "SELECT id, content FROM comments WHERE id = $1", id)
+                            .fetch_one(&mut connection)
+                            .map_err(|e| format!("Errore di lettura dal database: {}", e))?;
+                        
+                        return Ok(comment_row);
+                    }
+
+                    // Category (Database)
+                    "modules::default::category_model::Category" => {
+                        let category_row = sqlx::query_as!(Category, "SELECT id, name FROM categories WHERE id = $1", id)
+                            .fetch_one(&mut connection)
+                            .map_err(|e| format!("Errore di lettura dal database: {}", e))?;
+                        
+                        return Ok(category_row);
+                    }
+
+                    // Tag (Database)
+                    "modules::default::tag_model::Tag" => {
+                        let tag_row = sqlx::query_as!(Tag, "SELECT id, name FROM tags WHERE id = $1", id)
+                            .fetch_one(&mut connection)
+                            .map_err(|e| format!("Errore di lettura dal database: {}", e))?;
+                        
+                        return Ok(tag_row);
+                    }
+
+                    // File/Image (Database)
+                    "modules::default::file_model::FileImage" => {
+                        let file_row = sqlx::query_as!(FileImage, "SELECT id, path FROM files WHERE id = $1", id)
+                            .fetch_one(&mut connection)
+                            .map_err(|e| format!("Errore di lettura dal database: {}", e))?;
+                        
+                        return Ok(file_row);
+                    }
+
+                    // Page (Database)
+                    "modules::default::page_model::Page" => {
+                        let page_row = sqlx::query_as!(Page, "SELECT id, content FROM pages WHERE id = $1", id)
+                            .fetch_one(&mut connection)
+                            .map_err(|e| format!("Errore di lettura dal database: {}", e))?;
+                        
+                        return Ok(page_row);
+                    }
+
+                    // API Key (Database)
+                    "modules::default::api_key_model::ApiKey" => {
+                        let api_key_row = sqlx::query_as!(ApiKey, "SELECT id, key FROM api_keys WHERE id = $1", id)
+                            .fetch_one(&mut connection)
+                            .map_err(|e| format!("Errore di lettura dal database: {}", e))?;
+                        
+                        return Ok(api_key_row);
+                    }
+
+                    // Token (Database)
+                    "modules::default::token_model::Token" => {
+                        let token_row = sqlx::query_as!(Token, "SELECT id, token FROM tokens WHERE id = $1", id)
+                            .fetch_one(&mut connection)
+                            .map_err(|e| format!("Errore di lettura dal database: {}", e))?;
+                        
+                        return Ok(token_row);
+                    }
+
+                    // Request Log (Database)
+                    "modules::default::request_log_model::RequestLog" => {
+                        let log_row = sqlx::query_as!(RequestLog, "SELECT id, request FROM request_logs WHERE id = $1", id)
+                            .fetch_one(&mut connection)
+                            .map_err(|e| format!("Errore di lettura dal database: {}", e))?;
+                        
+                        return Ok(log_row);
+                    }
+
+                    // Endpoint (Database)
+                    "modules::default::endpoint_model::Endpoint" => {
+                        let endpoint_row = sqlx::query_as!(Endpoint, "SELECT id, path FROM endpoints WHERE id = $1", id)
+                            .fetch_one(&mut connection)
+                            .map_err(|e| format!("Errore di lettura dal database: {}", e))?;
+                        
+                        return Ok(endpoint_row);
+                    }
+
+                    // Permission (Database)
+                    "modules::default::permission_model::Permission" => {
+                        let permission_row = sqlx::query_as!(Permission, "SELECT id, name FROM permissions WHERE id = $1", id)
+                            .fetch_one(&mut connection)
+                            .map_err(|e| format!("Errore di lettura dal database: {}", e))?;
+                        
+                        return Ok(permission_row);
+                    }
+
+                    // Rate Limit Rule (Database)
+                    "modules::default::rate_limit_rule_model::RateLimitRule" => {
+                        let rate_limit_row = sqlx::query_as!(RateLimitRule, "SELECT id, rule FROM rate_limit_rules WHERE id = $1", id)
+                            .fetch_one(&mut connection)
+                            .map_err(|e| format!("Errore di lettura dal database: {}", e))?;
+                        
+                        return Ok(rate_limit_row);
+                    }
+
+                    // Settings (Database)
+                    "modules::default::settings_model::Settings" => {
+                        let settings_row = sqlx::query_as!(Settings, "SELECT id, key, value FROM settings WHERE id = $1", id)
+                            .fetch_one(&mut connection)
+                            .map_err(|e| format!("Errore di lettura dal database: {}", e))?;
+                        
+                        return Ok(settings_row);
+                    }
+
+                    // Document (Database)
+                    "modules::default::document_model::Document" => {
+                        let document_row = sqlx::query_as!(Document, "SELECT id, title FROM documents WHERE id = $1", id)
+                            .fetch_one(&mut connection)
+                            .map_err(|e| format!("Errore di lettura dal database: {}", e))?;
+                        
+                        return Ok(document_row);
+                    }
+
+                    // Preferences (Database)
+                    "modules::default::preferences_model::Preferences" => {
+                        let preferences_row = sqlx::query_as!(Preferences, "SELECT id, name FROM preferences WHERE id = $1", id)
+                            .fetch_one(&mut connection)
+                            .map_err(|e| format!("Errore di lettura dal database: {}", e))?;
+                        
+                        return Ok(preferences_row);
+                    }
+
+                    // Project (Database)
+                    "modules::default::project_model::Project" => {
+                        let project_row = sqlx::query_as!(Project, "SELECT id, name FROM projects WHERE id = $1", id)
+                            .fetch_one(&mut connection)
+                            .map_err(|e| format!("Errore di lettura dal database: {}", e))?;
+                        
+                        return Ok(project_row);
+                    }
+
+                    _ => Err(format!("Elemento con ID {} non trovato", id)),
+                }
             }
         }
+
 
         impl Update<$model> for $model {
             fn update(item: $model) -> Result<$model, String> {
