@@ -55,6 +55,9 @@ pub enum Commands {
         /// Il tipo di applicazione da inizializzare (WebApp, ApiBackend, DesktopApp, etc.)
         #[arg(short, long)]
         app_type: ApplicationType,
+        /// Memory multiplier per mole di memoria
+        #[arg(short, long, default_value_t = 1.0)] // Valore di default: 1.0 
+        memory_multiplier: f64,
     },
     /// Mostra informazioni sulla versione del framework
     Version, // Implementa Version

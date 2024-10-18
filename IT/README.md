@@ -233,7 +233,9 @@ Ospita il frontend
 
 ---
 
-# Come Utilizzare ArxFramework
+# Come Utilizzare ArxFramework`
+
+##### Puoi trovare informazioni utili sui moduli [qui](../docs/module-templates)
 
 ArxFramework è progettato per aiutarti a creare progetti con template predefiniti per diversi tipi di applicazioni: Web App, API Backend, App Desktop, Automazione e Scripting, e Sistemi Embedded. Segui i passaggi sottostanti per installare e usare il framework in modo efficace.
 

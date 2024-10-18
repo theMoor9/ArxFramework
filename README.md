@@ -245,6 +245,8 @@ ArxFramework/
 
 # How to Use ArxFramework
 
+##### You can find useful infos about the modules [here](./docs/module-templates) 
+
 ArxFramework is designed to help you create projects with predefined templates for various types of applications: Web App, API Backend, Desktop App, Automation and Scripting, and Embedded Systems. Follow the steps below to install and use the framework effectively.
 
 #### **Step 1: Install the CLI Tool**

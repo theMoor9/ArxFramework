@@ -8,18 +8,20 @@
 
 ### **core/**
 
-- [x]  `system_core.rs`: Gestione centrale del sistema implementata.
-	- [ ] code
+- [ ]  `system_core.rs`: Gestione centrale del sistema implementata.
+	- [x] code
 	- [x] dev documentation
 	- [x] documentation
 	- [x] Logger
 	- [x] In-code Documentation
-- [x]  `memory_management.rs`: Ottimizzazione della memoria gestita correttamente.
-	- [ ] code
+	- [ ] Review
+- [ ]  `memory_management.rs`: Ottimizzazione della memoria gestita correttamente.
+	- [x] code
 	- [x] dev documentation
 	- [x] documentation
 	- [x] Logger
 	- [x] In-code Documentation
+	- [ ] Review
 
 
 ### **auth/**
@@ -42,15 +44,15 @@
 - [ ]  `crud_operations.rs`: Operazioni CRUD implementate per tutti i casi d'uso.
 	- [ ] code
 	- [ ] implementare `connection` con api_server.rs con sqlx
-	- [ ] Recupero dati da variabile di config inizializzata nel `main.rs` per la variabile globale atta allo scalo della memoria `STATIC_MEMORY_SCALE`.
+	- [x] Recupero dati da variabile di config inizializzata nel `main.rs` per la variabile globale atta allo scalo della memoria `STATIC_MEMORY_SCALE`.
 	- [x] dev documentation
 	- [x] documentation
 	- [x] Logger
-	- [x] In-code Documentation
-- [ ]  `models.rs`: Modelli dati definiti e mappati correttamente.
-	- [ ] code
+	- [ ] In-code Documentation
+- [x]  `models.rs`: Modelli dati definiti e mappati correttamente.
+	- [x] code
 	- [x] dev documentation
-	- [ ] documentation
+	- [x] documentation
 	- [x] Logger
 	- [x] In-code Documentation
 
@@ -93,11 +95,11 @@
 ### **monitoring/**
 
 - [ ]  `logger.rs`: Sistema di logging configurato e funzionante.
-	- [ ] code
-	- [ ] dev documentation
-	- [ ] documentation
-	- [ ] Logger
-	- [ ] In-code Documentation
+	- [x] code
+	- [x] dev documentation
+	- [x] documentation
+	- [x] In-code Documentation
+	- [ ] Review
 	
 - [ ]  `metrics.rs`: Raccolta e reporting delle metriche attivi.
 	- [ ] code
@@ -193,19 +195,19 @@
 
 - [ ]  `main.rs`: Main costruito con standard procedures.
 	- [ ] code
-	- [ ] dev documentation
-	- [ ] documentation
+	- [x] dev documentation
+	- [x] documentation
 	- [ ] Logger
 	- [ ] In-code Documentation
 - [ ]  `lib.rs`: Tutte le crates e moduli inclusi e collegati correttamente.
 	- [x] Code
 	- [ ] dev documentation
-	- [ ] documentation
+	- [x] documentation
 	- [ ] In-code Documentation
 - [ ] `cli.rs`: Command Line Interface per facilitare il setup
 	- [ ] code
-	- [ ] dev documentation
-	- [ ] documentation
+	- [x] dev documentation
+	- [x] documentation
 	- [ ] Logger
 	- [ ] In-code Documentation
 
@@ -234,16 +236,16 @@ Script, Task, Execution Log, Schedule, Configuration, Job, Macro
 Device, Sensor Data, Configuration, Firmware Version, Log/Event, Command, Task
 
 #### CRUD Operations
-- [x] 
+- [ ] 
 Per **ogni modello** avremo le seguenti operazioni:
 
-- **Create**: Crea un nuovo elemento nel database.
-- **Read**: Legge un elemento specifico dal database.
-- **Update**: Aggiorna i dati di un elemento esistente.
-- **Delete**: Elimina un elemento specifico dal database.
-- **List**: Restituisce una lista di tutti gli elementi o una selezione.
-- **Search**: (Facoltativa) Ricerca avanzata di elementi nel database.
-- **Revoke**: (Facoltativa) Invalida o revoca un elemento (usata per chiavi API o token).
+- [x] **Create**: Crea un nuovo elemento nel database.
+- [x] **Read**: Legge un elemento specifico dal database.
+- [ ] **Update**: Aggiorna i dati di un elemento esistente.
+- [ ] **Delete**: Elimina un elemento specifico dal database.
+- [ ] **List**: Restituisce una lista di tutti gli elementi o una selezione.
+- [ ] **Search**: (Facoltativa) Ricerca avanzata di elementi nel database.
+- [ ] **Revoke**: (Facoltativa) Invalida o revoca un elemento (usata per chiavi API o token).
 
 #####  Operazioni CRUD Applicabili ai Modelli
 
@@ -297,7 +299,8 @@ creare un modulo indipendente (es. **server/** o **db_connection/**) che gestisc
 Una volta stabilita la connessione al database e propagata la configurazione, puoi completare **crud_ops.rs** e implementare le operazioni CRUD per i modelli. In questo passaggio, `crud_ops.rs` utilizzerà la connessione centralizzata per eseguire operazioni come `INSERT`, `UPDATE`, `DELETE`, ecc.
 
 
-
+### System Core Initialize module
+- [ ] Sviluppare la funzione `initialize_module` per ogni modulo.
 
 ---
 
