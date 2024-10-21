@@ -1,8 +1,23 @@
-# Steps
+# Ingegneria di sviluppo
 
-1. Completare tutti i moduli e documentazioni in maniera generale 
-2. Revisionare i moduli in cerca di elementi da adattare al sistema
-3. Correzione documentazioni
+- **Definizione di Milestone Modulare**: Invece di lavorare su un modulo alla volta senza una visione chiara dell’insieme, definisci una roadmap con milestone modulari. Ogni milestone corrisponde a un blocco fondamentale del framework (es. gestione memoria, logging, CRUD). Per ogni milestone, identifica:
+    
+    - **Obiettivi minimi**: Cosa deve funzionare al 100% in quella fase (ad es. gestione base della memoria).
+    - **Moduli collegati**: Quali moduli si collegano a quello che stai sviluppando in quella fase, e come (ad esempio il CRUD potrebbe connettersi alla gestione della memoria).
+    - **Compatibilità**: Documenta come i moduli sviluppati in quella fase devono integrarsi con moduli futuri, anche se questi non sono ancora sviluppati.
+    
+- **Integrazione di Tool di Versionamento e Monitoraggio**: Git è essenziale, ma considera l’aggiunta di un tool di monitoraggio o gestione progetti (come **Trello** o **Notion**) che ti permetta di creare board con task suddivisi in moduli e sotto-task. Questi strumenti ti aiutano a tracciare progressi, modifiche e compatibilità tra i moduli, e a visualizzare come ogni parte si collega all’insieme.
+    
+- **Iterazioni Agili**: Procedi per cicli di sviluppo rapidi. Completa il core framework con versioni semplificate, ma funzionanti, dei moduli principali. Ogni ciclo dovrà aggiungere o perfezionare qualcosa, mentre mantieni sempre una base stabile. Usa test per verificare la compatibilità tra i moduli sviluppati man mano.
+    
+- **Documentazione continua**: Non aspettare la fine del progetto per documentare. Ogni modulo e milestone dovrebbe avere una documentazione schematica e precisa. Ciò ti permetterà di tenere traccia delle interazioni tra i moduli, facilitando le future integrazioni avanzate.
+    
+- **Rimodellamento del Piano di Lavoro**: Invece di procedere in modo procedurale (che può essere dispersivo), utilizza una strategia più iterativa e basata su priorità:
+    
+    - **Core System** (Memory Management, CRUD, Logging) come prima milestone, assicurandoti che ogni blocco sia ben testato e integrato.
+    - **Integrazione di moduli avanzati** in maniera progressiva (ad es. Machine Learning e Blockchain) in fasi successive, con un occhio a mantenere la compatibilità e documentare le connessioni tra i moduli.
+    - **Modulo CLI**: Lascia spazio per eventuali modifiche che dovrai fare in base alle integrazioni future.
+
 
 # Elementi
 
@@ -13,14 +28,16 @@
 	- [x] dev documentation
 	- [x] documentation
 	- [x] Logger
-	- [x] In-code Documentation
+	- [x] In-code Documentation 	
+	- [ ] Unit test
 	- [ ] Review
 - [ ]  `memory_management.rs`: Ottimizzazione della memoria gestita correttamente.
 	- [x] code
 	- [x] dev documentation
 	- [x] documentation
 	- [x] Logger
-	- [x] In-code Documentation
+	- [x] In-code Documentation 	
+	- [ ] Unit test
 	- [ ] Review
 
 
@@ -31,13 +48,15 @@
 	- [ ] dev documentation
 	- [ ] documentation
 	- [ ] Logger
-	- [ ] In-code Documentation
+	- [ ] In-code Documentation 	
+	- [ ] Unit test
 - [ ]  `auth_wrapper.py`: Wrapper Python per integrazioni funzionante.
 	- [ ] code
 	- [ ] dev documentation
 	- [ ] documentation
 	- [ ] Logger
-	- [ ] In-code Documentation
+	- [ ] In-code Documentation 	
+	- [ ] Unit test
 
 ### **crud/**
 
@@ -48,13 +67,15 @@
 	- [x] dev documentation
 	- [x] documentation
 	- [x] Logger
-	- [ ] In-code Documentation
+	- [ ] In-code Documentation 	
+	- [ ] Unit test
 - [x]  `models.rs`: Modelli dati definiti e mappati correttamente.
 	- [x] code
 	- [x] dev documentation
 	- [x] documentation
 	- [x] Logger
-	- [x] In-code Documentation
+	- [x] In-code Documentation 	
+	- [ ] Unit test
 
 ### **api/**
 
@@ -63,19 +84,22 @@
 	- [ ] dev documentation
 	- [ ] documentation
 	- [ ] Logger
-	- [ ] In-code Documentation
+	- [ ] In-code Documentation 	
+	- [ ] Unit test
 - [ ]  `routes.rs`: Percorsi API definiti e mappati correttamente.
 	- [ ] code
 	- [ ] dev documentation
 	- [ ] documentation
 	- [ ] Logger
-	- [ ] In-code Documentation
+	- [ ] In-code Documentation 	
+	- [ ] Unit test
 - [ ]  `fastapi_integration.py`: Integrazione con FastAPI operativa.
 	- [ ] code
 	- [ ] dev documentation
 	- [ ] documentation
 	- [ ] Logger
-	- [ ] In-code Documentationon
+	- [ ] In-code Documentation 	
+	- [ ] Unit teston
 
 ### **file_management/**
 
@@ -84,13 +108,17 @@
 	- [ ] dev documentation
 	- [ ] documentation
 	- [ ] Logger
-	- [ ] In-code Documentation
+	- [ ] In-code Documentation 	
+	- [ ] Unit test
+
 - [ ]  `resource_manager.rs`: Gestione risorse ottimizzata.
 	- [ ] code
 	- [ ] dev documentation
 	- [ ] documentation
 	- [ ] Logger
-	- [ ] In-code Documentation
+	- [ ] In-code Documentation 	
+	- [ ] Unit test
+
 
 ### **monitoring/**
 
@@ -98,7 +126,8 @@
 	- [x] code
 	- [x] dev documentation
 	- [x] documentation
-	- [x] In-code Documentation
+	- [x] In-code Documentation 
+	- [ ] Unit test
 	- [ ] Review
 	
 - [ ]  `metrics.rs`: Raccolta e reporting delle metriche attivi.
@@ -106,7 +135,8 @@
 	- [ ] dev documentation
 	- [ ] documentation
 	- [ ] Logger
-	- [ ] In-code Documentation
+	- [ ] In-code Documentation 	
+	- [ ] Unit test
 
 ### **task_automation**
 
@@ -115,13 +145,15 @@
 	- [ ] dev documentation
 	- [ ] documentation
 	- [ ] Logger
-	- [ ] In-code Documentation
+	- [ ] In-code Documentation 	
+	- [ ] Unit test
 - [ ]  `automation_scripts.py`: Script Python di automazione funzionanti.
 	- [ ] code
 	- [ ] dev documentation
 	- [ ] documentation
 	- [ ] Logger
-	- [ ] In-code Documentation
+	- [ ] In-code Documentation 	
+	- [ ] Unit test
 
 ### **blockchain/**
 
@@ -130,13 +162,15 @@
 	- [ ] dev documentation
 	- [ ] documentation
 	- [ ] Logger
-	- [ ] In-code Documentation
+	- [ ] In-code Documentation 	
+	- [ ] Unit test
 - [ ]  `smart_contracts.rs`: Gestione degli smart contract implementata.
 	- [ ] code
 	- [ ] dev documentation
 	- [ ] documentation
 	- [ ] Logger
-	- [ ] In-code Documentation
+	- [ ] In-code Documentation 	
+	- [ ] Unit test
 
 ### **frontend/**
 
@@ -145,19 +179,22 @@
 	- [ ] dev documentation
 	- [ ] documentation
 	- [ ] Logger
-	- [ ] In-code Documentation
+	- [ ] In-code Documentation 	
+	- [ ] Unit test
 - [ ]  `main.js`: Entry point dell'applicazione frontend configurato correttamente.
 	- [ ] code
 	- [ ] dev documentation
 	- [ ] documentation
 	- [ ] Logger
-	- [ ] In-code Documentation
+	- [ ] In-code Documentation 	
+	- [ ] Unit test
 - [ ]  `components/`: Cartella componenti contiene elementi riutilizzabili.
 	- [ ] code
 	- [ ] dev documentation
 	- [ ] documentation
 	- [ ] Logger
-	- [ ] In-code Documentation
+	- [ ] In-code Documentation 	
+	- [ ] Unit test
 
 ### **ml/**
 
@@ -166,13 +203,15 @@
 	- [ ] dev documentation
 	- [ ] documentation
 	- [ ] Logger
-	- [ ] In-code Documentation
+	- [ ] In-code Documentation 	
+	- [ ] Unit test
 - [ ]  `data_processing.rs`: Elaborazione dati performante sviluppata.
 	- [ ] code
 	- [ ] dev documentation
 	- [ ] documentation
 	- [ ] Logger
-	- [ ] In-code Documentation
+	- [ ] In-code Documentation 	
+	- [ ] Unit test
 
 ### **architectures/**
 
@@ -189,7 +228,8 @@
 	- [x] dev documentation
 	- [ ] documentation
 	- [ ] Logger
-	- [x] In-code Documentation
+	- [x] In-code Documentation 	
+	- [ ] Unit test
 
 ### **src/**
 
@@ -198,18 +238,21 @@
 	- [x] dev documentation
 	- [x] documentation
 	- [ ] Logger
-	- [ ] In-code Documentation
+	- [ ] In-code Documentation 	
+	- [ ] Unit test
 - [ ]  `lib.rs`: Tutte le crates e moduli inclusi e collegati correttamente.
 	- [x] Code
 	- [ ] dev documentation
 	- [x] documentation
-	- [ ] In-code Documentation
+	- [ ] In-code Documentation 	
+	- [ ] Unit test
 - [ ] `cli.rs`: Command Line Interface per facilitare il setup
 	- [ ] code
 	- [x] dev documentation
 	- [x] documentation
 	- [ ] Logger
-	- [ ] In-code Documentation
+	- [ ] In-code Documentation 	
+	- [ ] Unit test
 
 ---
 #  Note Steps
@@ -343,4 +386,7 @@ Una volta stabilita la connessione al database e propagata la configurazione, pu
     - Assicurarsi che il sistema gestisca correttamente input non validi o malformati.
     - Implementare controlli di sicurezza nei moduli critici, come l'autenticazione e l'accesso ai dati.
 
+
 ---
+
+**Author**: Kenneth Boldrini

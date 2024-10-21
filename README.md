@@ -234,18 +234,15 @@ ArxFramework/
 
 - `main.rs`: Framework entry point and CLI encapsulator.
 - `lib.rs`: Contains references to all module folders (_crates_).
-
----
-
-# Guidelines
-
-[General Module Guidelines](development_guide_lines.md) [Model Properties](module_proprieties.md)
+](module_proprieties.md)
 
 ---
 
 # How to Use ArxFramework
 
 ##### You can find useful infos about the modules [here](./docs/module-templates) 
+
+## Setup
 
 ArxFramework is designed to help you create projects with predefined templates for various types of applications: Web App, API Backend, Desktop App, Automation and Scripting, and Embedded Systems. Follow the steps below to install and use the framework effectively.
 
@@ -352,8 +349,6 @@ This command will compile the project and run the application based on the confi
 - Use a version control system like Git to manage changes to your project.
 - During development, continue to customize the generated modules to meet the needs of your application.
 
----
-
 ### Example Workflow
 
 1. **Install the CLI**:
@@ -379,6 +374,7 @@ This command will compile the project and run the application based on the confi
 
 This will launch your web application with the pre-configured structure of ArxFramework.
 
+## Project Scalability
 
 ---
 

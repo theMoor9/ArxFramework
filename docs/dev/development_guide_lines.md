@@ -25,549 +25,316 @@ Prima di entrare nel dettaglio dei singoli moduli, è importante stabilire alcun
 
 ---
 
-## Proprietà per Modulo
+## Roadmap 
+
+#### Fase 1: Costruzione del Core System e Fondamenta
+
+**Obiettivo**: Assicurarsi che il core del framework, insieme ai componenti essenziali, sia funzionante e stabile prima di procedere con moduli avanzati o integrazioni complesse.
+
+1. **System Core (Rust)**
+    
+    - Completare il modulo `system_core.rs` e verificare che sia in grado di gestire la memoria, concorrenza e operazioni di base.
+    - Integrazione del `memory_management.rs`.
+2. **CLI Integration**
+    
+    - Assicurarsi che il CLI (`cli.rs`) sia completamente operativo per gestire la configurazione del framework in modo flessibile.
+    - Testare la configurazione con `main.rs` per garantire il corretto funzionamento delle variabili di configurazione.
+3. **Logging e Monitoraggio**
+    
+    - Implementare e testare il modulo `logger.rs` per fornire logging strutturato.
+    - Configurare e testare il modulo `metrics.rs` per il reporting delle metriche (fondamentale per monitorare performance e identificare colli di bottiglia).
+
+**Milestone 1**: Core System stabile con logging e gestione della memoria completati.
+
+
+#### Fase 2: Autenticazione e API Layer
+
+**Obiettivo**: Costruire una base di gestione utenti e connessione con API, permettendo al framework di essere utilizzabile per progetti API-centrici.
+
+1. **Autenticazione**
+    
+    - Sviluppare il modulo `auth_core.rs` per la gestione dell’autenticazione e sicurezza.
+    - Testare il wrapper Python (`auth_wrapper.py`) per garantire l’integrazione con applicazioni esterne.
+2. **API Backend**
+    
+    - Implementare `api_server.rs` per creare un backend API funzionante.
+    - Definire i percorsi delle API in `routes.rs` e collegarli con `api_server.rs`.
+    - Integrare FastAPI tramite `fastapi_integration.py` per supportare operazioni asincrone.
+
+**Milestone 2**: API Backend funzionante con autenticazione e sicurezza implementate.
+
+
+#### Fase 3: Gestione CRUD e Risorse
+
+**Obiettivo**: Implementare le funzionalità CRUD (Create, Read, Update, Delete) essenziali per la gestione dei dati e integrare la gestione delle risorse come file e configurazioni.
+
+1. **CRUD Operations**
+    
+    - Completare il modulo `crud_operations.rs` per tutte le operazioni CRUD.
+    - Testare l’integrazione dei modelli in `models/` con il modulo CRUD.
+    - Implementare la connessione con il server database tramite `sqlx` e configurare il pool di connessioni.
+2. **Gestione File e Risorse**
+    
+    - Implementare `file_ops.rs` per gestire operazioni sui file.
+    - Ottimizzare il modulo `resource_manager.rs` per una gestione efficiente delle risorse.
+
+**Milestone 3**: CRUD completo con gestione file/risorse pronta per integrazione in applicazioni reali.
+
+
+#### **Fase 4: Frontend e Integrazioni Avanzate**
+
+**Obiettivo**: Estendere il framework con un’interfaccia utente moderna e con capacità avanzate come machine learning e blockchain.
+
+1. **Frontend Dinamico**
+    
+    - Implementare `App.svelte` e configurare `main.js` per il frontend dinamico.
+    - Assicurarsi che i componenti Svelte siano modulari e facilmente integrabili con il backend.
+2. **Integrazione Machine Learning**
+    
+    - Implementare `ml_models.py` per costruire modelli di machine learning.
+    - Configurare `data_processing.rs` per la gestione dei dati da parte dei modelli ML.
+3. **Integrazione Blockchain**
+    
+    - Sviluppare `blockchain_integration.rs` e connetterlo con la rete Solana tramite il client Solana web3.
+    - Implementare `smart_contracts.rs` per la gestione degli smart contract.
+
+**Milestone 4**: Frontend dinamico pronto, con capacità di machine learning e integrazione blockchain operativa.
+
+
+#### Fase 5: Task Automation e Ottimizzazione Finale
+
+**Obiettivo**: Integrare capacità di automazione e ottimizzare l'intero framework per garantire performance elevate e stabilità.
+
+1. **Task Automation**
+    
+    - Implementare `task_core.rs` e gli script Python per automazione (`automation_scripts.py`).
+    - Testare le capacità di parallelismo tramite `rayon`.
+2. **Ottimizzazione del Codice**
+    
+    - Migliorare il pool di memoria e ottimizzare il modulo `memory_management.rs` per performance avanzate.
+    - Refactoring generale del codice per migliorare la manutenibilità.
+3. **Test e Validazione Finale**
+    
+    - Scrivere test unitari per tutti i moduli.
+    - Verificare che il framework funzioni in scenari multi-thread e ad alte prestazioni.
+
+**Milestone 5**: Framework completo e ottimizzato, pronto per deployment e utilizzo in ambienti di produzione.
+
+
+### Riepilogo delle Milestone
+
+1. **Core System**: Gestione memoria, logging, CLI operativi.
+2. **Autenticazione e API**: Backend funzionante con autenticazione sicura.
+3. **CRUD e Gestione Risorse**: Moduli CRUD e gestione file pronti.
+4. **Frontend e Integrazioni Avanzate**: Frontend Svelte, Machine Learning, Blockchain.
+5. **Task Automation e Ottimizzazione**: Automazione dei task e ottimizzazioni finali.
+
+
+---
+
+## Proprietà dei Moduli
 
 ### **1. core/**
 
-#### a. `system_core.rs` - Gestione Centrale del Sistema
+#### a. `system_core.rs` - Gestione centrale del sistema
 
-**Proprietà da Rispettare:**
+- **Tipo**: **Statico**
+- **Motivazione**: Questo modulo contiene la logica centrale del framework, gestendo l'inizializzazione dei componenti, la gestione delle risorse e le operazioni di sistema. È una parte fondamentale del framework che dovrebbe essere fornita dalla libreria.
 
-- **Interfaccia Pubblica Chiara**: Esportare le funzioni e le strutture necessarie per interagire con il sistema core, implementando il trait `SystemComponent` se applicabile.
-    
-- **Inizializzazione e Shutdown**: Fornire metodi per inizializzare e spegnere il sistema core in modo sicuro, gestendo correttamente le risorse.
-    
-- **Gestione degli Errori**: Implementare una gestione degli errori robusta, utilizzando tipi di errore personalizzati come `CoreError`.
-    
-- **Integrazione con Altri Moduli**: Garantire che il sistema core possa orchestrare correttamente gli altri moduli, rispettando le dipendenze e le interfacce.
-    
-- **Logging**: Utilizzare il logger per registrare eventi importanti, stati di inizializzazione e errori.
-    
+#### b. `memory_management.rs` - Ottimizzazione della memoria
 
-#### b. `memory_management.rs` - Ottimizzazione della Memoria
-
-**Proprietà da Rispettare:**
-
-- **Implementazione delle Strategie di Allocazione**: Fornire diverse strategie di allocazione della memoria (Standard, PoolBased, CustomEmbedded) in base alle esigenze dell'applicazione.
-    
-- **Thread Safety**: Assicurare che la gestione della memoria sia thread-safe, utilizzando meccanismi di sincronizzazione come `Mutex` o `RwLock` dove necessario.
-    
-- **Performance**: Ottimizzare le operazioni di allocazione e deallocazione per ridurre l'overhead e migliorare le prestazioni.
-    
-- **Configurabilità**: Permettere la configurazione delle strategie di allocazione attraverso le impostazioni globali o i parametri.
-    
-- **Test**: Includere test per verificare il corretto funzionamento delle diverse strategie di allocazione.
-    
-
----
+- **Tipo**: **Statico con personalizzazione**
+- **Motivazione**: Fornisce meccanismi per la gestione efficiente della memoria, che sono generali e utili in vari contesti applicativi. È un componente che può essere utilizzato così com'è dagli utenti.
+- **Scelta della strategia**: **statica** - code line: 24
 
 ### **2. auth/**
 
-#### a. `auth_core.rs` - Funzionalità Core di Autenticazione
+#### a. `auth_core.rs` - Funzionalità core di autenticazione
 
-**Proprietà da Rispettare:**
+- **Tipo**: **Statico con personalizzazione**
+- **Motivazione**: Il framework può fornire funzionalità di autenticazione di base (gestione utenti, sessioni, ecc.). Tuttavia, gli utenti potrebbero voler estendere o personalizzare alcune parti (ad esempio, aggiungendo campi specifici agli utenti o integrando metodi di autenticazione custom).
 
-- **Implementazione Sicura**: Gestire le credenziali in modo sicuro, utilizzando hashing e salting per le password, e proteggendo le informazioni sensibili.
-    
-- **Standard di Autenticazione**: Supportare standard comuni come OAuth2, JWT, ecc., se applicabile.
-    
-- **Interfaccia Pubblica**: Esportare funzioni per registrazione, login, logout, verifica delle credenziali, ecc.
-    
-- **Gestione delle Sessioni**: Implementare meccanismi per la gestione delle sessioni utente, includendo timeout e invalidazione.
-    
-- **Logging e Monitoraggio**: Registrare tentativi di accesso, successi e fallimenti, per scopi di auditing e sicurezza.
-    
+#### b. `auth_wrapper.py` - Wrapper Python per integrazioni
 
-#### b. `auth_wrapper.py` - Wrapper Python per Integrazioni
-
-**Proprietà da Rispettare:**
-
-- **Interoperabilità**: Permettere l'integrazione delle funzionalità di autenticazione con applicazioni Python, esponendo le API necessarie.
-    
-- **Documentazione**: Fornire istruzioni chiare su come utilizzare il wrapper e come integrarlo in applicazioni Python.
-    
-- **Gestione degli Errori**: Gestire correttamente le eccezioni e fornire messaggi di errore significativi.
-    
-- **Sicurezza**: Assicurare che le comunicazioni tra il wrapper e il modulo Rust siano sicure e che le informazioni sensibili siano protette.
-    
-
----
+- **Tipo**: **Opzionale/User-Defined**
+- **Motivazione**: Se il framework fornisce integrazioni con Python, può essere utile fornire un wrapper base. Tuttavia, le integrazioni specifiche saranno probabilmente sviluppate dagli utenti in base alle loro esigenze.
 
 ### **3. crud/**
 
-#### a. `crud_operations.rs` - Operazioni CRUD Generiche
+#### a. `crud_operations.rs` - Operazioni CRUD generiche
 
-**Proprietà da Rispettare:**
+- **Tipo**: **Statico**
+- **Motivazione**: Fornisce implementazioni generiche delle operazioni CRUD che possono essere utilizzate con diversi modelli, sfruttando i generics e i trait di Rust.
 
-- **Genericità**: Implementare operazioni CRUD (Create, Read, Update, Delete) generiche che possano essere utilizzate con diversi tipi di dati.
-    
-- **Interfaccia Semplice**: Fornire funzioni intuitive per eseguire operazioni CRUD, con parametri chiari e documentati.
-    
-- **Supporto per Database**: Integrare con i database supportati, utilizzando crate come `diesel` o `sqlx`, e permettere la configurazione attraverso le impostazioni.
-    
-- **Transazioni e Consistenza**: Gestire transazioni per assicurare la consistenza dei dati, specialmente in operazioni che coinvolgono più tabelle o entità.
-    
-- **Error Handling**: Gestire gli errori derivanti dalle operazioni sul database, fornendo informazioni utili per il debugging.
-    
+#### b. `models.rs` - Definizioni dei modelli dati
 
-#### b. `models.rs` - Definizioni dei Modelli Dati
-
-**Proprietà da Rispettare:**
-
-- **Definizione dei Modelli**: Definire le strutture dati che rappresentano le entità del dominio applicativo.
-    
-- **Annotazioni per il Database**: Utilizzare macro o attributi per mappare i modelli alle tabelle del database, se necessario.
-    
-- **Validazione dei Dati**: Implementare metodi o utilizzare crate per validare i dati prima delle operazioni CRUD.
-    
-- **Documentazione**: Fornire descrizioni chiare per ogni modello, spiegando il significato di ciascun campo.
-    
-
----
+- **Tipo**: **User-Defined**
+- **Motivazione**: I modelli dati sono specifici dell'applicazione dell'utente. Il framework dovrebbe fornire linee guida e interfacce per la definizione dei modelli, ma le implementazioni saranno create dagli utenti.
 
 ### **4. api/**
 
-#### a. `api_server.rs` - Server API Principale
+#### a. `api_server.rs` - Server API principale
 
-**Proprietà da Rispettare:**
+- **Tipo**: **Statico**
+- **Motivazione**: Il server API può essere fornito come parte del framework, gestendo aspetti come il routing, middleware comuni, gestione delle richieste, ecc.
 
-- **Framework Web**: Utilizzare un framework web robusto come `Actix Web` o `Warp` per implementare il server API.
-    
-- **Gestione delle Richieste**: Implementare handler per le diverse richieste HTTP, supportando metodi come GET, POST, PUT, DELETE.
-    
-- **Autenticazione e Autorizzazione**: Integrare il modulo `auth` per proteggere le API, gestendo token e permessi.
-    
-- **Gestione degli Errori**: Restituire risposte HTTP appropriate in caso di errori, utilizzando codici di stato e messaggi significativi.
-    
-- **Logging**: Registrare le richieste ricevute, le risposte inviate e gli errori.
-    
+#### b. `routes.rs` - Definizione dei percorsi API
 
-#### b. `routes.rs` - Definizione dei Percorsi API
-
-**Proprietà da Rispettare:**
-
-- **Organizzazione Logica**: Definire i percorsi in modo chiaro e organizzato, seguendo le best practice RESTful.
-    
-- **Documentazione**: Fornire documentazione per ogni endpoint, specificando i parametri richiesti, le risposte possibili e gli errori.
-    
-- **Testabilità**: Includere test per verificare che i percorsi rispondano correttamente alle richieste.
-    
+- **Tipo**: **User-Defined**
+- **Motivazione**: Le rotte API sono specifiche dell'applicazione e dipendono dalle esigenze dell'utente. Il framework può fornire strumenti per definire le rotte, ma la loro implementazione spetta all'utente.
 
 #### c. `fastapi_integration.py` - Integrazione con FastAPI
 
-**Proprietà da Rispettare:**
-
-- **Interoperabilità**: Permettere l'integrazione con applicazioni Python che utilizzano FastAPI, esponendo le API necessarie.
-    
-- **Documentazione**: Fornire istruzioni su come integrare il server API con FastAPI, includendo esempi di codice.
-    
-- **Prestazioni**: Assicurare che l'integrazione sia efficiente e non introduca overhead significativi.
-    
-
----
+- **Tipo**: **Opzionale/Statico**
+- **Motivazione**: Se il framework supporta integrazioni con FastAPI, può fornire moduli per facilitare questa interazione. Tuttavia, le specifiche implementazioni potrebbero essere personalizzate dagli utenti.
 
 ### **5. file_management/**
 
-#### a. `file_ops.rs` - Operazioni su File
+#### a. `file_ops.rs` - Operazioni su file
 
-**Proprietà da Rispettare:**
+- **Tipo**: **Statico**
+- **Motivazione**: Operazioni comuni sui file possono essere fornite come parte della libreria, offrendo funzionalità standardizzate e sicure.
 
-- **Sicurezza**: Gestire i file in modo sicuro, evitando vulnerabilità come traversal path e accessi non autorizzati.
-    
-- **Supporto per Operazioni Comuni**: Fornire funzioni per leggere, scrivere, copiare, spostare e eliminare file e directory.
-    
-- **Gestione degli Errori**: Gestire correttamente gli errori I/O, fornendo messaggi significativi.
-    
-- **Performance**: Ottimizzare le operazioni su file per gestire grandi quantità di dati o file di grandi dimensioni.
-    
+#### b. `resource_manager.rs` - Gestione risorse
 
-#### b. `resource_manager.rs` - Gestione Risorse
-
-**Proprietà da Rispettare:**
-
-- **Riferimenti e Controllo**: Tenere traccia delle risorse utilizzate dall'applicazione, come file aperti, connessioni, ecc.
-    
-- **Pulizia delle Risorse**: Assicurare che le risorse vengano rilasciate correttamente, implementando metodi di cleanup.
-    
-- **Thread Safety**: Gestire l'accesso alle risorse in ambienti multi-thread, utilizzando meccanismi di sincronizzazione.
-    
-
----
+- **Tipo**: **Statico**
+- **Motivazione**: La gestione delle risorse è una funzionalità core che può essere fornita dal framework per garantire una corretta allocazione e deallocazione delle risorse.
 
 ### **6. monitoring/**
 
-#### a. **logs/** - Contiene Tutti i File di Log dei Rispettivi Moduli
+#### a. **logs/** - Contiene tutti i file di log dei rispettivi moduli
 
-**Proprietà da Rispettare:**
+- **Tipo**: **Generato a Runtime**
+- **Motivazione**: I file di log sono generati dall'applicazione durante l'esecuzione. La struttura delle cartelle può essere definita dal framework, ma i contenuti saranno generati dall'uso dell'applicazione.
 
-- **Organizzazione**: Salvare i log in cartelle o file separati per modulo, facilitando l'analisi.
-    
-- **Rotazione dei Log**: Implementare meccanismi per la rotazione dei log se necessario, evitando che i file diventino troppo grandi.
-    
-- **Permessi**: Assicurare che i file di log abbiano i permessi corretti, proteggendo informazioni sensibili.
-    
+#### b. `logger.rs` - Sistema di logging
 
-#### b. `logger.rs` - Sistema di Logging
+- **Tipo**: **Statico**
+- **Motivazione**: Il sistema di logging è una componente fondamentale del framework, fornendo funzionalità per la registrazione degli eventi e facilitando il debugging.
 
-**Proprietà da Rispettare:**
+#### c. `metrics.rs` - Raccolta e reporting metriche
 
-- **Livelli di Log**: Supportare diversi livelli (Debug, Info, Warning, Error), permettendo di filtrare i messaggi.
-    
-- **Thread Safety**: Assicurare che il logger sia sicuro in ambienti multi-thread.
-    
-- **Configurabilità**: Permettere la configurazione dei livelli di log, formati, destinazioni (file, console, ecc.).
-    
-- **Performance**: Minimizzare l'impatto sulle prestazioni, evitando blocchi o rallentamenti.
-    
-
-#### c. `metrics.rs` - Raccolta e Reporting Metriche
-
-**Proprietà da Rispettare:**
-
-- **Metriche Chiave**: Raccogliere metriche importanti come utilizzo della CPU, memoria, latenza delle richieste, ecc.
-    
-- **Esposizione delle Metriche**: Fornire interfacce per accedere alle metriche, ad esempio tramite un endpoint API.
-    
-- **Alerting**: Integrare con sistemi di alerting se necessario, notificando in caso di anomalie.
-    
-- **Estensibilità**: Permettere l'aggiunta di nuove metriche in futuro.
-    
-
----
+- **Tipo**: **Statico**
+- **Motivazione**: La raccolta di metriche è una funzionalità comune che può essere inclusa nella libreria per monitorare le prestazioni e lo stato dell'applicazione.
 
 ### **7. task_automation/**
 
-#### a. `task_core.rs` - Funzioni Core per Automazione
+#### a. `task_core.rs` - Funzioni core per automazione
 
-**Proprietà da Rispettare:**
+- **Tipo**: **Statico**
+- **Motivazione**: Fornisce funzionalità per la schedulazione e l'esecuzione di task automatizzati, utili in molte applicazioni.
 
-- **Schedulazione**: Fornire meccanismi per schedulare task, con supporto per esecuzioni ritardate o ripetute.
-    
-- **Gestione dei Task**: Permettere l'aggiunta, rimozione e gestione dei task in esecuzione.
-    
-- **Error Handling**: Gestire errori durante l'esecuzione dei task, con possibilità di retry o fallback.
-    
-- **Logging**: Registrare l'esecuzione dei task, inclusi successi e fallimenti.
-    
+#### b. `automation_scripts.py` - Script di automazione Python
 
-#### b. `automation_scripts.py` - Script di Automazione Python
-
-**Proprietà da Rispettare:**
-
-- **Interoperabilità**: Permettere l'esecuzione di script Python dall'applicazione Rust, gestendo input e output.
-    
-- **Sicurezza**: Assicurare che l'esecuzione degli script sia sicura, evitando esecuzioni di codice non autorizzato.
-    
-- **Documentazione**: Fornire istruzioni su come scrivere e integrare nuovi script di automazione.
-    
-
----
+- **Tipo**: **User-Defined**
+- **Motivazione**: Gli script specifici di automazione saranno creati dagli utenti in base alle loro necessità.
 
 ### **8. blockchain/**
 
-#### a. `blockchain_integration.rs` - Interfaccia Blockchain
+#### a. `blockchain_integration.rs` - Interfaccia blockchain
 
-**Proprietà da Rispettare:**
+- **Tipo**: **Statico**
+- **Motivazione**: Fornisce un'interfaccia standard per interagire con diverse blockchain, gestendo le funzionalità comuni.
 
-- **Supporto per Blockchain**: Integrare con le principali piattaforme blockchain (es. Ethereum, Bitcoin), utilizzando le API appropriate.
-    
-- **Sicurezza**: Gestire le chiavi private e le transazioni in modo sicuro.
-    
-- **Performance**: Ottimizzare le operazioni per ridurre la latenza nelle interazioni con la blockchain.
-    
-- **Error Handling**: Gestire errori di rete, transazioni fallite, e altri problemi comuni.
-    
+#### b. `smart_contracts.rs` - Gestione smart contract
 
-#### b. `smart_contracts.rs` - Gestione Smart Contract
-
-**Proprietà da Rispettare:**
-
-- **Deploy e Interazione**: Fornire funzioni per il deploy di smart contract e l'interazione con essi.
-    
-- **ABI e Encoding**: Gestire correttamente l'Application Binary Interface (ABI) e l'encoding/decoding dei dati.
-    
-- **Test**: Includere test per verificare il corretto funzionamento con smart contract di esempio.
-    
-
----
+- **Tipo**: **Statico con estensioni User-Defined**
+- **Motivazione**: Il framework può fornire funzionalità per gestire smart contract, ma gli smart contract specifici saranno definiti dagli utenti.
 
 ### **9. frontend/**
 
-#### a. `App.svelte` - Componente Root Svelte
+#### a. `App.svelte` - Componente root Svelte
 
-**Proprietà da Rispettare:**
+- **Tipo**: **User-Defined**
+- **Motivazione**: Il frontend è specifico dell'applicazione. Il framework può fornire template o componenti di base, ma l'implementazione sarà dell'utente.
 
-- **Struttura Chiara**: Organizzare il componente root in modo che sia facile da comprendere e mantenere.
-    
-- **Stato dell'Applicazione**: Gestire lo stato globale, utilizzando store o altre soluzioni offerte da Svelte.
-    
-- **Interfaccia Utente**: Implementare una UI responsiva e accessibile.
-    
+#### b. `index.js` - Entry point dell'applicazione
 
-#### b. `index.js` - Entry Point dell'Applicazione
+- **Tipo**: **User-Defined**
+- **Motivazione**: Specifico dell'applicazione frontend dell'utente.
 
-**Proprietà da Rispettare:**
+#### c. `components/` - Cartella componenti riutilizzabili
 
-- **Inizializzazione**: Configurare correttamente l'applicazione, montando il componente root e gestendo le dipendenze.
-    
-- **Bundling e Build**: Assicurarsi che il processo di build funzioni correttamente, utilizzando strumenti come Rollup o Webpack.
-    
-
-#### c. `components/` - Cartella Componenti Riutilizzabili
-
-**Proprietà da Rispettare:**
-
-- **Riutilizzabilità**: Creare componenti generici che possano essere riutilizzati in diverse parti dell'applicazione.
-    
-- **Isolamento**: Assicurare che i componenti siano isolati, evitando effetti collaterali.
-    
-- **Stile e Temi**: Seguire uno stile coerente e supportare temi se necessario.
-    
-
----
+- **Tipo**: **User-Defined con componenti statici opzionali**
+- **Motivazione**: Gli utenti creeranno i propri componenti, ma il framework può fornire componenti comuni.
 
 ### **10. ml/**
 
-#### a. `ml_models.py` - Implementazione Modelli ML
+#### a. `ml_models.py` - Implementazione modelli ML
 
-**Proprietà da Rispettare:**
+- **Tipo**: **User-Defined**
+- **Motivazione**: I modelli di machine learning sono specifici dei casi d'uso dell'utente.
 
-- **Scelta degli Algoritmi**: Implementare algoritmi appropriati per i problemi affrontati, utilizzando librerie come TensorFlow o PyTorch.
-    
-- **Preprocessamento dei Dati**: Includere fasi di preprocessamento come normalizzazione, gestione dei valori mancanti, ecc.
-    
-- **Valutazione**: Fornire metriche per valutare le prestazioni dei modelli.
-    
-- **Serializzazione**: Permettere il salvataggio e il caricamento dei modelli addestrati.
-    
+#### b. `data_processing.rs` - Elaborazione dati performante
 
-#### b. `data_processing.rs` - Elaborazione Dati Performante
-
-**Proprietà da Rispettare:**
-
-- **Efficienza**: Implementare algoritmi di elaborazione dati ad alte prestazioni, sfruttando le caratteristiche di Rust.
-    
-- **Interoperabilità**: Permettere l'interazione con i modelli ML implementati in Python, se necessario.
-    
-- **Scalabilità**: Supportare l'elaborazione di grandi dataset, eventualmente utilizzando parallelismo o elaborazione distribuita.
-    
-
----
+- **Tipo**: **Statico**
+- **Motivazione**: Fornisce strumenti per l'elaborazione efficiente dei dati, utile in vari contesti applicativi.
 
 ### **11. docs/**
 
-**Proprietà da Rispettare:**
-
-- **Completezza**: Fornire documentazione dettagliata per ogni modulo, includendo descrizioni, esempi e guide.
-    
-- **Aggiornamento**: Mantenere la documentazione aggiornata con le ultime modifiche al codice.
-    
-- **Formato**: Utilizzare un formato coerente, come Markdown, e organizzare i documenti in modo logico.
-    
-- **Accessibilità**: Assicurarsi che la documentazione sia facilmente accessibile agli utenti, ad esempio tramite un sito web o repository.
-    
-
----
+- **Tipo**: **Statico e User-Defined**
+- **Motivazione**: La libreria fornirà la documentazione per i moduli statici. Gli utenti aggiungeranno documentazione per i propri moduli.
 
 ### **12. tests/**
 
-**Proprietà da Rispettare:**
-
-- **Copertura**: Scrivere test che coprano le principali funzionalità dei moduli, raggiungendo una copertura del codice significativa.
-    
-- **Isolamento**: Assicurarsi che i test siano indipendenti tra loro e non influenzino lo stato globale.
-    
-- **Automazione**: Integrare i test nel processo di build e continuous integration (CI), eseguendoli automaticamente.
-    
-- **Documentazione**: Documentare ciò che ciascun test verifica, facilitando la comprensione e la manutenzione.
-    
-
----
+- **Tipo**: **Statico e User-Defined**
+- **Motivazione**: Il framework può fornire test per i moduli statici. Gli utenti scriveranno test per i propri moduli.
 
 ### **13. config/**
 
-#### a. `global_config.rs` - File di Configurazione per l'Intero Framework
+#### a. `global_config.rs` - File di configurazione per l'intero framework
 
-**Proprietà da Rispettare:**
-
-- **Centralizzazione**: Definire tutte le configurazioni globali in un unico punto, facilitando la gestione.
-    
-- **Flessibilità**: Permettere la personalizzazione delle configurazioni attraverso file esterni, variabili d'ambiente o parametri di linea di comando.
-    
-- **Validazione**: Implementare controlli per assicurare che le configurazioni fornite siano valide e consistenti.
-    
-- **Documentazione**: Fornire descrizioni dettagliate per ogni opzione di configurazione.
-    
-
----
+- **Tipo**: **Statico con personalizzazione**
+- **Motivazione**: Fornisce le configurazioni di base, ma gli utenti possono personalizzare le impostazioni secondo le proprie esigenze.
 
 ### **14. src/**
 
+#### a. `main.rs`
 
-#### a. `lib.rs` - Esportazione dei Moduli
+- **Tipo**: **User-Defined**
+- **Motivazione**: Il punto di ingresso dell'applicazione è specifico per ogni progetto dell'utente.
 
-**Proprietà da Rispettare:**
+#### b. `lib.rs`
 
-- **Organizzazione**: Esportare i moduli in modo logico, raggruppando le funzionalità correlate.
-    
-- **Visibilità**: Definire correttamente la visibilità dei moduli e delle funzioni (`pub`, `pub(crate)`, ecc.), esponendo solo ciò che è necessario.
-    
-- **Documentazione**: Fornire una panoramica del framework e delle sue funzionalità principali.
-
----
-
-## Allocazione della memoria
-
-### **1. core/**
-
-#### a. `system_core.rs` - Gestione Centrale del Sistema
-
-- **Allocazione di Memoria**: Potrebbe fare uso di `MemoryManager` per allocare e deallocare risorse durante il runtime.
-
-#### b. `memory_management.rs` - Ottimizzazione della Memoria
-
-- **Allocazione di Memoria**: Sì, è il modulo principale per gestire l'allocazione e la deallocazione della memoria.
+- **Tipo**: **Statico**
+- **Motivazione**: Esporta i moduli della libreria e definisce le interfacce pubbliche.
 
 ---
 
-### **2. auth/**
+## **Riepilogo**
 
-#### a. `auth_core.rs` - Funzionalità Core di Autenticazione
+### **Moduli Statici (Parte della Libreria):**
 
-- **Allocazione di Memoria**: Potrebbe fare uso della memoria in operazioni di gestione delle credenziali e sessioni.
+- `core/system_core.rs`
+- `core/memory_management.rs`
+- `auth/auth_core.rs` (con possibilità di estensione)
+- `crud/crud_operations.rs`
+- `api/api_server.rs`
+- `file_management/file_ops.rs`
+- `file_management/resource_manager.rs`
+- `monitoring/logger.rs`
+- `monitoring/metrics.rs`
+- `task_automation/task_core.rs`
+- `blockchain/blockchain_integration.rs`
+- `blockchain/smart_contracts.rs` (con estensioni)
+- `ml/data_processing.rs`
+- `config/global_config.rs` (personalizzabile)
+- `src/lib.rs`
 
-#### b. `auth_wrapper.py` - Wrapper Python per Integrazioni
+### **Moduli User-Defined (Creati dall'Utente):**
 
-- **Allocazione di Memoria**: No.
-
----
-
-### **3. crud/**
-
-#### a. `crud_operations.rs` - Operazioni CRUD Generiche
-
-- **Allocazione di Memoria**: Sì, potrebbe fare uso di allocazione per gestire buffer temporanei per operazioni CRUD su database.
-
-#### b. `models.rs` - Definizioni dei Modelli Dati
-
-- **Allocazione di Memoria**: Sì, potrebbe fare uso di memoria per allocare le entità in memoria.
-
----
-
-### **4. api/**
-
-#### a. `api_server.rs` - Server API Principale
-
-- **Allocazione di Memoria**: Potrebbe fare uso di memoria per allocare risorse legate alle richieste HTTP e gestione dei dati delle API.
-
-#### b. `routes.rs` - Definizione dei Percorsi API
-
-- **Allocazione di Memoria**: Sì, per la gestione delle richieste e risposte HTTP.
-
----
-
-### **5. file_management/**
-
-#### a. `file_ops.rs` - Operazioni su File
-
-- **Allocazione di Memoria**: Potrebbe fare uso di memoria per gestire buffer di lettura/scrittura dei file.
-
-#### b. `resource_manager.rs` - Gestione Risorse
-
-- **Allocazione di Memoria**: Sì, per tenere traccia delle risorse utilizzate e gestire buffer di dati.
+- `crud/models/dev/*.rs`
+- `api/routes.rs`
+- `automation_scripts.py`
+- `frontend/App.svelte`
+- `frontend/index.js`
+- `frontend/components/`
+- `ml/ml_models.py`
+- `src/main.rs`
+- **logs/** (generati a runtime)
+- **docs/** (per moduli utente)
+- **tests/** (per moduli utente)
 
 ---
 
-### **6. monitoring/**
-
-#### a. **logs/** - Contiene Tutti i File di Log
-
-- **Allocazione di Memoria**: Potrebbe fare uso di memoria per gestire buffer di scrittura dei log.
-
-#### b. `logger.rs` - Sistema di Logging
-
-- **Allocazione di Memoria**: Sì, per gestire i buffer di log sia per la console che per i file.
-
-#### c. `metrics.rs` - Raccolta e Reporting Metriche
-
-- **Allocazione di Memoria**: Sì, per memorizzare e aggregare le metriche raccolte.
-
----
-
-### **7. task_automation/**
-
-#### a. `task_core.rs` - Funzioni Core per Automazione
-
-- **Allocazione di Memoria**: Potrebbe fare uso di memoria per gestire la coda di task in esecuzione.
-
-#### b. `automation_scripts.py` - Script di Automazione Python
-
-- **Allocazione di Memoria**: No.
-
----
-
-### **8. blockchain/**
-
-#### a. `blockchain_integration.rs` - Interfaccia Blockchain
-
-- **Allocazione di Memoria**: Potrebbe fare uso di memoria per gestire le transazioni e le interazioni con la blockchain.
-
-#### b. `smart_contracts.rs` - Gestione Smart Contract
-
-- **Allocazione di Memoria**: Sì, per allocare i dati e gestire l'interazione con gli smart contract.
-
----
-
-### **9. frontend/**
-
-#### a. `App.svelte` - Componente Root Svelte
-
-- **Allocazione di Memoria**: Potrebbe fare uso di memoria per gestire lo stato e i dati dell'applicazione.
-
-#### b. `index.js` - Entry Point dell'Applicazione
-
-- **Allocazione di Memoria**: Potrebbe fare uso di memoria per gestire l'inizializzazione dell'app e le dipendenze.
-
-#### c. `components/` - Cartella Componenti Riutilizzabili
-
-- **Allocazione di Memoria**: Potrebbe fare uso di memoria per gestire lo stato locale e globale dei componenti.
-
----
-
-### **10. ml/**
-
-#### a. `ml_models.py` - Implementazione Modelli ML
-
-- **Allocazione di Memoria**: Sì, per gestire i modelli ML e il training su dataset.
-
-#### b. `data_processing.rs` - Elaborazione Dati Performante
-
-- **Allocazione di Memoria**: Sì, per gestire l'elaborazione e il pre-processing dei dati.
-
----
-
-### **11. docs/**
-
-- **Allocazione di Memoria**: No.
-
----
-
-### **12. tests/**
-
-- **Allocazione di Memoria**: Potrebbe fare uso di memoria per gestire test di carico o complessi test d'integrazione.
-
----
-
-### **13. config/**
-
-#### a. `global_config.rs` - File di Configurazione per l'Intero Framework
-
-- **Allocazione di Memoria**: Potrebbe fare uso di memoria per gestire le configurazioni in memoria.
-
----
-
-### **14. src/**
-
-#### a. `lib.rs` - Esportazione dei Moduli
-
-- **Allocazione di Memoria**: No, questo file gestisce solo le esportazioni.
+**Author**: Kenneth Boldrini

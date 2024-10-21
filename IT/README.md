@@ -2,7 +2,7 @@
 
 ## Introduzione
 
-**ArxFramework** è una libreria modulare e flessibile che prende forma di "Boilerplate" una volta configurata al fine di aagevolare lo sviluppo di una applicazione designata. È progettato per supportare lo sviluppo di diverse tipologie di applicazioni, tra cui applicazioni web, API backend, applicazioni desktop, sistemi di automazione e scripting, e sistemi embedded.
+**ArxFramework** è una libreria modulare e flessibile che prende forma di "Boilerplate" una volta configurata al fine di agevolare lo sviluppo di una applicazione designata. È progettato per supportare lo sviluppo di diverse tipologie di applicazioni, tra cui applicazioni web, API backend, applicazioni desktop, sistemi di automazione e scripting, e sistemi embedded.
 
 ### Caratteristiche principali:
 
@@ -223,13 +223,6 @@ Ospita il frontend
 **src/**
 - `main.rs`: Punto d'ingresso del framework e incapsulatore del CLI.
 - `lib.rs`: Qui sono riportate tutte le cartelle( *crates* ) contenenti moduli
-	
----
-
-# Guidelines
-
-[Linee Guida Generali Moduli](development_guide_lines.md)
-[Proprietà dei modelli](module_proprieties.md)
 
 ---
 
@@ -238,6 +231,8 @@ Ospita il frontend
 ##### Puoi trovare informazioni utili sui moduli [qui](../docs/module-templates)
 
 ArxFramework è progettato per aiutarti a creare progetti con template predefiniti per diversi tipi di applicazioni: Web App, API Backend, App Desktop, Automazione e Scripting, e Sistemi Embedded. Segui i passaggi sottostanti per installare e usare il framework in modo efficace.
+
+## Setup
 
 #### **Passo 1: Installa lo Strumento CLI**
 
@@ -343,8 +338,6 @@ Questo comando compilerà il progetto ed eseguirà l'applicazione in base alla c
 - Usa un sistema di controllo di versione come Git per gestire le modifiche al progetto.
 - Durante lo sviluppo, continua a personalizzare i moduli generati in base alle esigenze della tua applicazione.
 
----
-
 ### Esempio di Workflow
 
 1. **Installa il CLI**:
@@ -369,6 +362,8 @@ Questo comando compilerà il progetto ed eseguirà l'applicazione in base alla c
     
 
 Questo farà partire la tua applicazione web con la struttura preconfigurata di ArxFramework.
+
+## Scalare il progetto
 
 ---
 	
