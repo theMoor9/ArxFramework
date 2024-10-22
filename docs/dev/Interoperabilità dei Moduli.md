@@ -121,7 +121,6 @@ Di seguito è riportata una rappresentazione semplificata del flusso di interazi
 
 ```
 
-
 ### Considerazioni Specifiche
 
 1. **Autenticazione e Sicurezza**:  
@@ -143,7 +142,6 @@ Questo è il documento completo per la **Web App** che descrive in dettaglio com
 ### Descrizione Generale
 
 Un **API Backend** serve come ponte tra applicazioni front-end (come Web App, Mobile App, ecc.) e un database. Fornisce un'interfaccia per accedere e manipolare i dati tramite API REST o GraphQL, gestendo la logica di business e assicurando l'autenticazione degli utenti per mantenere la sicurezza dei dati. L’API deve essere scalabile, sicura e performante, gestendo migliaia di richieste simultanee.
-
 
 ### Moduli Necessari
 
@@ -177,7 +175,6 @@ Un **API Backend** serve come ponte tra applicazioni front-end (come Web App, Mo
     - **Moduli coinvolti**: `file_ops.rs`, `resource_manager.rs`
     - **Funzione**: Se l’API gestisce file o risorse fisiche, questi moduli gestiscono il caricamento e l'accesso ai file richiesti.
 
-
 ### Flusso di Interazione tra Moduli
 
 1. **API Layer** (`api_server.rs`, `routes.rs`, `fastapi_integration.py`):
@@ -203,7 +200,6 @@ Un **API Backend** serve come ponte tra applicazioni front-end (come Web App, Mo
 6. **Core System** (`system_core.rs`, `memory_management.rs`):
     
     - Il Core System gestisce le risorse di sistema durante tutte le operazioni. Fornisce efficienza nella gestione della memoria e nel parallelismo, assicurando che le richieste vengano gestite in modo stabile anche sotto carico elevato.
-
 
 ### Diagramma di Interazione tra i Moduli
 
@@ -253,7 +249,6 @@ Un **API Backend** serve come ponte tra applicazioni front-end (come Web App, Mo
 
 ```
 
-
 ### Considerazioni Specifiche
 
 1. **Autenticazione e Sicurezza**:
@@ -269,6 +264,138 @@ Un **API Backend** serve come ponte tra applicazioni front-end (come Web App, Mo
     - Un API Backend deve gestire un alto numero di richieste simultanee. Il **Core System** gioca un ruolo cruciale nell’ottimizzare l’uso delle risorse e garantire che le operazioni CRUD siano eseguite in parallelo senza compromettere le performance.
 
 ---
+
+# Desktop App
+
+### Descrizione Generale
+
+Una **Desktop App** è un’applicazione che gira su sistemi operativi come Windows, macOS o Linux, offrendo funzionalità offline e gestione locale delle risorse. Queste applicazioni tendono a richiedere un'interfaccia grafica (GUI) dinamica e possono includere funzionalità come l'accesso ai file locali, la memorizzazione dei dati sul dispositivo e l'interazione con servizi online tramite API. Sicurezza e ottimizzazione delle risorse sono cruciali, poiché l'app viene eseguita direttamente sulla macchina dell'utente.
+
+### Moduli Necessari
+
+1. **Core System**:
+    
+    - **Moduli coinvolti**: `system_core.rs`, `memory_management.rs`
+    - **Funzione**: Gestione delle risorse di sistema, come la memoria e la CPU, garantendo che l'applicazione desktop possa eseguire operazioni pesanti in modo efficiente.
+
+2. **Autenticazione e Sicurezza** (Opzionale):
+    
+    - **Moduli coinvolti**: `auth_core.rs`, `auth_wrapper.py`
+    - **Funzione**: Se l’app necessita di autenticazione o autorizzazione, questo modulo gestisce gli utenti locali o remoti e la protezione delle risorse.
+
+3. **CRUD Operations**:
+    
+    - **Moduli coinvolti**: `crud_operations.rs`, `models.rs`
+    - **Funzione**: Gestisce le operazioni di base sui dati, come la creazione, lettura, aggiornamento e cancellazione di informazioni archiviate localmente o in un database remoto.
+
+4. **API Layer** (Opzionale):
+    
+    - **Moduli coinvolti**: `api_server.rs`, `routes.rs`
+    - **Funzione**: Se la Desktop App necessita di interagire con un server remoto, l’API Layer gestisce le richieste e invia i dati a un backend.
+
+5. **Frontend Dinamico** (GUI):
+    
+    - **Moduli coinvolti**: Non esistono moduli Svelte, ma l'interfaccia utente potrebbe essere costruita usando una libreria GUI come **Tauri** o **Electron** per fornire un'interfaccia desktop moderna.
+    - **Funzione**: Gestisce l’interazione dell’utente con l'applicazione. Le operazioni CRUD o API inviate dal frontend vengono processate e i risultati visualizzati.
+
+6. **Gestione Risorse**:
+    
+    - **Moduli coinvolti**: `file_ops.rs`, `resource_manager.rs`
+    - **Funzione**: Gestione dei file locali, inclusa la lettura, scrittura e aggiornamento dei file direttamente sul sistema dell'utente.
+
+7. **Monitoraggio e Logging**:
+    
+    - **Moduli coinvolti**: `logger.rs`, `metrics.rs`
+    - **Funzione**: Tiene traccia delle operazioni svolte dall'app, registrando eventuali errori o problemi di prestazione. Questo è particolarmente utile per ottimizzare l'uso della memoria e della CPU.
+
+### Flusso di Interazione tra Moduli
+
+1. **Frontend Dinamico (GUI)**:
+    
+    - Il frontend gestisce le interazioni dell’utente. Ogni volta che l'utente compie un’azione, come creare un file o inviare dati, queste richieste vengono inviate ai moduli appropriati, come CRUD o gestione risorse.
+
+2. **API Layer** (Opzionale):
+    
+    - Se l’app deve comunicare con servizi remoti, il **API Layer** gestisce le richieste e le inoltra ai servizi backend, interfacciandosi con l'**API Server**.
+
+3. **Autenticazione e Sicurezza**:
+    
+    - Se necessario, prima di eseguire qualsiasi operazione, il modulo di autenticazione verifica i permessi dell’utente. Questo è particolarmente importante se l’app ha accesso a dati sensibili o richiede autenticazioni multiple.
+
+4. **CRUD Operations**:
+    
+    - Il modulo CRUD gestisce le operazioni sui dati locali o remoti. Le operazioni vengono eseguite tramite modelli, che rappresentano la struttura dei dati con cui interagisce l'app.
+
+5. **Gestione Risorse**:
+    
+    - Se l’app interagisce con file locali, il modulo **Gestione Risorse** gestisce il caricamento, salvataggio o modifica di questi file.
+
+6. **Monitoraggio e Logging**:
+    
+    - Ogni operazione viene tracciata. **Logger.rs** registra errori e successi nelle operazioni CRUD o nelle interazioni API. **Metrics.rs** monitora l’utilizzo della memoria e delle risorse di sistema per assicurare che l’app rimanga performante.
+
+7. **Core System**:
+    
+    - Il **Core System** coordina tutte le operazioni e garantisce l’efficienza del sistema, ottimizzando l’uso della memoria, CPU e altre risorse locali.
+
+### Diagramma di Interazione tra i Moduli
+
+```
+           +--------------------+
+           |  Interfaccia GUI    |
+           |  (Electron/Tauri)   |
+           +--------------------+
+                    |
+                    v
+           +--------------------+
+           |     CRUD Ops        |
+           | (crud_operations.rs)|
+           +--------------------+
+                    |
+                    v
+           +--------------------+
+           |    Database Locale  |
+           +--------------------+
+                    |
+                    v
+    +-----------------------------------+
+    |      Gestione Risorse             |
+    |    (file_ops.rs, resource_manager)|
+    +-----------------------------------+
+                    |
+                    v
+           +--------------------+
+           |   Core System       |
+           |  (system_core.rs,   |
+           |  memory_management) |
+           +--------------------+
+                    |
+                    v
+           +--------------------+
+           |   Monitoraggio/Log  |
+           |    (logger.rs,      |
+           |   metrics.rs)       |
+           +--------------------+
+
+```
+
+### Considerazioni Specifiche
+
+1. **Gestione Risorse**:
+    
+    - Le Desktop App spesso manipolano file locali. Il modulo **Gestione Risorse** deve essere ben integrato per garantire che file di grandi dimensioni possano essere caricati, modificati e salvati senza problemi.
+
+2. **Autenticazione e Sicurezza**:
+    
+    - In alcune Desktop App, l’autenticazione potrebbe non essere necessaria, specialmente se i dati sono gestiti solo localmente. Tuttavia, se l’app richiede accesso a dati protetti o servizi remoti, il modulo di autenticazione diventa cruciale.
+
+3. **Prestazioni**:
+    
+    - Le Desktop App tendono a essere eseguite su macchine con risorse limitate (specialmente su vecchi sistemi). Il **Core System** deve gestire efficacemente la memoria e ottimizzare l'uso delle risorse per garantire performance elevate.
+
+---
+
+
 
 ---
 
