@@ -143,23 +143,24 @@ Additional Notes:
 
 ```sh
 ArxFramework/
-├── core/                 # Core Sistema (Rust)
-├── auth/                 # Autenticazione e Sicurezza (Rust, Python opzionale)
-├── crud/                 # Gestione CRUD (Rust)
-| └── models/               # Cartella dei modelli
-├── api/                  # API Layer (Rust primario, Python FastAPI opzionale)
-├── file_management/      # Gestione file/risorse (Rust)
-├── monitoring/           # Monitoraggio e logging (Rust)
-| └── logs/               # Cartella dei log
-├── task_automation/      # Task Automation (Rust primario, Python secondario)
-├── blockchain/           # Integrazione Blockchain (Rust)
-├── frontend/             # Ospita il front end
-├── ml/                   # Machine Learning (Python primario, Rust secondario)
-├── docs/                 # Documentazione del framework
-├── config/               # Configurazioni globali
+├── core/                 # Core System (Rust)
+├── auth/                 # Authentication and Security (Rust, optional Python)
+├── crud/                 # CRUD Management (Rust)
+| └── models/               # Models folder
+├── api/                  # API Layer (Primary Rust, optional Python FastAPI)
+├── file_management/      # File/Resource Management (Rust)
+├── monitoring/           # Monitoring and logging (Rust)
+| └── logs/               # Logs folder
+├── task_automation/      # Task Automation (Primary Rust, secondary Python)
+├── blockchain/           # Blockchain Integration (Rust)
+├── frontend/             # Hosts the front end
+├── ml/                   # Machine Learning (Primary Python, secondary Rust)
+├── docs/                 # Framework documentation
+├── config/               # Global configurations
 ├── src/                  # Source
-├── tests/                # Test unitari 
-└── README.md             # Documentazione principale del framework
+├── tests/                # Unit tests
+└── README.md             # Main framework documentation
+
 ```
 
 **core/**
@@ -375,6 +376,8 @@ This command will compile the project and run the application based on the confi
 This will launch your web application with the pre-configured structure of ArxFramework.
 
 ## Project Scalability
+Implementation of new system's components
+
 
 ---
 
