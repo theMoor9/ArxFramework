@@ -518,6 +518,146 @@ Le applicazioni di **Automazione e Scripting** automatizzano processi ripetitivi
     - Se il processo di automazione deve interagire con servizi esterni o database, è fondamentale che il **API Layer** e il **CRUD** siano ben configurati per garantire la corretta manipolazione dei dati e la comunicazione con fonti esterne.
 ---
 
+# Sistemi Embedded o Performance-Critical
+
+### Descrizione Generale
+
+Le applicazioni **Sistemi Embedded** o **Performance-Critical** sono progettate per eseguire operazioni ad alte prestazioni su dispositivi con risorse limitate, come dispositivi IoT, microcontrollori, o sistemi in tempo reale. Queste applicazioni richiedono un'efficienza estrema in termini di utilizzo della memoria e della CPU, poiché devono rispondere rapidamente e consumare poche risorse. La gestione diretta dell’hardware e la sicurezza sono altrettanto cruciali in questi contesti.
+
+### Moduli Necessari
+
+1. **Core System**:
+    
+    - **Moduli coinvolti**: `system_core.rs`, `memory_management.rs`
+    - **Funzione**: Fornisce la base per l'ottimizzazione delle risorse di sistema. Gestisce la memoria, la concorrenza e le operazioni di basso livello per garantire che l'applicazione risponda in tempo reale o rispetti i vincoli di prestazione.
+
+2. **Gestione Risorse**:
+    
+    - **Moduli coinvolti**: `file_ops.rs`, `resource_manager.rs`
+    - **Funzione**: Gestisce risorse fisiche come file o dati persistenti, ma in un contesto embedded, si occupa anche della gestione efficiente dello storage o della memoria disponibile sul dispositivo.
+
+3. **Autenticazione e Sicurezza**:
+    
+    - **Moduli coinvolti**: `auth_core.rs`
+    - **Funzione**: In applicazioni embedded, la sicurezza è fondamentale per prevenire accessi non autorizzati e proteggere le risorse hardware. Il modulo gestisce autenticazione e autorizzazione su dispositivi fisici o reti.
+
+4. **CRUD Operations** (Opzionale):
+    
+    - **Moduli coinvolti**: `crud_operations.rs`, `models.rs`
+    - **Funzione**: Se l’applicazione embedded deve interagire con dati strutturati o un database, questo modulo gestisce le operazioni di creazione, lettura, aggiornamento e cancellazione.
+
+5. **API Layer** (Opzionale):
+    
+    - **Moduli coinvolti**: `api_server.rs`, `routes.rs`
+    - **Funzione**: Utilizzato quando l'applicazione embedded ha bisogno di comunicare con server esterni per inviare o ricevere dati, il modulo API gestisce la comunicazione di rete.
+
+6. **Monitoraggio e Logging**:
+    
+    - **Moduli coinvolti**: `logger.rs`, `metrics.rs`
+    - **Funzione**: È fondamentale monitorare costantemente le operazioni per assicurarsi che l'applicazione embedded funzioni correttamente. Il modulo di logging registra gli eventi del sistema e il monitoraggio raccoglie metriche di prestazione.
+
+7. **Task Automation** (Opzionale):
+    
+    - **Moduli coinvolti**: `task_core.rs`, `automation_scripts.py`
+    - **Funzione**: Se l'applicazione deve eseguire task automatici o pianificati (come eseguire comandi specifici in determinati momenti), questo modulo può essere utilizzato.
+
+### Flusso di Interazione tra Moduli
+
+1. **Core System** (`system_core.rs`, `memory_management.rs`):
+    
+    - Il **Core System** è la base di tutte le operazioni in un sistema embedded. Ottimizza la gestione delle risorse hardware, gestendo concorrenza e consumo di memoria. Garantisce che l'applicazione possa eseguire le sue operazioni in tempo reale o nel rispetto dei vincoli di risorse del dispositivo.
+
+2. **Gestione Risorse** (`file_ops.rs`, `resource_manager.rs`):
+    
+    - In un contesto embedded, il modulo **Gestione Risorse** si occupa di file o risorse fisiche come sensori o storage limitato del dispositivo. Gestisce lo spazio disponibile e ottimizza l'accesso ai dati.
+
+3. **Autenticazione e Sicurezza** (`auth_core.rs`):
+    
+    - Se l'applicazione embedded ha accesso a risorse protette o comunica tramite una rete, è fondamentale garantire che solo utenti o dispositivi autorizzati possano accedere o inviare comandi al sistema.
+
+4. **CRUD Operations** (Opzionale):
+    
+    - Se l’applicazione richiede l'interazione con dati strutturati, il modulo CRUD si occupa della manipolazione dei dati (lettura, scrittura, aggiornamento, cancellazione). Questo può essere rilevante se l'app gestisce dati di configurazione o telemetria.
+
+5. **API Layer** (Opzionale):
+    
+    - Se l'applicazione embedded comunica con server remoti per l’invio di dati o il controllo a distanza, il modulo API gestisce la comunicazione tra il dispositivo embedded e i server.
+
+6. **Monitoraggio e Logging** (`logger.rs`, `metrics.rs`):
+    
+    - Il **Monitoraggio** è cruciale in un ambiente embedded per tenere traccia delle prestazioni, consumo di risorse, e per prevenire guasti del sistema. Il **Logging** registra tutte le operazioni critiche, che possono essere utili per il debug e la diagnostica.
+
+7. **Task Automation** (Opzionale):
+    
+    - Se il dispositivo deve eseguire task programmati, come attivare sensori in determinati momenti, il modulo di **Task Automation** gestisce la pianificazione e l'esecuzione di questi processi.
+
+### Diagramma di Interazione tra i Moduli
+
+```
+           +--------------------+
+           |    Dispositivo      |
+           | (Microcontroller,   |
+           |    IoT Device)      |
+           +--------------------+
+                    |
+                    v
+           +--------------------+
+           |    Core System      |
+           | (system_core.rs,    |
+           |  memory_management) |
+           +--------------------+
+                    |
+                    v
+    +-----------------------------------+
+    |      Gestione Risorse             |
+    |    (file_ops.rs, resource_manager)|
+    +-----------------------------------+
+                    |
+                    v
+    +-----------------------------------+
+    |      Autenticazione e Sicurezza   |
+    |         (auth_core.rs)            |
+    +-----------------------------------+
+                    |
+                    v
+    +-----------------------------------+
+    |     CRUD Operations (Opzionale)   |
+    |   (crud_operations.rs, models.rs) |
+    +-----------------------------------+
+                    |
+                    v
+           +--------------------+
+           |      API Layer      |
+           |  (Opzionale: API    |
+           |   Server, routes)   |
+           +--------------------+
+                    |
+                    v
+           +--------------------+
+           |   Monitoraggio/Log  |
+           |   (logger.rs,       |
+           |   metrics.rs)       |
+           +--------------------+
+
+```
+
+### Considerazioni Specifiche
+
+1. **Efficienza delle Risorse**:
+    
+    - Nei sistemi embedded, le risorse hardware come la memoria e la CPU sono spesso limitate. Il **Core System** deve gestire in modo efficiente queste risorse, garantendo che l'applicazione possa operare senza sovraccaricare il dispositivo.
+
+2. **Sicurezza**:
+    
+    - La sicurezza è critica, soprattutto quando l'applicazione embedded è collegata a una rete o ha accesso a risorse fisiche sensibili. Il modulo di **Autenticazione e Sicurezza** deve proteggere contro accessi non autorizzati.
+
+3. **Monitoraggio in Tempo Reale**:
+    
+    - Il monitoraggio continuo delle prestazioni e delle operazioni è essenziale per garantire che il sistema embedded funzioni senza interruzioni. Eventuali problemi devono essere identificati e risolti rapidamente tramite il sistema di **Logging**.
+
+4. **Connettività** (Opzionale):
+    
+    - Se il dispositivo embedded comunica con server remoti o è controllato da remoto, l’integrazione con il **API Layer** è fondamentale per gestire le interazioni di rete in modo efficiente.
 
 ---
 
