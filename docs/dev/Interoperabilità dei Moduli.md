@@ -395,6 +395,128 @@ Una **Desktop App** è un’applicazione che gira su sistemi operativi come Wind
 
 ---
 
+# Automazione e Scripting
+
+### Descrizione Generale
+
+Le applicazioni di **Automazione e Scripting** automatizzano processi ripetitivi o complessi, eseguono script e task pianificati, o elaborano dati senza richiedere un'interazione continua con l'utente. Queste applicazioni possono essere utilizzate per attività come l'estrazione di dati, la gestione di file, l'analisi di grandi set di dati, e molto altro. L'enfasi è sulla capacità di eseguire script in modo efficiente, con una gestione delle risorse ottimizzata per garantire performance elevate anche su task intensivi.
+
+### Moduli Necessari
+
+1. **Core System**:
+    
+    - **Moduli coinvolti**: `system_core.rs`, `memory_management.rs`
+    - **Funzione**: Gestisce l'allocazione delle risorse e la concorrenza per ottimizzare l'esecuzione di task automatizzati. Questo modulo è fondamentale per garantire che il sistema gestisca correttamente l'uso della CPU e della memoria durante l'esecuzione di processi complessi.
+
+2. **Task Automation**:
+    
+    - **Moduli coinvolti**: `task_core.rs`, `automation_scripts.py`
+    - **Funzione**: Modulo principale per eseguire task automatizzati e script programmati. Consente l’automazione di processi ripetitivi e l’esecuzione di script Python o Rust.
+
+3. **Gestione Risorse**:
+    
+    - **Moduli coinvolti**: `file_ops.rs`, `resource_manager.rs`
+    - **Funzione**: Gestisce il caricamento, la manipolazione e la conservazione di file e risorse utilizzati o generati dagli script. In un ambiente di automazione, questo modulo garantisce l'accesso efficiente a grandi quantità di dati o risorse locali.
+
+4. **CRUD Operations** (Opzionale):
+    
+    - **Moduli coinvolti**: `crud_operations.rs`, `models.rs`
+    - **Funzione**: Se gli script o i processi automatizzati devono interagire con un database, questo modulo si occupa di tutte le operazioni di manipolazione dei dati.
+
+5. **API Layer** (Opzionale):
+    
+    - **Moduli coinvolti**: `api_server.rs`, `routes.rs`
+    - **Funzione**: Se l'automazione richiede l'integrazione con servizi esterni tramite API, questo modulo gestisce l'invio e la ricezione di dati da server remoti.
+
+6. **Monitoraggio e Logging**:
+    
+    - **Moduli coinvolti**: `logger.rs`, `metrics.rs`
+    - **Funzione**: Traccia l’esecuzione degli script e registra errori o problemi di performance. Il monitoraggio raccoglie metriche che indicano quanto tempo ha impiegato un task o quanto impatto ha avuto sulle risorse di sistema.
+
+### Flusso di Interazione tra Moduli
+
+1. **Task Automation** (`task_core.rs`, `automation_scripts.py`):
+    
+    - Il modulo principale per l'esecuzione di task automatizzati. Gli script, sia Python che Rust, vengono eseguiti tramite questo modulo. I task possono essere pianificati o eseguiti immediatamente.
+
+2. **Core System** (`system_core.rs`, `memory_management.rs`):
+    
+    - Ogni task viene gestito dal **Core System**, che ottimizza l'uso delle risorse di sistema come la memoria e la CPU. Questo è particolarmente importante per task intensivi o quando si eseguono più script in parallelo.
+
+3. **Gestione Risorse** (`file_ops.rs`, `resource_manager.rs`):
+    
+    - Gli script automatizzati spesso manipolano file, che vengono gestiti dal modulo di **Gestione Risorse**. Questo include la lettura, modifica e scrittura di file generati o utilizzati dagli script.
+
+4. **CRUD Operations** (Opzionale):
+    
+    - Se l'automazione richiede l’interazione con un database, il modulo CRUD gestisce le operazioni di lettura, aggiornamento, creazione e cancellazione di dati. Ad esempio, uno script potrebbe automatizzare il processo di estrazione dati da un database e l'elaborazione di questi dati.
+
+5. **API Layer** (Opzionale):
+    
+    - Se gli script devono inviare o ricevere dati da servizi esterni, il modulo API si occupa di gestire queste interazioni. Questo potrebbe includere l'estrazione di dati da un'API remota o l'invio di risultati di automazione a un server.
+
+6. **Monitoraggio e Logging** (`logger.rs`, `metrics.rs`):
+    
+    - Durante l'esecuzione degli script, il sistema di **Logging** registra l’inizio, il completamento e gli eventuali errori, mentre il **Monitoraggio** raccoglie metriche sull'utilizzo delle risorse e le performance del sistema. Questo è essenziale per ottimizzare i task e prevenire colli di bottiglia.
+
+### Diagramma di Interazione tra i Moduli
+
+```
+           +--------------------+
+           |    Scheduler/CLI    |
+           |  (Avvio manuale o   |
+           |     pianificato)    |
+           +--------------------+
+                    |
+                    v
+           +--------------------+
+           |    Task Automation  |
+           |  (task_core.rs,     |
+           |  automation_scripts)|
+           +--------------------+
+                    |
+                    v
+    +-----------------------------------+             +----------------------+
+    |      Gestione Risorse             |<---+        |   Monitoring/Logging | 
+    |    (file_ops.rs, resource_manager)|    |        |   (logger.rs,        |
+    +-----------------------------------+    |        |   metrics.rs)        |
+                    |                       |         +----------------------+
+                    |                       |                   ^
+                    |                       |                   |
+                    |                       |                   v
+					v				        |          +----------------------+
+    +-----------------------------------+    +------->|   Core System         |
+    |     CRUD Operations (Opzionale)   |             |  (system_core.rs,     |
+    |   (crud_operations.rs, models.rs) |             |  memory_management.rs)|
+    +-----------------------------------+             +----------------------+
+                    |
+                    v
+           +--------------------+
+           |     API Layer       |
+           | (Opzionale: API     |
+           | Server e Routes)    |
+           +--------------------+
+
+```
+
+### Considerazioni Specifiche
+
+1. **Ottimizzazione delle Risorse**:
+    
+    - La gestione delle risorse è cruciale, poiché gli script automatizzati possono essere eseguiti in parallelo o a intervalli regolari. Il **Core System** deve garantire che la memoria e le risorse siano allocate correttamente per evitare rallentamenti o crash.
+
+2. **Monitoraggio e Logging**:
+    
+    - L'automazione può richiedere esecuzioni lunghe o continue. È importante monitorare e registrare ogni task per analizzare le performance e ottimizzare gli script. Questo è particolarmente utile quando si devono identificare task che causano colli di bottiglia.
+
+3. **Scripting Multilingua**:
+    
+    - Gli script possono essere scritti in Rust o Python. Il sistema di automazione deve essere in grado di eseguire entrambi i linguaggi senza problemi di compatibilità.
+
+4. **Interazioni con API o Database** (Opzionale):
+    
+    - Se il processo di automazione deve interagire con servizi esterni o database, è fondamentale che il **API Layer** e il **CRUD** siano ben configurati per garantire la corretta manipolazione dei dati e la comunicazione con fonti esterne.
+---
 
 
 ---
