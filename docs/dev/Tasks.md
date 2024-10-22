@@ -24,235 +24,226 @@
 ### **core/**
 
 - [ ]  `system_core.rs`: Gestione centrale del sistema implementata.
-	- [x] code
-	- [x] dev documentation
-	- [x] documentation
-	- [x] Logger
-	- [x] In-code Documentation 	
-	- [ ] Unit test
-	- [ ] Review
+    - [x]  code
+    - [x]  dev documentation
+    - [x]  documentation
+    - [x]  Logger
+    - [x]  In-code Documentation
+    - [ ]  Unit test
+    - [ ]  Review
 - [ ]  `memory_management.rs`: Ottimizzazione della memoria gestita correttamente.
-	- [x] code
-	- [x] dev documentation
-	- [x] documentation
-	- [x] Logger
-	- [x] In-code Documentation 	
-	- [ ] Unit test
-	- [ ] Review
+    - [x]  code
+    - [x]  dev documentation
+    - [x]  documentation
+    - [x]  Logger
+    - [x]  In-code Documentation
+    - [ ]  Unit test
+    - [ ]  Review
 
+### **monitoring/**
+
+-  `logger.rs`: Sistema di logging configurato e funzionante.
+    
+    - [x]  code
+    - [x]  dev documentation
+    - [x]  documentation
+    - [x]  In-code Documentation
+    - [ ]  Unit test
+    - [ ]  Review
+-  `metrics.rs`: Raccolta e reporting delle metriche attivi.
+    
+    - [ ]  code
+    - [ ]  dev documentation
+    - [ ]  documentation
+    - [ ]  Logger
+    - [ ]  In-code Documentation
+    - [ ]  Unit test
 
 ### **auth/**
 
 - [ ]  `auth_core.rs`: Funzionalità di autenticazione core definite.
-	- [ ] code
-	- [ ] dev documentation
-	- [ ] documentation
-	- [ ] Logger
-	- [ ] In-code Documentation 	
-	- [ ] Unit test
+    - [ ]  code
+    - [ ]  dev documentation
+    - [ ]  documentation
+    - [ ]  Logger
+    - [ ]  In-code Documentation
+    - [ ]  Unit test
 - [ ]  `auth_wrapper.py`: Wrapper Python per integrazioni funzionante.
-	- [ ] code
-	- [ ] dev documentation
-	- [ ] documentation
-	- [ ] Logger
-	- [ ] In-code Documentation 	
-	- [ ] Unit test
+    - [ ]  code
+    - [ ]  dev documentation
+    - [ ]  documentation
+    - [ ]  Logger
+    - [ ]  In-code Documentation
+    - [ ]  Unit test
 
 ### **crud/**
 
 - [ ]  `crud_operations.rs`: Operazioni CRUD implementate per tutti i casi d'uso.
-	- [ ] code
-	- [ ] implementare `connection` con api_server.rs con sqlx
-	- [x] Recupero dati da variabile di config inizializzata nel `main.rs` per la variabile globale atta allo scalo della memoria `STATIC_MEMORY_SCALE`.
-	- [x] dev documentation
-	- [x] documentation
-	- [x] Logger
-	- [ ] In-code Documentation 	
-	- [ ] Unit test
+    - [ ]  code
+    - [ ]  implementare `connection` con api_server.rs con sqlx
+    - [x]  Recupero dati da variabile di config inizializzata nel `main.rs` per la variabile globale atta allo scalo della memoria `STATIC_MEMORY_SCALE`.
+    - [x]  dev documentation
+    - [x]  documentation
+    - [x]  Logger
+    - [ ]  In-code Documentation
+    - [ ]  Unit test
 - [x]  `models.rs`: Modelli dati definiti e mappati correttamente.
-	- [x] code
-	- [x] dev documentation
-	- [x] documentation
-	- [x] Logger
-	- [x] In-code Documentation 	
-	- [ ] Unit test
+    - [x]  code
+    - [x]  dev documentation
+    - [x]  documentation
+    - [x]  Logger
+    - [x]  In-code Documentation
+    - [ ]  Unit test
 
 ### **api/**
 
 - [ ]  `api_server.rs`: Server API principale avviabile e funzionante.
-	- [ ] code
-	- [ ] dev documentation
-	- [ ] documentation
-	- [ ] Logger
-	- [ ] In-code Documentation 	
-	- [ ] Unit test
+    - [ ]  code
+    - [ ]  dev documentation
+    - [ ]  documentation
+    - [ ]  Logger
+    - [ ]  In-code Documentation
+    - [ ]  Unit test
 - [ ]  `routes.rs`: Percorsi API definiti e mappati correttamente.
-	- [ ] code
-	- [ ] dev documentation
-	- [ ] documentation
-	- [ ] Logger
-	- [ ] In-code Documentation 	
-	- [ ] Unit test
+    - [ ]  code
+    - [ ]  dev documentation
+    - [ ]  documentation
+    - [ ]  Logger
+    - [ ]  In-code Documentation
+    - [ ]  Unit test
 - [ ]  `fastapi_integration.py`: Integrazione con FastAPI operativa.
-	- [ ] code
-	- [ ] dev documentation
-	- [ ] documentation
-	- [ ] Logger
-	- [ ] In-code Documentation 	
-	- [ ] Unit teston
+    - [ ]  code
+    - [ ]  dev documentation
+    - [ ]  documentation
+    - [ ]  Logger
+    - [ ]  In-code Documentation
+    - [ ]  Unit test
 
 ### **file_management/**
 
 - [ ]  `file_ops.rs`: Operazioni su file implementate e testate.
-	- [ ] code
-	- [ ] dev documentation
-	- [ ] documentation
-	- [ ] Logger
-	- [ ] In-code Documentation 	
-	- [ ] Unit test
-
+    - [ ]  code
+    - [ ]  dev documentation
+    - [ ]  documentation
+    - [ ]  Logger
+    - [ ]  In-code Documentation
+    - [ ]  Unit test
 - [ ]  `resource_manager.rs`: Gestione risorse ottimizzata.
-	- [ ] code
-	- [ ] dev documentation
-	- [ ] documentation
-	- [ ] Logger
-	- [ ] In-code Documentation 	
-	- [ ] Unit test
-
-
-### **monitoring/**
-
-- [ ]  `logger.rs`: Sistema di logging configurato e funzionante.
-	- [x] code
-	- [x] dev documentation
-	- [x] documentation
-	- [x] In-code Documentation 
-	- [ ] Unit test
-	- [ ] Review
-	
-- [ ]  `metrics.rs`: Raccolta e reporting delle metriche attivi.
-	- [ ] code
-	- [ ] dev documentation
-	- [ ] documentation
-	- [ ] Logger
-	- [ ] In-code Documentation 	
-	- [ ] Unit test
-
-### **task_automation**
-
-- [ ]  `task_core.rs`: Funzioni core per automazione sviluppate.
-	- [ ] code
-	- [ ] dev documentation
-	- [ ] documentation
-	- [ ] Logger
-	- [ ] In-code Documentation 	
-	- [ ] Unit test
-- [ ]  `automation_scripts.py`: Script Python di automazione funzionanti.
-	- [ ] code
-	- [ ] dev documentation
-	- [ ] documentation
-	- [ ] Logger
-	- [ ] In-code Documentation 	
-	- [ ] Unit test
-
-### **blockchain/**
-
-- [ ]  `blockchain_integration.rs`: Interfaccia blockchain funzionante.
-	- [ ] code
-	- [ ] dev documentation
-	- [ ] documentation
-	- [ ] Logger
-	- [ ] In-code Documentation 	
-	- [ ] Unit test
-- [ ]  `smart_contracts.rs`: Gestione degli smart contract implementata.
-	- [ ] code
-	- [ ] dev documentation
-	- [ ] documentation
-	- [ ] Logger
-	- [ ] In-code Documentation 	
-	- [ ] Unit test
+    - [ ]  code
+    - [ ]  dev documentation
+    - [ ]  documentation
+    - [ ]  Logger
+    - [ ]  In-code Documentation
+    - [ ]  Unit test
 
 ### **frontend/**
 
 - [ ]  `App.svelte`: Componente root Svelte sviluppato e funzionante.
-	- [ ] code
-	- [ ] dev documentation
-	- [ ] documentation
-	- [ ] Logger
-	- [ ] In-code Documentation 	
-	- [ ] Unit test
+    - [ ]  code
+    - [ ]  dev documentation
+    - [ ]  documentation
+    - [ ]  Logger
+    - [ ]  In-code Documentation
+    - [ ]  Unit test
+    - [ ] 
 - [ ]  `main.js`: Entry point dell'applicazione frontend configurato correttamente.
-	- [ ] code
-	- [ ] dev documentation
-	- [ ] documentation
-	- [ ] Logger
-	- [ ] In-code Documentation 	
-	- [ ] Unit test
+    - [ ]  code
+    - [ ]  dev documentation
+    - [ ]  documentation
+    - [ ]  Logger
+    - [ ]  In-code Documentation
+    - [ ]  Unit test
 - [ ]  `components/`: Cartella componenti contiene elementi riutilizzabili.
-	- [ ] code
-	- [ ] dev documentation
-	- [ ] documentation
-	- [ ] Logger
-	- [ ] In-code Documentation 	
-	- [ ] Unit test
+    - [ ]  code
+    - [ ]  dev documentation
+    - [ ]  documentation
+    - [ ]  Logger
+    - [ ]  In-code Documentation
+    - [ ]  Unit test
+
+### **task_automation**
+
+- [ ]  `task_core.rs`: Funzioni core per automazione sviluppate.
+    - [ ]  code
+    - [ ]  dev documentation
+    - [ ]  documentation
+    - [ ]  Logger
+    - [ ]  In-code Documentation
+    - [ ]  Unit test
+- [ ]  `automation_scripts.py`: Script Python di automazione funzionanti.
+    - [ ]  code
+    - [ ]  dev documentation
+    - [ ]  documentation
+    - [ ]  Logger
+    - [ ]  In-code Documentation
+    - [ ]  Unit test
+
+### **blockchain/**
+
+- [ ]  `blockchain_integration.rs`: Interfaccia blockchain funzionante.
+    - [ ]  code
+    - [ ]  dev documentation
+    - [ ]  documentation
+    - [ ]  Logger
+    - [ ]  In-code Documentation
+    - [ ]  Unit test
+- [ ]  `smart_contracts.rs`: Gestione degli smart contract implementata.
+    - [ ]  code
+    - [ ]  dev documentation
+    - [ ]  documentation
+    - [ ]  Logger
+    - [ ]  In-code Documentation
+    - [ ]  Unit test
 
 ### **ml/**
 
 - [ ]  `ml_models.py`: Modelli ML implementati e funzionanti.
-	- [ ] code
-	- [ ] dev documentation
-	- [ ] documentation
-	- [ ] Logger
-	- [ ] In-code Documentation 	
-	- [ ] Unit test
+    - [ ]  code
+    - [ ]  dev documentation
+    - [ ]  documentation
+    - [ ]  Logger
+    - [ ]  In-code Documentation
+    - [ ]  Unit test
 - [ ]  `data_processing.rs`: Elaborazione dati performante sviluppata.
-	- [ ] code
-	- [ ] dev documentation
-	- [ ] documentation
-	- [ ] Logger
-	- [ ] In-code Documentation 	
-	- [ ] Unit test
-
-### **architectures/**
-
-- [ ]  Schemi per le diverse applicazioni presenti .
-
-### **docs/**
-
-- [ ]  File di documentazione aggiornati per ogni modulo.
+    - [ ]  code
+    - [ ]  dev documentation
+    - [ ]  documentation
+    - [ ]  Logger
+    - [ ]  In-code Documentation
+    - [ ]  Unit test
 
 ### **config/**
 
 - [ ]  `global_config.rs`: File di configurazione globale completo e configurato.
-	- [ ] code
-	- [x] dev documentation
-	- [ ] documentation
-	- [ ] Logger
-	- [x] In-code Documentation 	
-	- [ ] Unit test
+    - [ ]  code
+    - [x]  dev documentation
+    - [ ]  documentation
+    - [ ]  Logger
+    - [x]  In-code Documentation
+    - [ ]  Unit test
 
 ### **src/**
 
 - [ ]  `main.rs`: Main costruito con standard procedures.
-	- [ ] code
-	- [x] dev documentation
-	- [x] documentation
-	- [ ] Logger
-	- [ ] In-code Documentation 	
-	- [ ] Unit test
+    - [ ]  code
+    - [x]  dev documentation
+    - [x]  documentation
+    - [ ]  Logger
+    - [ ]  In-code Documentation
+    - [ ]  Unit test
 - [ ]  `lib.rs`: Tutte le crates e moduli inclusi e collegati correttamente.
-	- [x] Code
-	- [ ] dev documentation
-	- [x] documentation
-	- [ ] In-code Documentation 	
-	- [ ] Unit test
-- [ ] `cli.rs`: Command Line Interface per facilitare il setup
-	- [ ] code
-	- [x] dev documentation
-	- [x] documentation
-	- [ ] Logger
-	- [ ] In-code Documentation 	
-	- [ ] Unit test
+    - [x]  code
+    - [ ]  dev documentation
+    - [x]  documentation
+    - [ ]  In-code Documentation
+    - [ ]  Unit test
+- [ ]  `cli.rs`: Command Line Interface per facilitare il setup.
+    - [ ]  code
+    - [x]  dev documentation
+    - [x]  documentation
+    - [ ]  Logger
+    - [ ]  In-code Documentation
+    - [ ]  Unit test
 
 ---
 #  Note Steps
