@@ -1,0 +1,10 @@
+[package]
+name = "file_management"
+version = "0.0.1"
+edition = "2021"
+
+[dependencies]
+
+[lib]
+name = "file_management"
+path = "mod.rs"

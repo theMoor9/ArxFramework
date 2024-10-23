@@ -1,0 +1,10 @@
+[package]
+name = "crud"
+version = "0.0.1"
+edition = "2021"
+
+[dependencies]
+
+[lib]
+name = "crud"
+path = "mod.rs"

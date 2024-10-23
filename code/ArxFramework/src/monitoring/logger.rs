@@ -42,19 +42,19 @@ pub fn monitor_module_status(module_name: &str, status: bool) {
     }
 }
 
-/// Metodo standard per aggiungere nuovi tipi di messaggi di log.
-/// 
-/// Se sei un dev a cui piace "incespicare" e personalizzare tutto, puoi aggiungere nuovi livelli
-/// o tipi di messaggi di log seguendo lo schema esistente.
-/// 
-/// # Esempio:
-/// Per creare un nuovo tipo di messaggio di log:
-/// 
-/// ```rust
-/// use log::trace;
-///
-/// trace!("Traccia dettagliata del funzionamento del modulo 'Example'...");
-/// ```
-/// 
-/// Puoi aggiungere livelli come `trace`, `debug` o persino crearne di nuovi se ti senti avventuroso!
-/// Basta seguire lo schema di `info!`, `warn!` e `error!` per estendere le funzionalità del logger.
+// Metodo standard per aggiungere nuovi tipi di messaggi di log.
+// 
+// Se sei un dev a cui piace "incespicare" e personalizzare tutto, puoi aggiungere nuovi livelli
+// o tipi di messaggi di log seguendo lo schema esistente.
+// 
+// # Esempio:
+// Per creare un nuovo tipo di messaggio di log:
+// 
+// ```rust
+// use log::trace;
+//
+// trace!("Traccia dettagliata del funzionamento del modulo 'Example'...");
+// ```
+// 
+// Puoi aggiungere livelli come `trace`, `debug` o persino crearne di nuovi se ti senti avventuroso!
+// Basta seguire lo schema di `info!`, `warn!` e `error!` per estendere le funzionalità del logger.

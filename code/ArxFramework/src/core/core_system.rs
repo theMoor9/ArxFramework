@@ -3,9 +3,9 @@
 //! Questo modulo è responsabile della gestione e dell'orchestrazione dei vari moduli
 //! in base al tipo di applicazione. Gestisce l'inizializzazione dei moduli richiesti
 //! e assicura che siano eseguiti correttamente. La memoria è gestita tramite un 
-//! `MemoryManager`, che seleziona la strategia di allocazione più adatta.
+//! MemoryManager, che seleziona la strategia di allocazione più adatta per il default se non è stata definita.
 //!
-//! Nota: Il modulo `system_core.rs` è statico per tutte le applicazioni tranne per i sistemi embedded.
+//! Nota: Il modulo system_core.rs è statico per tutte le applicazioni tranne per i sistemi embedded.
 //! Per i sistemi embedded, il modulo fornisce un'infrastruttura di base ma permette personalizzazioni
 //! a livello di codice, per consentire compatibilità con hardware specifico e ambienti con risorse limitate.
 //!
@@ -59,29 +59,29 @@ impl std::fmt::Display for CoreError {
 
 impl std::error::Error for CoreError {}
 
-/// `CoreSystem` è la struttura centrale che gestisce l'intero sistema.
+/// CoreSystem è la struttura centrale che gestisce l'intero sistema.
 /// Si occupa dell'inizializzazione dei moduli e della gestione della memoria.
 ///
 /// # Campi
-/// - `config`: La configurazione principale del sistema, che specifica il tipo di applicazione.
-/// - `memory_manager`: Gestore della memoria, che implementa strategie di allocazione in base al tipo di applicazione.
+/// - config: La configurazione principale del sistema, che specifica il tipo di applicazione.
+/// - memory_manager: Gestore della memoria, che implementa strategie di allocazione in base al tipo di applicazione.
 pub struct CoreSystem {
     config: CoreConfig,
     memory_manager: MemoryManager,
 }
 
 impl CoreSystem {
-    /// Crea una nuova istanza di `CoreSystem` in base alla configurazione fornita.
-    /// Questa funzione inizializza anche il `MemoryManager`.
+    /// Crea una nuova istanza di CoreSystem in base alla configurazione fornita.
+    /// Questa funzione inizializza anche il MemoryManager.
     ///
     /// # Parametri
-    /// - `config`: La configurazione globale che definisce il tipo di applicazione.
+    /// - config: La configurazione globale che definisce il tipo di applicazione.
     ///
     /// # Ritorna
-    /// Un'istanza di `CoreSystem` o un errore di inizializzazione (`CoreError`).
+    /// Un'istanza di CoreSystem o un errore di inizializzazione (CoreError).
     pub fn new(core_config: CoreConfig, memory_config: MemoryConfig) -> Result<Self, CoreError> {
         info!("Inizializzazione del CoreSystem...");
-        let memory_manager = MemoryManager::new(core_config.app_type).map_err(|e| {
+        let memory_manager = MemoryManager::new(core_config.app_type, memory_config).map_err(|e| {
             error!("Errore nell'inizializzazione del MemoryManager: {}", e);
             CoreError::InitializationError(e.to_string())
         })?;
@@ -95,11 +95,11 @@ impl CoreSystem {
     /// gli eventuali errori, riportandoli nel log.
     ///
     /// # Parametri
-    /// - `module_name`: Nome del modulo da inizializzare (usato per i log).
-    /// - `init_func`: Funzione di inizializzazione del modulo.
+    /// - module_name: Nome del modulo da inizializzare (usato per i log).
+    /// - init_func: Funzione di inizializzazione del modulo.
     ///
     /// # Ritorna
-    /// `Ok(())` se il modulo è stato inizializzato correttamente, altrimenti un `CoreError`.
+    /// Ok(()) se il modulo è stato inizializzato correttamente, altrimenti un CoreError.
     fn initialize_module<F>(&self, module_name: &str, init_func: F) -> Result<(), CoreError>
     where
         F: FnOnce() -> Result<(), CoreError>,
@@ -115,54 +115,42 @@ impl CoreSystem {
     /// Inizializza i moduli richiesti per il tipo di applicazione configurata.
     ///
     /// # Ritorna
-    /// `Ok(())` se tutti i moduli sono stati inizializzati correttamente, altrimenti un `CoreError`.
+    /// Ok(()) se tutti i moduli sono stati inizializzati correttamente, altrimenti un CoreError.
     ///
     /// # Nota
-    /// - Questa funzione utilizza la configurazione fornita in `CoreConfig` per determinare
+    /// - Questa funzione utilizza la configurazione fornita in CoreConfig per determinare
     /// quali moduli devono essere inizializzati.
     pub fn run(&self) -> Result<(), CoreError> {
         match self.config.app_type {
             ApplicationType::WebApp => {
                 info!("Configurazione per WebApp");
-                self.initialize_module("Authentication", || auth::initialize())?;
-                logger::monitor_module_status("Authentication", true);
-                self.initialize_module("CRUD", || crud::initialize())?;
-                logger::monitor_module_status("CRUD", true);
-                self.initialize_module("API Layer", || api_layer::initialize())?;
-                logger::monitor_module_status("API Layer", true);
-                self.initialize_module("Frontend", || frontend::initialize())?;
-                logger::monitor_module_status("Frontend", true);
+                init_module!("Authentication", || auth::initialize())?;
+                init_module!("CRUD", || crud::initialize())?;
+                init_module!("API Layer", || api_layer::initialize())?;
+                init_module!("Frontend", || frontend::initialize())?;
             }
 
             ApplicationType::ApiBackend => {
                 info!("Configurazione per API Backend");
-                self.initialize_module("Authentication", || auth::initialize())?;
-                logger::monitor_module_status("Authentication", true);
-                self.initialize_module("CRUD", || crud::initialize())?;
-                logger::monitor_module_status("CRUD", true);
-                self.initialize_module("API Layer", || api_layer::initialize())?;
-                logger::monitor_module_status("API Layer", true);
+                init_module!("Authentication", || auth::initialize())?;
+                init_module!("CRUD", || crud::initialize())?;
+                init_module!("API Layer", || api_layer::initialize())?;
             }
 
             ApplicationType::DesktopApp => {
                 info!("Configurazione per App Desktop");
-                self.initialize_module("Authentication", || auth::initialize())?;
-                logger::monitor_module_status("Authentication", true);
-                self.initialize_module("CRUD", || crud::initialize())?;
-                logger::monitor_module_status("CRUD", true);
-                self.initialize_module("File Management", || file_management::initialize())?;
-                logger::monitor_module_status("File Management", true);
-                self.initialize_module("Frontend", || frontend::initialize())?;
-                logger::monitor_module_status("Frontend", true);
+                init_module!("Authentication", || auth::initialize())?;
+                init_module!("CRUD", || crud::initialize())?;
+                init_module!("File Management", || file_management::initialize())?;
+                init_module!("Frontend", || frontend::initialize())?;
             }
 
             ApplicationType::AutomationScript => {
                 info!("Configurazione per Automazione e Scripting");
-                self.initialize_module("Task Automation", || task_automation::initialize())?;
-                logger::monitor_module_status("Task Automation", true);
+                init_module!("Task Automation", || task_automation::initialize())?;
+
                 #[cfg(feature = "file_management")]
-                self.initialize_module("File Management", || file_management::initialize())?;
-                logger::monitor_module_status("File Management", true);
+                init_module!("File Management", || file_management::initialize())?;
             }
 
             ApplicationType::EmbeddedSystem => {
@@ -175,20 +163,34 @@ impl CoreSystem {
     }
 }
 
-/// Esempio di personalizzazione per Sistemi Embedded:
-///
-/// ```rust
-/// // Inizializzazione personalizzata per un sistema embedded
-/// fn initialize_embedded_system() -> Result<(), CoreError> {
-///     info!("Configurazione specifica per Sistemi Embedded...");
-///     // Logica di inizializzazione specifica per l'hardware target
-///     // Potrebbe includere configurazione di GPIO, interfacce seriali, ecc.
-///     Ok(())
-/// }
-///
-/// // Esempio di utilizzo:
-/// let result = initialize_embedded_system();
-/// if result.is_err() {
-///     error!("Errore nell'inizializzazione del sistema embedded");
-/// }
-/// ```
+macro_rules! init_module {
+    ($module_name:expr, $init_func:expr) => {
+        {
+            info!("Inizializzazione del modulo {}", $module_name);
+            if let Err(e) = $init_func() {
+                error!("Errore nell'inizializzazione del modulo {}: {}", $module_name, e);
+                return Err(CoreError::InitializationError(format!("{} initialization failed: {}", $module_name, e)));
+            }
+            logger::monitor_module_status($module_name, true);
+        }
+    }
+}
+
+/* 
+ Esempio di personalizzazione per Sistemi Embedded:
+
+ 
+ // Inizializzazione personalizzata per un sistema embedded
+ fn initialize_embedded_system() -> Result<(), CoreError> {
+     info!("Configurazione specifica per Sistemi Embedded...");
+     // Logica di inizializzazione specifica per l'hardware target
+     // Potrebbe includere configurazione di GPIO, interfacce seriali, ecc.
+     Ok(())
+ }
+
+ // Esempio di utilizzo:
+ let result = initialize_embedded_system();
+ if result.is_err() {
+     error!("Errore nell'inizializzazione del sistema embedded");
+ }
+*/

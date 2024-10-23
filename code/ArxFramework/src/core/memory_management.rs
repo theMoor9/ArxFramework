@@ -177,9 +177,9 @@ impl MemoryManager {
     }
 }
 
-/// # Aggiunta di Nuovi Modelli o Strategie di Allocazione
-/// Se desideri aggiungere nuovi modelli o strategie di allocazione, segui questi passaggi:
-/// 1. **Nuova Strategia**: Aggiungi una nuova variante all'enum `AllocationStrategy` per rappresentare la tua strategia.
-/// 2. **Logica di Allocazione**: Aggiorna i metodi `allocate` e `deallocate` per gestire la nuova strategia.
-/// 3. **Configurazione**: Assicurati di aggiungere nuove opzioni alla struttura `MemoryConfig` per configurare il comportamento della nuova strategia.
-/// 4. **Testing**: Scrivi test unitari per verificare il corretto funzionamento della tua nuova strategia di allocazione.
+// # Aggiunta di Nuovi Modelli o Strategie di Allocazione
+// Se desideri aggiungere nuovi modelli o strategie di allocazione, segui questi passaggi:
+// 1. **Nuova Strategia**: Aggiungi una nuova variante all'enum `AllocationStrategy` per rappresentare la tua strategia.
+// 2. **Logica di Allocazione**: Aggiorna i metodi `allocate` e `deallocate` per gestire la nuova strategia.
+// 3. **Configurazione**: Assicurati di aggiungere nuove opzioni alla struttura `MemoryConfig` per configurare il comportamento della nuova strategia.
+// 4. **Testing**: Scrivi test unitari per verificare il corretto funzionamento della tua nuova strategia di allocazione.

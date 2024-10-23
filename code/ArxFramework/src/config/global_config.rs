@@ -48,27 +48,27 @@ impl Default for MemoryConfig {
     }
 }
 
-/// Esempio di come estendere la configurazione globale
-/// con nuove variabili personalizzate.
-///
-/// Se sei uno di quei dev che amano "incespicare" tra le variabili di configurazione,
-/// puoi tranquillamente aggiungere nuovi campi. Per esempio, per aggiungere una nuova
-/// variabile di configurazione `cache_size`, puoi farlo così:
-///
-/// ```rust
-/// pub struct CoreConfig {
-///     pub app_type: ApplicationType,
-///     pub max_threads: usize,
-///     pub cache_size: usize, // Nuova variabile per gestire la dimensione della cache
-/// }
-/// 
-/// impl Default for CoreConfig {
-///     fn default() -> Self {
-///         CoreConfig {
-///             app_type: ApplicationType::WebApp,
-///             max_threads: 4,
-///             cache_size: 256, // Imposta un valore di default per la cache
-///         }
-///     }
-/// }
-/// ```
+// Esempio di come estendere la configurazione globale
+// con nuove variabili personalizzate.
+//
+// Se sei uno di quei dev che amano "incespicare" tra le variabili di configurazione,
+// puoi tranquillamente aggiungere nuovi campi. Per esempio, per aggiungere una nuova
+// variabile di configurazione `cache_size`, puoi farlo così:
+//
+// ```rust
+// pub struct CoreConfig {
+//     pub app_type: ApplicationType,
+//     pub max_threads: usize,
+//     pub cache_size: usize, // Nuova variabile per gestire la dimensione della cache
+// }
+// 
+// impl Default for CoreConfig {
+//     fn default() -> Self {
+//         CoreConfig {
+//             app_type: ApplicationType::WebApp,
+//             max_threads: 4,
+//             cache_size: 256, // Imposta un valore di default per la cache
+//         }
+//     }
+// }
+// ```

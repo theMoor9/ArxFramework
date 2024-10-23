@@ -1,0 +1,13 @@
+[package]
+name = "monitoring"
+version = "0.0.1"
+edition = "2021"
+
+[dependencies]
+fern = "0.6"  # Per il logging
+chrono = "0.4"  # Per timestamp nel logging
+log = "0.4"  # Sistema di logging generale
+
+[lib]
+name = "monitoring"
+path = "mod.rs"
