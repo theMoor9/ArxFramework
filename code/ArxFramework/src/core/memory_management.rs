@@ -9,15 +9,18 @@
 //! È possibile configurare la dimensione dei buffer e del pool utilizzando la struttura `MemoryConfig`.
 
 use crate::config::global_config::{ApplicationType, MemoryConfig};
-use crate::system_core::CoreError;
+use crate::core::system_core::CoreError;
 use log::{info};
 use std::collections::VecDeque;
+
+use clap::Command;
 
 // struttura globale TASKS_IN_MEMORY che mantiene tutti i Task in memoria
 use std::sync::Mutex;
 use lazy_static::lazy_static;
 use std::collections::HashMap;
-use crate::modules::default::{
+#[cfg(feature = "crud")]
+use crate::crud::modules::default::{
     task_model::Task,
     device_model::Device,
     job_model::Job,
@@ -30,20 +33,21 @@ use crate::modules::default::{
 
 
 lazy_static! {
-    pub static ref TASKS_IN_MEMORY: Mutex<HashMap<u32, Task>> = Mutex::new(HashMap::new());
-    pub static ref CONFIGURATIONS_IN_MEMORY: Mutex<HashMap<u32, Configuration>> = Mutex::new(HashMap::new());
-    pub static ref DEVICES_IN_MEMORY: Mutex<HashMap<u32, Device>> = Mutex::new(HashMap::new());
-    pub static ref JOBS_IN_MEMORY: Mutex<HashMap<u32, Job>> = Mutex::new(HashMap::new());
-    pub static ref MACROS_IN_MEMORY: Mutex<HashMap<u32, Macro>> = Mutex::new(HashMap::new());
-    pub static ref SENSOR_DATA_IN_MEMORY: Mutex<HashMap<u32, SensorData>> = Mutex::new(HashMap::new());
-    pub static ref LOG_EVENTS_IN_MEMORY: Mutex<HashMap<u32, LogEvent>> = Mutex::new(HashMap::new());
-    pub static ref COMMANDS_IN_MEMORY: Mutex<HashMap<u32, Command>> = Mutex::new(HashMap::new());
+    pub static ref TASKS_IN_MEMORY: Mutex<HashMap<u32, Task<'static>>> = Mutex::new(HashMap::new());
+    pub static ref CONFIGURATIONS_IN_MEMORY: Mutex<HashMap<u32, Configuration<'static>>> = Mutex::new(HashMap::new());
+    pub static ref DEVICES_IN_MEMORY: Mutex<HashMap<u32, Device<'static>>> = Mutex::new(HashMap::new());
+    pub static ref JOBS_IN_MEMORY: Mutex<HashMap<u32, Job<'static>>> = Mutex::new(HashMap::new());
+    pub static ref MACROS_IN_MEMORY: Mutex<HashMap<u32, Macro<'static>>> = Mutex::new(HashMap::new());
+    pub static ref SENSOR_DATA_IN_MEMORY: Mutex<HashMap<u32, SensorData<'static>>> = Mutex::new(HashMap::new());
+    pub static ref LOG_EVENTS_IN_MEMORY: Mutex<HashMap<u32, LogEvent<'static>>> = Mutex::new(HashMap::new());
+    pub static ref COMMANDS_IN_MEMORY: Mutex<HashMap<u32, Command<'static>>> = Mutex::new(HashMap::new());
 }
 
 
 
 
 /// Enum per rappresentare le diverse strategie di allocazione della memoria.
+#[derive(Debug,Clone)]
 enum AllocationStrategy {
     Standard,
     PoolBased,
@@ -111,7 +115,7 @@ impl MemoryManager {
     /// - La strategia `PoolBased` utilizza buffer pre-allocati dal pool. Se il pool è esaurito, viene effettuata un'allocazione dinamica.
     /// - La strategia `CustomEmbedded` utilizza una configurazione fissa per i buffer, che è specificata dalla configurazione della memoria (`memory_config`).
     pub fn allocate(&mut self, strategy: Option<AllocationStrategy>, size: usize) -> Result<Box<[u8]>, CoreError> {
-        let alloc_strategy = strategy.unwrap_or(self.default_allocation_strategy);
+        let alloc_strategy = strategy.unwrap_or(self.default_allocation_strategy.clone());
     
         info!("Allocazione di {} byte di memoria con strategia {:?}...", size, alloc_strategy);
         match alloc_strategy {

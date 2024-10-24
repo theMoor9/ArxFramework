@@ -12,28 +12,32 @@
 //! La struttura del framework garantisce la compatibilità con la maggior parte delle applicazioni standard (WebApp, API Backend, Desktop App, ecc.),
 //! eseguendo in modo sicuro e centralizzato tutti i moduli, mentre per gli ambienti embedded offre flessibilità per le personalizzazioni richieste.
 
-use crate::config::global_config::{CoreConfig, ApplicationType};
-use crate::memory_management::MemoryManager;
+use crate::config::global_config::{CoreConfig, MemoryConfig, ApplicationType};
+use crate::core::memory_management::MemoryManager;
 use crate::monitoring::logger;
 use log::{info, error};
-use once_cell::sync::Lazy;
 // Importa i modelli dalla cartella dev
-use crate::crud::models::dev::*;
+
 // Importa i modelli dalla cartella default
-use crate::crud::models::default::*;
+
 
 #[cfg(feature = "auth")]
 use crate::auth;
 #[cfg(feature = "crud")]
 use crate::crud;
-#[cfg(feature = "api_layer")]
-use crate::api_layer;
+#[cfg(feature = "crud")]
+use crate::crud::models::dev::*;
+#[cfg(feature = "crud")]
+use crate::crud::models::default::*;
+#[cfg(feature = "api")]
+use crate::api;
 #[cfg(feature = "file_management")]
 use crate::file_management;
 #[cfg(feature = "task_automation")]
 use crate::task_automation;
-#[cfg(feature = "monitoring")]
-use crate::monitoring;
+#[cfg(feature = "frontend")]    
+use crate::frontend;
+
 
 /// Definizione degli errori principali che possono verificarsi nel sistema core.
 #[derive(Debug)]
@@ -70,22 +74,38 @@ pub struct CoreSystem {
     memory_manager: MemoryManager,
 }
 
+macro_rules! init_module {
+    ($module_name:expr, $init_func:expr) => {
+        {
+            info!("Inizializzazione del modulo {}", $module_name);
+            if let Err(e) = $init_func() {
+                error!("Errore nell'inizializzazione del modulo {}: {}", $module_name, e);
+                return Err(CoreError::InitializationError(format!("{} initialization failed: {}", $module_name, e)));
+            }
+            logger::monitor_module_status($module_name, true);
+            Ok(())
+        }
+    }
+}
+
 impl CoreSystem {
     /// Crea una nuova istanza di CoreSystem in base alla configurazione fornita.
     /// Questa funzione inizializza anche il MemoryManager.
     ///
-    /// # Parametri
+    /// # Parametri shrthand syntax
     /// - config: La configurazione globale che definisce il tipo di applicazione.
+    /// - memory_config: La configurazione della memoria che specifica le dimensioni dei buffer e del pool.
     ///
     /// # Ritorna
     /// Un'istanza di CoreSystem o un errore di inizializzazione (CoreError).
-    pub fn new(core_config: CoreConfig, memory_config: MemoryConfig) -> Result<Self, CoreError> {
+    pub fn new(config: CoreConfig, memory_config: MemoryConfig) -> Result<Self, CoreError> {
         info!("Inizializzazione del CoreSystem...");
-        let memory_manager = MemoryManager::new(core_config.app_type, memory_config).map_err(|e| {
+        let app_type = &config.app_type;
+        let memory_manager = MemoryManager::new(config.app_type.clone(), memory_config).map_err(|e| {
             error!("Errore nell'inizializzazione del MemoryManager: {}", e);
             CoreError::InitializationError(e.to_string())
         })?;
-        info!("CoreSystem inizializzato con app_type: {:?}", config.app_type);
+        info!("CoreSystem inizializzato con app_type: {:?}",app_type);
         Ok(CoreSystem { config, memory_manager })
     }
 
@@ -126,7 +146,7 @@ impl CoreSystem {
                 info!("Configurazione per WebApp");
                 init_module!("Authentication", || auth::initialize())?;
                 init_module!("CRUD", || crud::initialize())?;
-                init_module!("API Layer", || api_layer::initialize())?;
+                init_module!("API Layer", || api::initialize())?;
                 init_module!("Frontend", || frontend::initialize())?;
             }
 
@@ -134,7 +154,7 @@ impl CoreSystem {
                 info!("Configurazione per API Backend");
                 init_module!("Authentication", || auth::initialize())?;
                 init_module!("CRUD", || crud::initialize())?;
-                init_module!("API Layer", || api_layer::initialize())?;
+                init_module!("API Layer", || api::initialize())?;
             }
 
             ApplicationType::DesktopApp => {
@@ -163,18 +183,7 @@ impl CoreSystem {
     }
 }
 
-macro_rules! init_module {
-    ($module_name:expr, $init_func:expr) => {
-        {
-            info!("Inizializzazione del modulo {}", $module_name);
-            if let Err(e) = $init_func() {
-                error!("Errore nell'inizializzazione del modulo {}: {}", $module_name, e);
-                return Err(CoreError::InitializationError(format!("{} initialization failed: {}", $module_name, e)));
-            }
-            logger::monitor_module_status($module_name, true);
-        }
-    }
-}
+
 
 /* 
  Esempio di personalizzazione per Sistemi Embedded:

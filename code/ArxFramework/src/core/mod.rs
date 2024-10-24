@@ -1,2 +1,2 @@
-pub mod core_system;
+pub mod system_core;
 pub mod memory_management;

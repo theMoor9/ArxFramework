@@ -21,25 +21,28 @@ pub mod monitoring;
 /// Solo i moduli necessari per il tipo di applicazione scelto verranno compilati e inclusi.
 
 #[cfg(feature = "auth")]
-pub mod auth;
+pub extern crate auth;
 
 #[cfg(feature = "crud")]
-pub mod crud;
+pub extern crate crud;
 
-#[cfg(feature = "api_layer")]
-pub mod api_layer;
+#[cfg(feature = "api")]
+pub extern crate api;
 
 #[cfg(feature = "file_management")]
-pub mod file_management;
+pub extern crate file_management;
 
 #[cfg(feature = "task_automation")]
-pub mod task_automation;
+pub extern crate task_automation;
 
 #[cfg(feature = "blockchain")]
-pub mod blockchain;
+pub extern crate blockchain;
 
 #[cfg(feature = "ml")]
-pub mod ml;
+pub extern crate ml;
+
+#[cfg(feature = "frontend")]
+pub extern crate frontend;
 
 // ### Estensione del Framework
 //
