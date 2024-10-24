@@ -1,2 +1,11 @@
-Makefile linguist-language=ignored
-*.d linguist-language=ignored
+/target/* linguist-generated
+*.exe linguist-generated
+*.out linguist-generated
+*.bin linguist-generated
+*.class linguist-generated
+*.o linguist-generated
+*.obj linguist-generated
+*.a linguist-generated
+*.rlib linguist-generated
+*.dylib linguist-generated
+*.so linguist-generated
