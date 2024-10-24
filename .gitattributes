@@ -1,2 +1,2 @@
 Makefile linguist-language=ignored
-*.mk linguist-language=ignored
+*.d linguist-language=ignored
