@@ -8,7 +8,8 @@
 //! e integrarla nel `CoreConfig`. Ecco come aggiungere nuove variabili mantenendo la compatibilità con il framework.
 
 // Tipi di applicazione supportati
-#[derive(Debug,Clone)]
+use clap::{Parser, ValueEnum}; // Necessario per l'implementazione di delle versioni di ApplicationType nel CLI
+#[derive(Debug,Clone,Parser, ValueEnum)]
 pub enum ApplicationType {
     WebApp,
     ApiBackend,
@@ -21,7 +22,8 @@ pub enum ApplicationType {
 ///
 /// Questo struct contiene le impostazioni principali del sistema, come il tipo di applicazione
 /// e il numero massimo di thread. Può essere esteso con nuovi campi secondo necessità.
-#[derive(Debug)]pub struct CoreConfig {
+#[derive(Debug)]
+pub struct CoreConfig {
     pub app_type: ApplicationType,
     pub max_threads: u8,
 }

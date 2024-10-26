@@ -82,7 +82,7 @@ macro_rules! init_module {
                 error!("Errore nell'inizializzazione del modulo {}: {}", $module_name, e);
                 return Err(CoreError::InitializationError(format!("{} initialization failed: {}", $module_name, e)));
             }
-            logger::monitor_module_status($module_name, true);
+            logger::monitor_module_status($module_name, None);
             Ok(())
         }
     }
@@ -144,31 +144,42 @@ impl CoreSystem {
         match self.config.app_type {
             ApplicationType::WebApp => {
                 info!("Configurazione per WebApp");
+                #[cfg(feature = "auth")]
                 init_module!("Authentication", || auth::initialize())?;
+                #[cfg(feature = "crud")]
                 init_module!("CRUD", || crud::initialize())?;
+                #[cfg(feature = "api")]
                 init_module!("API Layer", || api::initialize())?;
+                #[cfg(feature = "frontend")]
                 init_module!("Frontend", || frontend::initialize())?;
             }
 
             ApplicationType::ApiBackend => {
                 info!("Configurazione per API Backend");
+                #[cfg(feature = "auth")]
                 init_module!("Authentication", || auth::initialize())?;
+                #[cfg(feature = "crud")]
                 init_module!("CRUD", || crud::initialize())?;
+                #[cfg(feature = "api")]
                 init_module!("API Layer", || api::initialize())?;
             }
 
             ApplicationType::DesktopApp => {
                 info!("Configurazione per App Desktop");
+                #[cfg(feature = "auth")]
                 init_module!("Authentication", || auth::initialize())?;
+                #[cfg(feature = "crud")]
                 init_module!("CRUD", || crud::initialize())?;
+                #[cfg(feature = "file_management")]
                 init_module!("File Management", || file_management::initialize())?;
+                #[cfg(feature = "frontend")]
                 init_module!("Frontend", || frontend::initialize())?;
             }
 
             ApplicationType::AutomationScript => {
                 info!("Configurazione per Automazione e Scripting");
+                #[cfg(feature = "task_automation")]
                 init_module!("Task Automation", || task_automation::initialize())?;
-
                 #[cfg(feature = "file_management")]
                 init_module!("File Management", || file_management::initialize())?;
             }

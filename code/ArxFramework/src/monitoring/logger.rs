@@ -33,15 +33,14 @@ pub fn setup_logging() -> Result<(), fern::InitError> {
 ///
 /// # Argomenti
 /// - `module_name`: Nome del modulo da monitorare.
-/// - `status`: Stato attuale del modulo (true = operativo, false = errore).
-pub fn monitor_module_status(module_name: &str, status: bool) {
-    if status {
-        info!("Il modulo '{}' è operativo", module_name);
-    } else {
-        error!("Errore nel modulo '{}'", module_name);
+/// - `status`: Stato del modulo (true = warning, false = errore, None = operativo).
+pub fn monitor_module_status(module_name: &str, status: Option<bool>) {
+    match status {
+        Some(true) => warn!("Il modulo '{}' è in stato di warning", module_name),
+        Some(false) => error!("Errore nel modulo '{}'", module_name),
+        None => info!("Il modulo '{}' è operativo", module_name),
     }
 }
-
 // Metodo standard per aggiungere nuovi tipi di messaggi di log.
 // 
 // Se sei un dev a cui piace "incespicare" e personalizzare tutto, puoi aggiungere nuovi livelli

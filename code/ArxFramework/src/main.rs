@@ -1,17 +1,18 @@
-use crate::core_system::CoreSystem;
-use crate::cli::{parse_arguments, Cli, Commands}; // Assicurati di importare il CLI
-use crate::config::global_config::ApplicationType;
+use ArxFramework::cli::{parse_arguments,Commands};
+use ArxFramework::core::system_core::CoreSystem;
+use ArxFramework::config::global_config{CoreConfig,MemoryConfig};
+use ArxFramework::monitoring::logger::setup_logging;
 use log::info;
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     // Inizializza il sistema di logging
-    monitoring::logger::setup_logging().expect("Errore nell'inizializzazione del sistema di logging");
+    setup_logging().expect("Errore nell'inizializzazione del sistema di logging");
 
     // Parsing degli argomenti passati dal CLI
     let cli_args = parse_arguments().expect("Errore nel parsing degli argomenti CLI");
 
     // Gestione del comando Init
-    let config_tuple = = match cli_args.command {
+    let config_tuple = match cli_args.command {
         Commands::Init { app_type, memory_scale, max_threads } => {
             info!("Inizializzazione del progetto con i seguenti parametri:");
             info!("Tipo di applicazione: {:?}", app_type);

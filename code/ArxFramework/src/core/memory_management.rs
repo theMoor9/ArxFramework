@@ -13,11 +13,12 @@ use crate::core::system_core::CoreError;
 use log::{info};
 use std::collections::VecDeque;
 
-use clap::Command;
-
 // struttura globale TASKS_IN_MEMORY che mantiene tutti i Task in memoria
+#[cfg(feature = "crud")]
 use std::sync::Mutex;
+#[cfg(feature = "crud")]
 use lazy_static::lazy_static;
+#[cfg(feature = "crud")]
 use std::collections::HashMap;
 #[cfg(feature = "crud")]
 use crate::crud::modules::default::{
@@ -31,7 +32,7 @@ use crate::crud::modules::default::{
     configuration_model::Configuration,
 };
 
-
+#[cfg(feature = "crud")]
 lazy_static! {
     pub static ref TASKS_IN_MEMORY: Mutex<HashMap<u32, Task<'static>>> = Mutex::new(HashMap::new());
     pub static ref CONFIGURATIONS_IN_MEMORY: Mutex<HashMap<u32, Configuration<'static>>> = Mutex::new(HashMap::new());
@@ -48,7 +49,7 @@ lazy_static! {
 
 /// Enum per rappresentare le diverse strategie di allocazione della memoria.
 #[derive(Debug,Clone)]
-enum AllocationStrategy {
+pub enum AllocationStrategy {
     Standard,
     PoolBased,
     CustomEmbedded,

@@ -14,6 +14,7 @@
 pub mod config;
 pub mod core;
 pub mod monitoring;
+pub mod cli;
 
 /// Ottimizzazione in fase di compilazione grazie alle feature specificate nel `Cargo.toml`.
 ///

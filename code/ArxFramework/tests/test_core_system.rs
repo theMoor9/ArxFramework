@@ -1,8 +1,7 @@
 #[cfg(test)]
 mod tests {
-    use super::*;
-    use crate::config::global_config::{CoreConfig, ApplicationType};
-    use crate::memory_management::MemoryConfig;
+    use ArxFramework::core::system_core::{CoreSystem,CoreError};
+    use ArxFramework::config::global_config::{CoreConfig,MemoryConfig,ApplicationType};
 
     /// Test per verificare che il `CoreSystem` venga inizializzato correttamente per una WebApp
     #[test]
