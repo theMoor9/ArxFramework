@@ -90,16 +90,17 @@ impl MemoryManager {
 
         // Inizializza il pool solo se la strategia è `PoolBased`, utilizzando il `pool_size` configurato.
         let pool = if let AllocationStrategy::PoolBased = strategy {
-            let mut pool = VecDeque::new();
-            for _ in 0..memory_config.pool_size {
-                pool.push_back(vec![0u8; memory_config.buffer_size].into_boxed_slice());
-            }
-            Some(pool)
+            // Calcola quanti buffer servono in base alla dimensione totale del pool e del buffer
+            let buffer_count = memory_config.pool_size / memory_config.buffer_size;
+            let buffers = (0..buffer_count)
+                .map(|_| vec![0u8; memory_config.buffer_size].into_boxed_slice())
+                .collect::<VecDeque<_>>();
+            Some(buffers)
         } else {
             None
         };
 
-        Ok(MemoryManager { default_allocation_strategy: strategy, pool, memory_config })
+        Ok(Self { default_allocation_strategy: strategy, pool, memory_config })
     }
 
     /// Alloca memoria in base alla strategia configurata.
@@ -179,6 +180,36 @@ impl MemoryManager {
                 Ok(())
             },
         }
+    }
+}
+
+// Calcola il buffer_size
+pub fn calculate_buffer_size(app_type: ApplicationType, buffer_size: usize) -> usize {
+    if buffer_size != 0 {
+        return buffer_size;
+    }
+
+    match app_type {
+        ApplicationType::WebApp => 16 * 1024 * 1024, // 16 MB
+        ApplicationType::ApiBackend => 8 * 1024 * 1024, // 8 MB
+        ApplicationType::DesktopApp => 4 * 1024 * 1024, // 4 MB
+        ApplicationType::AutomationScript => 2 * 1024 * 1024, // 2 MB
+        ApplicationType::EmbeddedSystem => 512 * 1024, // 512 KB
+    }
+}
+
+// Calcola il pool_size
+pub fn calculate_pool_size(app_type: ApplicationType, pool_size: usize) -> usize {
+    if pool_size != 0 {
+        return pool_size;
+    }
+
+    match app_type {
+        ApplicationType::WebApp => 150 * 1024 * 1024, // 150 MB
+        ApplicationType::ApiBackend => 100 * 1024 * 1024, // 100 MB
+        ApplicationType::DesktopApp => 50 * 1024 * 1024, // 50 MB
+        ApplicationType::AutomationScript => 30 * 1024 * 1024, // 30 MB
+        ApplicationType::EmbeddedSystem => 5 * 1024 * 1024, // 5 MB
     }
 }
 

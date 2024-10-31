@@ -71,7 +71,7 @@ impl std::error::Error for CoreError {}
 /// - memory_manager: Gestore della memoria, che implementa strategie di allocazione in base al tipo di applicazione.
 pub struct CoreSystem {
     config: CoreConfig,
-    memory_manager: MemoryManager,
+    _memory_manager: MemoryManager,
 }
 
 macro_rules! init_module {
@@ -101,12 +101,12 @@ impl CoreSystem {
     pub fn new(config: CoreConfig, memory_config: MemoryConfig) -> Result<Self, CoreError> {
         info!("Inizializzazione del CoreSystem...");
         let app_type = &config.app_type;
-        let memory_manager = MemoryManager::new(config.app_type.clone(), memory_config).map_err(|e| {
+        let _memory_manager = MemoryManager::new(config.app_type.clone(), memory_config).map_err(|e| {
             error!("Errore nell'inizializzazione del MemoryManager: {}", e);
             CoreError::InitializationError(e.to_string())
         })?;
         info!("CoreSystem inizializzato con app_type: {:?}",app_type);
-        Ok(CoreSystem { config, memory_manager })
+        Ok(CoreSystem { config, _memory_manager })
     }
 
     /// Helper per gestire l'inizializzazione dei moduli.
@@ -120,7 +120,7 @@ impl CoreSystem {
     ///
     /// # Ritorna
     /// Ok(()) se il modulo è stato inizializzato correttamente, altrimenti un CoreError.
-    fn initialize_module<F>(&self, module_name: &str, init_func: F) -> Result<(), CoreError>
+    pub fn initialize_module<F>(&self, module_name: &str, init_func: F) -> Result<(), CoreError>
     where
         F: FnOnce() -> Result<(), CoreError>,
     {

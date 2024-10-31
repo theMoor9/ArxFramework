@@ -25,8 +25,14 @@ pub enum Commands {
         /// Numero massimo di thread per l'applicazione
         #[arg(short = 't', long = "max_threads", default_value_t = 8)] // Valore di default: 8
         max_threads: u8,
+        /// Buffer size per la memoria
+        #[arg(short = 'b', long = "buffer_size", default_value_t = 0)] // Valore di default: 1024
+        buffer_size: usize,
+        /// Pool size per la memoria
+        #[arg(short = 'p', long = "pool_size", default_value_t = 0)] // Valore di default: 8
+        pool_size: usize,
     },
-    
+    Help,
 }
 
 /// Parsing degli argomenti e ritorno della configurazione CLI

@@ -1,13 +1,14 @@
 #[cfg(test)]
 mod tests {
-    use ArxFramework::core::system_core::{CoreSystem,CoreError};
-    use ArxFramework::config::global_config::{CoreConfig,MemoryConfig,ApplicationType};
+    use arx_framework::core::system_core::{CoreSystem,CoreError};
+    use arx_framework::config::global_config::{CoreConfig,MemoryConfig,ApplicationType};
 
     /// Test per verificare che il `CoreSystem` venga inizializzato correttamente per una WebApp
     #[test]
     fn test_core_system_initialization_webapp() {
         let core_config = CoreConfig {
             app_type: ApplicationType::WebApp,
+            max_threads: 8,
         };
         let memory_config = MemoryConfig::default(); // Assumi che ci sia una configurazione di default
 
@@ -21,6 +22,7 @@ mod tests {
     fn test_module_initialization_failure() {
         let core_config = CoreConfig {
             app_type: ApplicationType::ApiBackend,
+            max_threads: 8,
         };
         let memory_config = MemoryConfig::default();
 
@@ -39,6 +41,7 @@ mod tests {
     fn test_memory_manager_initialization() {
         let core_config = CoreConfig {
             app_type: ApplicationType::EmbeddedSystem,
+            max_threads: 8,
         };
         let memory_config = MemoryConfig::default();
 
@@ -52,6 +55,7 @@ mod tests {
     fn test_core_system_initialization_desktop() {
         let core_config = CoreConfig {
             app_type: ApplicationType::DesktopApp,
+            max_threads: 8,
         };
         let memory_config = MemoryConfig::default();
 
@@ -65,6 +69,7 @@ mod tests {
     fn test_core_system_initialization_failure() {
         let core_config = CoreConfig {
             app_type: ApplicationType::WebApp,
+            max_threads: 8,
         };
         let memory_config = MemoryConfig::default();
 

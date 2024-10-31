@@ -1,7 +1,7 @@
-use ArxFramework::cli::{parse_arguments,Commands};
-use ArxFramework::core::system_core::CoreSystem;
-use ArxFramework::config::global_config{CoreConfig,MemoryConfig};
-use ArxFramework::monitoring::logger::setup_logging;
+use arx_framework::cli::{parse_arguments,Commands};
+use arx_framework::core::system_core::CoreSystem;
+use arx_framework::config::global_config::{CoreConfig,MemoryConfig};
+use arx_framework::monitoring::logger::setup_logging;
 use log::info;
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
@@ -13,22 +13,28 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     // Gestione del comando Init
     let config_tuple = match cli_args.command {
-        Commands::Init { app_type, memory_scale, max_threads } => {
+        Commands::Init { app_type, memory_scale, max_threads,buffer_size, pool_size } => {
             info!("Inizializzazione del progetto con i seguenti parametri:");
-            info!("Tipo di applicazione: {:?}", app_type);
+            info!("Tipo di applicazione: {:?}", app_type.clone());
             info!("Memory scale: {}", memory_scale);
             info!("Max threads: {}", max_threads);
+            info!("Buffer size: {}", buffer_size);
+            info!("Pool size: {}", pool_size);
 
             // Genera la configurazione basata sui parametri passati dal CLI
             let core_config = CoreConfig {
-                app_type,
+                app_type:app_type.clone(),
                 max_threads,
             };
+            use arx_framework::core::memory_management::calculate_pool_size;
+            use arx_framework::core::memory_management::calculate_buffer_size;
+            let defined_ps = calculate_pool_size(app_type.clone(),pool_size); // Imposta il valore di default per pool_size
+            let defined_bs = calculate_buffer_size(app_type,buffer_size); // Imposta il valore di default per buffer_size
 
             // Configurazione della memoria
             let memory_config = MemoryConfig {
-                pool_size: calculate_pool_size(app_type, memory_scale),
-                buffer_size: calculate_buffer_size(app_type, memory_scale),
+                pool_size: defined_ps,
+                buffer_size: defined_bs,
                 memory_scale,
             };
 

@@ -3,27 +3,6 @@
 version = 3
 
 [[package]]
-name = "ArxFramework"
-version = "0.1.0"
-dependencies = [
- "api",
- "auth",
- "blockchain",
- "chrono",
- "clap",
- "colored",
- "crud",
- "fern",
- "file_management",
- "frontend",
- "lazy_static",
- "log",
- "ml",
- "once_cell",
- "task_automation",
-]
-
-[[package]]
 name = "android-tzdata"
 version = "0.1.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -90,6 +69,27 @@ dependencies = [
 [[package]]
 name = "api"
 version = "0.0.1"
+
+[[package]]
+name = "arx_framework"
+version = "0.1.0"
+dependencies = [
+ "api",
+ "auth",
+ "blockchain",
+ "chrono",
+ "clap",
+ "colored",
+ "crud",
+ "fern",
+ "file_management",
+ "frontend",
+ "lazy_static",
+ "log",
+ "ml",
+ "once_cell",
+ "task_automation",
+]
 
 [[package]]
 name = "auth"

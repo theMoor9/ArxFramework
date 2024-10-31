@@ -1,10 +1,10 @@
 [package]
-name = "ArxFramework"
+name = "arx_framework"
 version = "0.1.0"
 edition = "2021"
 
 [lib]
-name = "ArxFramework"
+name = "arx_framework"
 path = "src/lib.rs"  # Path relativo per la libreria
 
 # Definizione del binario per il CLI 
