@@ -109,27 +109,6 @@ impl CoreSystem {
         Ok(CoreSystem { config, _memory_manager })
     }
 
-    /// Helper per gestire l'inizializzazione dei moduli.
-    ///
-    /// Questa funzione esegue una funzione di inizializzazione passata e gestisce
-    /// gli eventuali errori, riportandoli nel log.
-    ///
-    /// # Parametri
-    /// - module_name: Nome del modulo da inizializzare (usato per i log).
-    /// - init_func: Funzione di inizializzazione del modulo.
-    ///
-    /// # Ritorna
-    /// Ok(()) se il modulo è stato inizializzato correttamente, altrimenti un CoreError.
-    pub fn initialize_module<F>(&self, module_name: &str, init_func: F) -> Result<(), CoreError>
-    where
-        F: FnOnce() -> Result<(), CoreError>,
-    {
-        info!("Inizializzazione del modulo {}", module_name);
-        init_func().map_err(|e| {
-            error!("Errore nell'inizializzazione del modulo {}: {}", module_name, e);
-            CoreError::InitializationError(format!("{} initialization failed: {}", module_name, e))
-        })
-    }
 
     /// Funzione principale che esegue le operazioni in base al tipo di applicazione.
     /// Inizializza i moduli richiesti per il tipo di applicazione configurata.

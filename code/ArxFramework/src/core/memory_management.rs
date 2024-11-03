@@ -45,8 +45,6 @@ lazy_static! {
 }
 
 
-
-
 /// Enum per rappresentare le diverse strategie di allocazione della memoria.
 #[derive(Debug,Clone)]
 pub enum AllocationStrategy {
@@ -66,6 +64,19 @@ pub struct MemoryManager {
     default_allocation_strategy: AllocationStrategy,
     pool: Option<VecDeque<Box<[u8]>>>, // Pool per l'allocazione basata su pool
     memory_config: MemoryConfig,  // Configurazione della memoria di default 
+}
+
+/// Implementazione della configurazione della memoria.
+/// Questa struttura contiene le impostazioni per la dimensione del pool e dei buffer e si trova in global_config.rs
+impl MemoryConfig {
+    /// Crea una nuova configurazione della memoria con le impostazioni predefinite.
+    pub fn new(pool_size: usize, buffer_size: usize, memory_scale: u8) -> Self {
+        MemoryConfig {
+            pool_size,
+            buffer_size,
+            memory_scale,
+        }
+    }
 }
 
 impl MemoryManager {
