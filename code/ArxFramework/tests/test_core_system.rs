@@ -1,3 +1,45 @@
+/// # Unit Tests per `system_core.rs`, `global_config.rs` e `memory_management.rs`
+///
+/// Questo modulo di unit test è progettato per verificare il corretto comportamento
+/// di diverse parti del `CoreSystem` del framework, in particolare per applicazioni
+/// WebApp e AutomationScript. Ogni test si concentra su specifici moduli e configurazioni.
+///
+/// ## Scopo dei Test
+/// 1. **Inizializzazione del `CoreSystem`**: Assicura che il `CoreSystem` venga configurato
+///    correttamente per diverse tipologie di applicazioni e che sia in grado di inizializzare
+///    i moduli richiesti.
+///
+/// 2. **Configurazione della Memoria**:
+///     - Verifica l'applicazione di valori predefiniti per `MemoryConfig` per tutte le tipologie
+///       di applicazioni.
+///     - Controlla la corretta applicazione delle configurazioni definite in `global_config.rs` e
+///       `memory_management.rs` tramite la funzione `new` di `MemoryConfig`.
+///
+/// 3. **Gestione dei Limiti di Configurazione**:
+///     - Simula scenari in cui i limiti massimi dei parametri di configurazione sono ecceduti
+///       e controlla che i valori massimi di `pool_size`, `buffer_size` e `memory_scale` siano
+///       rispettati.
+///
+/// 4. **Fallimento di Inizializzazione dei Moduli**:
+///     - Simula il fallimento nell'inizializzazione di moduli essenziali, verificando che il
+///       `CoreSystem` ritorni errori quando vengono esclusi moduli necessari (es. `crud` per
+///       le applicazioni WebApp).
+///
+/// ## Struttura dei Test
+/// - **test_core_system_initialization_webapp**:
+///   - Inizializza il `CoreSystem` per un'app di tipo `AutomationScript`.
+///   - Verifica che `MemoryConfig` utilizzi valori predefiniti e che i valori siano coerenti
+///     con le configurazioni impostate in `global_config.rs`.
+///   - Assicura che il `CoreSystem` venga eseguito correttamente tramite `run()`.
+///
+/// - **test_module_initialization_failure**:
+///   - Testa il fallimento dell'inizializzazione quando `CoreSystem` è configurato per
+///     una WebApp senza uno o più moduli fondamentali (ad esempio `crud`).
+///   - Verifica che i limiti massimi di `pool_size`, `buffer_size` e `memory_scale` siano
+///     applicati correttamente in `MemoryConfig` e che un errore venga generato se i moduli
+///     necessari mancano.
+
+
 #[cfg(test)]
 mod tests {
     use arx_framework::core::system_core::{CoreSystem};
@@ -59,6 +101,9 @@ mod tests {
         // Tentativo di eccedenza valori massimi i campi di CoreSystem
         let core_system = CoreSystem::new(core_config, memory_config);
 
+        // Simulare il fallimento è possibile tramite l'esclusione di moduli fondamentali per l'applicazione in questione con:
+        // cargo test --features "auth","frontend","api","file_management","task_automation"
+        // WebApp necessita del modulo "crud" per funzionare correttamente
         let result = core_system.unwrap().run();
 
         assert!(result.is_err(), "Module initialization should fail");

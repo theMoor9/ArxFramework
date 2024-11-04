@@ -26,16 +26,18 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 app_type:app_type.clone(),
                 max_threads,
             };
-            use arx_framework::core::memory_management::calculate_pool_size;
-            use arx_framework::core::memory_management::calculate_buffer_size;
-            let defined_ps = calculate_pool_size(app_type.clone(),pool_size); // Imposta il valore di default per pool_size
-            let defined_bs = calculate_buffer_size(app_type,buffer_size); // Imposta il valore di default per buffer_size
+            use arx_framework::core::memory_management::define_pool_size;
+            use arx_framework::core::memory_management::define_buffer_size;
+            use arx_framework::core::memory_management::define_multiplier;
+            let defined_ps = define_pool_size(app_type.clone(),pool_size); // Imposta il valore di default per pool_size
+            let defined_bs = define_buffer_size(app_type.clone(),buffer_size); // Imposta il valore di default per buffer_size
+            let defined_ms = define_multiplier(app_type.clone(), memory_scale); // Imposta il valore di default per memory_scale
 
             // Configurazione della memoria
             let memory_config = MemoryConfig {
                 pool_size: defined_ps,
                 buffer_size: defined_bs,
-                memory_scale,
+                memory_scale: defined_ms,
             };
 
             info!("Configurazione della memoria completata: pool_size={}, buffer_size={}", memory_config.pool_size, memory_config.buffer_size);

@@ -12,6 +12,7 @@ use crate::config::global_config::{ApplicationType, MemoryConfig};
 use crate::core::system_core::CoreError;
 use log::{info};
 use std::collections::VecDeque;
+use std::io::{self, Write};
 
 // struttura globale TASKS_IN_MEMORY che mantiene tutti i Task in memoria
 #[cfg(feature = "crud")]
@@ -194,9 +195,44 @@ impl MemoryManager {
     }
 }
 
+
+fn usize_max_value(var_name: &str) -> usize {
+    println!("Il valore di {} eccede il limite massimo di usize.\n\
+    Vuoi assegnare il valore massimo consentito ({} /2)? [y/n]", var_name, usize::MAX );
+
+    let mut input = String::new();
+    io::stdout().flush().unwrap(); // Assicura che il prompt venga mostrato
+    io::stdin().read_line(&mut input).expect("Errore nella lettura dell'input");
+
+    match input.trim().to_lowercase().as_str() {
+        "y" => usize::MAX/2,
+        "n" => {
+            println!("Inserisci un nuovo valore:");
+            input.clear();
+            io::stdin().read_line(&mut input).expect("Errore nella lettura dell'input");
+            
+            match input.trim().parse::<usize>() {
+                Ok(val) => val,
+                Err(_) => {
+                    println!("Input non valido. Riprova.");
+                    usize_max_value(var_name)
+                }
+            }
+        }
+        _ => {
+            println!("Input non valido. Digita 'y' per accettare il valore \
+            massimo o 'n' per inserire un nuovo valore.");
+            usize_max_value(var_name)
+        }
+    }
+}
+
 // Calcola il buffer_size
-pub fn calculate_buffer_size(app_type: ApplicationType, buffer_size: usize) -> usize {
-    if buffer_size != 0 {
+pub fn define_buffer_size(app_type: ApplicationType, buffer_size: usize) -> usize {
+
+    if buffer_size > usize::MAX/2 {
+        return usize_max_value("buffer_size");
+    } else if buffer_size != 0 {
         return buffer_size;
     }
 
@@ -210,8 +246,11 @@ pub fn calculate_buffer_size(app_type: ApplicationType, buffer_size: usize) -> u
 }
 
 // Calcola il pool_size
-pub fn calculate_pool_size(app_type: ApplicationType, pool_size: usize) -> usize {
-    if pool_size != 0 {
+pub fn define_pool_size(app_type: ApplicationType, pool_size: usize) -> usize {
+
+    if pool_size > usize::MAX/2 {
+        return usize_max_value("pool_size");
+    } else if pool_size != 0 {
         return pool_size;
     }
 
@@ -221,6 +260,49 @@ pub fn calculate_pool_size(app_type: ApplicationType, pool_size: usize) -> usize
         ApplicationType::DesktopApp => 50 * 1024 * 1024, // 50 MB
         ApplicationType::AutomationScript => 30 * 1024 * 1024, // 30 MB
         ApplicationType::EmbeddedSystem => 5 * 1024 * 1024, // 5 MB
+    }
+}
+
+pub fn define_multiplier(app_type: ApplicationType, memory_scale: u8) -> u8 {
+    if memory_scale > u8::MAX {
+        println!("Il valore di memory_scale eccede il limite massimo di u8.\n\
+        Vuoi assegnare il valore massimo consentito ({})? [y/n]", u8::MAX);
+
+        let mut input = String::new();
+        io::stdout().flush().unwrap(); // Assicura che il prompt venga mostrato
+        io::stdin().read_line(&mut input).expect("Errore nella lettura dell'input");
+
+        match input.trim().to_lowercase().as_str() {
+            "y" => return u8::MAX,
+            "n" => {
+                println!("Inserisci un nuovo valore:");
+                input.clear();
+                io::stdin().read_line(&mut input).expect("Errore nella lettura dell'input");
+                
+                return match input.trim().parse::<u8>() {
+                    Ok(val) => val,
+                    Err(_) => {
+                        println!("Input non valido. Riprova.");
+                        return define_multiplier(app_type, memory_scale);
+                    }
+                };
+            }
+            _ => {
+                println!("Input non valido. Digita 'y' per accettare il valore \
+                massimo o 'n' per inserire un nuovo valore.");
+                return define_multiplier(app_type, memory_scale);
+            }
+        }
+    } else if memory_scale != 0 {
+        return memory_scale;
+    }
+
+    match app_type {
+        ApplicationType::WebApp => 1,
+        ApplicationType::ApiBackend => 1,
+        ApplicationType::DesktopApp => 1,
+        ApplicationType::AutomationScript => 1,
+        ApplicationType::EmbeddedSystem => 1,
     }
 }
 

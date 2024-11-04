@@ -131,6 +131,16 @@ impl CoreSystem {
                 init_module!("API Layer", || api::initialize())?;
                 #[cfg(feature = "frontend")]
                 init_module!("Frontend", || frontend::initialize())?;
+
+                #[cfg(not(feature = "auth"))]
+                return Err(CoreError::UnsupportedOperationError("Authentication module is required for WebApp".to_string()));
+                #[cfg(not(feature = "crud"))]
+                return Err(CoreError::UnsupportedOperationError("CRUD module is required for WebApp".to_string()));
+                #[cfg(not(feature = "api"))]
+                return Err(CoreError::UnsupportedOperationError("API module is required for WebApp".to_string()));
+                #[cfg(not(feature = "frontend"))]
+                return Err(CoreError::UnsupportedOperationError("Frontend module is required for WebApp".to_string()));
+                
             }
 
             ApplicationType::ApiBackend => {
@@ -141,6 +151,15 @@ impl CoreSystem {
                 init_module!("CRUD", || crud::initialize())?;
                 #[cfg(feature = "api")]
                 init_module!("API Layer", || api::initialize())?;
+
+
+                #[cfg(not(feature = "auth"))]
+                return Err(CoreError::UnsupportedOperationError("Authentication module is required for API Backend".to_string()));
+                #[cfg(not(feature = "crud"))]
+                return Err(CoreError::UnsupportedOperationError("CRUD module is required for API Backend".to_string()));
+                #[cfg(not(feature = "api"))]
+                return Err(CoreError::UnsupportedOperationError("API module is required for API Backend".to_string()));
+
             }
 
             ApplicationType::DesktopApp => {
@@ -153,6 +172,15 @@ impl CoreSystem {
                 init_module!("File Management", || file_management::initialize())?;
                 #[cfg(feature = "frontend")]
                 init_module!("Frontend", || frontend::initialize())?;
+
+                #[cfg(not(feature = "auth"))]
+                return Err(CoreError::UnsupportedOperationError("Authentication module is required for Desktop App".to_string()));
+                #[cfg(not(feature = "crud"))]
+                return Err(CoreError::UnsupportedOperationError("CRUD module is required for Desktop App".to_string()));
+                #[cfg(not(feature = "file_management"))]
+                return Err(CoreError::UnsupportedOperationError("File Management module is required for Desktop App".to_string()));
+                #[cfg(not(feature = "frontend"))]
+                return Err(CoreError::UnsupportedOperationError("Frontend module is required for Desktop App".to_string()));
             }
 
             ApplicationType::AutomationScript => {
@@ -161,6 +189,11 @@ impl CoreSystem {
                 init_module!("Task Automation", || task_automation::initialize())?;
                 #[cfg(feature = "file_management")]
                 init_module!("File Management", || file_management::initialize())?;
+
+                #[cfg(not(feature = "task_automation"))]
+                return Err(CoreError::UnsupportedOperationError("Task Automation module is required for Automation Script".to_string()));
+                #[cfg(not(feature = "file_management"))]
+                return Err(CoreError::UnsupportedOperationError("File Management module is required for Automation Script".to_string()));
             }
 
             ApplicationType::EmbeddedSystem => {
