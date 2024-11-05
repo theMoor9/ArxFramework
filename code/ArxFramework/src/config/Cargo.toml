@@ -1,0 +1,11 @@
+[package]
+name = "config"
+version = "0.0.1"
+edition = "2021"
+
+[dependencies]
+clap = { version = "4.5.20", features = ["derive"] }  # Per il parsing del CLI
+
+[lib]
+name = "config"
+path = "mod.rs"

@@ -8,8 +8,8 @@
 //!
 //! È possibile configurare la dimensione dei buffer e del pool utilizzando la struttura `MemoryConfig`.
 
-use crate::config::global_config::{ApplicationType, MemoryConfig};
-use crate::core::system_core::CoreError;
+use config::global_config::{ApplicationType, MemoryConfig};
+use crate::system_core::CoreError;
 use log::{info};
 use std::collections::VecDeque;
 use std::io::{self, Write};
@@ -65,19 +65,6 @@ pub struct MemoryManager {
     default_allocation_strategy: AllocationStrategy,
     pool: Option<VecDeque<Box<[u8]>>>, // Pool per l'allocazione basata su pool
     memory_config: MemoryConfig,  // Configurazione della memoria di default 
-}
-
-/// Implementazione della configurazione della memoria.
-/// Questa struttura contiene le impostazioni per la dimensione del pool e dei buffer e si trova in global_config.rs
-impl MemoryConfig {
-    /// Crea una nuova configurazione della memoria con le impostazioni predefinite.
-    pub fn new(pool_size: usize, buffer_size: usize, memory_scale: u8) -> Self {
-        MemoryConfig {
-            pool_size,
-            buffer_size,
-            memory_scale,
-        }
-    }
 }
 
 impl MemoryManager {

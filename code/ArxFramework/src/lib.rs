@@ -16,34 +16,39 @@ pub mod core;
 pub mod monitoring;
 pub mod cli;
 
+#[cfg(feature = "desktop")]
+compile_error!("desktop feature è attiva");
+
+#[cfg(not(feature = "desktop"))]
+compile_error!("desktop feature NON è attiva");
 /// Ottimizzazione in fase di compilazione grazie alle feature specificate nel `Cargo.toml`.
 ///
 /// Queste direttive permettono di includere o escludere moduli in base alle feature abilitate.
 /// Solo i moduli necessari per il tipo di applicazione scelto verranno compilati e inclusi.
 
 #[cfg(feature = "auth")]
-pub extern crate auth;
+pub mod auth;
 
 #[cfg(feature = "crud")]
-pub extern crate crud;
+pub mod crud;
 
 #[cfg(feature = "api")]
-pub extern crate api;
+pub mod api;
 
 #[cfg(feature = "file_management")]
-pub extern crate file_management;
+pub mod file_management;
 
 #[cfg(feature = "task_automation")]
-pub extern crate task_automation;
+pub mod task_automation;
 
 #[cfg(feature = "blockchain")]
-pub extern crate blockchain;
+pub mod blockchain;
 
 #[cfg(feature = "ml")]
-pub extern crate ml;
+pub mod ml;
 
 #[cfg(feature = "frontend")]
-pub extern crate frontend;
+pub mod frontend;
 
 // ### Estensione del Framework
 //

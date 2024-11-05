@@ -12,26 +12,6 @@ path = "src/lib.rs"  # Path relativo per la libreria
 name = "arx_cli" 
 path = "src/main.rs"  # Path del CLI
 
-# Dipendenze comuni a tutti i moduli
-[dependencies]
-fern = "0.7.0"  # Per la 
-log = "0.4.14"  # Per la gestione dei log
-chrono = "0.4.19"  # Per la gestione del tempo
-colored = "2.0"  # Per colorare i messaggi di log
-clap = { version = "4.5.20", features = ["derive"] }  # Per il parsing del CLI
-once_cell = "1.17.1"  # Per la gestione di valori statici
-lazy_static = "1.4"  # Per la gestione di valori statici
-
-# Dipendenze opzionali (crate esterni)
-auth = { path = "./auth/", optional = true }
-crud = { path = "./crud/", optional = true }
-api = { path = "./api/", optional = true }
-file_management = { path = "./file-management/", optional = true }
-task_automation = { path = "./task-automation/", optional = true }
-blockchain = { path = "./blockchain/", optional = true }
-ml = { path = "./ml/", optional = true }
-frontend = { path = "./frontend/", optional = true }
-
 # Feature Flags
 [features]
 # Definizione delle feature per i moduli
@@ -51,7 +31,24 @@ desktop = ["dep:auth", "dep:crud", "dep:file_management", "dep:frontend"]
 automation = ["dep:task_automation"]
 embedded = []  # I sistemi embedded utilizzano solo core e monitoring
 
-# Feature di base
-core = []
-monitoring = []
-config = []
+# Dipendenze comuni a tutti i moduli
+[dependencies]
+fern = "0.7.0"  # Per la 
+chrono = "0.4.19"  # Per la gestione del tempo
+colored = "2.0"  # Per colorare i messaggi di log
+clap = { version = "4.5.20", features = ["derive"] }  # Per il parsing del CLI
+once_cell = "1.17.1"  # Per la gestione di valori statici
+lazy_static = "1.4"  # Per la gestione di valori statici
+
+core = { path = "./src/core/"}
+auth = { path = "./auth/", optional = true }
+crud = { path = "./src/crud/", optional = true }
+api = { path = "./api/", optional = true }
+file_management = { path = "./file-management/", optional = true }
+task_automation = { path = "./task-automation/", optional = true }
+blockchain = { path = "./blockchain/", optional = true }
+ml = { path = "./ml/", optional = true }
+frontend = { path = "./frontend/", optional = true }
+
+
+

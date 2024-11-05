@@ -51,6 +51,19 @@ impl Default for MemoryConfig {
     }
 }
 
+/// Implementazione della configurazione della memoria.
+/// Questa struttura contiene le impostazioni per la dimensione del pool e dei buffer e si trova in global_config.rs
+impl MemoryConfig {
+    /// Crea una nuova configurazione della memoria con le impostazioni predefinite.
+    pub fn new(pool_size: usize, buffer_size: usize, memory_scale: u8) -> Self {
+        MemoryConfig {
+            pool_size,
+            buffer_size,
+            memory_scale,
+        }
+    }
+}
+
 // Esempio di come estendere la configurazione globale
 // con nuove variabili personalizzate.
 //

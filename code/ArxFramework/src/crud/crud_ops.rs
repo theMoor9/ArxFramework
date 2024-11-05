@@ -1,12 +1,14 @@
-use crate::models::default::task_model::Task;  
+#[cfg(any(feature = "automation", feature = "desktop", feature = "embedded"))]
+use crate::models::default::task_model::task_model::{Task,Allocation};  
+
 use crate::models::dev::*;
-use crate::memory_manager::{AllocationStrategy, memory_manager};
-use crate::global_config::MemoryConfig;
+use core::memory_management::{AllocationStrategy, MemoryManager};
+use config::global_config::MemoryConfig;
 //use crate::::connection; NECESSARIO PER LA CONNESSIONE AL DATABASE
 use log::{info};
 
 // Importazione variabili statiche per mantenere i modelli in memoria
-use crate::memory_management::{
+use core::memory_management::{
     TASKS_IN_MEMORY, 
     CONFIGURATIONS_IN_MEMORY, 
     DEVICES_IN_MEMORY, 
@@ -17,17 +19,7 @@ use crate::memory_management::{
     COMMANDS_IN_MEMORY
 };
 
-#[cfg(any(feature = "automation", feature = "desktop", feature = "embedded"))]
-#[derive(Debug)]
-pub enum CrudOperations {
-    Create,
-    Read,
-    Update,
-    Delete,
-}
-
-
-#[derive(Debug)]
+#[derive(Debug,Clone)]
 pub enum Allocation {
     InMemory,
     Database,
@@ -125,8 +117,11 @@ macro_rules! impl_crud_ops {
                         let mut task = Task::new(
                             item.id,
                             item.description, 
+                            #[cfg(feature = "automation")]
                             item.schedule,
+                            #[cfg(feature = "desktop")]
                             item.completed,
+                            #[cfg(feature = "embedded")]
                             item.device_id,
                             task_memory,
                         );
