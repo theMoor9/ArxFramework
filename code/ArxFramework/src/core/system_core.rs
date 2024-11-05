@@ -14,7 +14,6 @@
 
 use crate::config::global_config::{CoreConfig, MemoryConfig, ApplicationType};
 use crate::core::memory_management::MemoryManager;
-use crate::monitoring::logger;
 use log::{info, error};
 // Importa i modelli dalla cartella dev
 
@@ -74,6 +73,7 @@ pub struct CoreSystem {
     _memory_manager: MemoryManager,
 }
 
+#[cfg(any(feature = "auth", feature = "crud", feature = "api", feature = "frontend"))]
 macro_rules! init_module {
     ($module_name:expr, $init_func:expr) => {
         {
@@ -119,6 +119,7 @@ impl CoreSystem {
     /// # Nota
     /// - Questa funzione utilizza la configurazione fornita in CoreConfig per determinare
     /// quali moduli devono essere inizializzati.
+    #[allow(unreachable_code)]
     pub fn run(&self) -> Result<(), CoreError> {
         match self.config.app_type {
             ApplicationType::WebApp => {

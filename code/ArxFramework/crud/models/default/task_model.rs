@@ -1,3 +1,6 @@
+use crate::crud::crud_ops::Allocation;
+use crate::crud::crud_ops::CrudOperations;
+
 #[cfg(any(feature = "automation", feature = "desktop", feature = "embedded"))]
 #[derive(Debug, Clone)]
 pub struct Task {
@@ -18,22 +21,6 @@ pub struct Task {
 
     pub store: Allocation,
     pub memory: Box<[u8]>,
-}
-
-#[cfg(any(feature = "automation", feature = "desktop", feature = "embedded"))]
-#[derive(Debug)]
-pub enum CrudOperations {
-    Create,
-    Read,
-    Update,
-    Delete,
-}
-
-
-#[derive(Debug)]
-pub enum Allocation {
-    InMemory,
-    Database,
 }
 
 impl Task {

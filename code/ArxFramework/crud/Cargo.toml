@@ -5,6 +5,18 @@ edition = "2021"
 
 [dependencies]
 
+
 [lib]
 name = "crud"
 path = "mod.rs"
+
+# Feature Flags
+[features]
+
+
+# Definizione delle feature per i diversi tipi di applicazioni
+webapp = []
+api_backend = []
+desktop = []
+automation = []
+embedded = []  # I sistemi embedded utilizzano solo core e monitoring
