@@ -67,43 +67,23 @@ dependencies = [
 ]
 
 [[package]]
-name = "api"
-version = "0.0.1"
-
-[[package]]
 name = "arx_framework"
 version = "0.1.0"
 dependencies = [
- "api",
- "auth",
- "blockchain",
  "chrono",
  "clap",
  "colored",
- "core",
- "crud",
- "fern 0.7.0",
- "file_management",
- "frontend",
+ "fern",
  "lazy_static",
- "ml",
+ "log",
  "once_cell",
- "task_automation",
 ]
-
-[[package]]
-name = "auth"
-version = "0.0.1"
 
 [[package]]
 name = "autocfg"
 version = "1.4.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "ace50bade8e6234aa140d9a2f552bbee1db4d353f69b8217bc503490fc1a9f26"
-
-[[package]]
-name = "blockchain"
-version = "0.0.1"
 
 [[package]]
 name = "bumpalo"
@@ -197,44 +177,10 @@ dependencies = [
 ]
 
 [[package]]
-name = "config"
-version = "0.0.1"
-dependencies = [
- "clap",
-]
-
-[[package]]
-name = "core"
-version = "0.0.1"
-dependencies = [
- "config",
- "log",
- "monitoring",
-]
-
-[[package]]
 name = "core-foundation-sys"
 version = "0.8.7"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "773648b94d0e5d620f64f280777445740e61fe701025087ec8b57f45c791888b"
-
-[[package]]
-name = "crud"
-version = "0.0.1"
-dependencies = [
- "config",
- "core",
- "log",
-]
-
-[[package]]
-name = "fern"
-version = "0.6.2"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "d9f0c14694cbd524c8720dd69b0e3179344f04ebb5f90f2e4a440c6ea3b2f1ee"
-dependencies = [
- "log",
-]
 
 [[package]]
 name = "fern"
@@ -244,14 +190,6 @@ checksum = "69ff9c9d5fb3e6da8ac2f77ab76fe7e8087d512ce095200f8f29ac5b656cf6dc"
 dependencies = [
  "log",
 ]
-
-[[package]]
-name = "file_management"
-version = "0.0.1"
-
-[[package]]
-name = "frontend"
-version = "0.0.1"
 
 [[package]]
 name = "heck"
@@ -316,19 +254,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "a7a70ba024b9dc04c27ea2f0c0548feb474ec5c54bba33a7f72f873a39d07b24"
 
 [[package]]
-name = "ml"
-version = "0.0.1"
-
-[[package]]
-name = "monitoring"
-version = "0.0.1"
-dependencies = [
- "chrono",
- "fern 0.6.2",
- "log",
-]
-
-[[package]]
 name = "num-traits"
 version = "0.2.19"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -383,10 +308,6 @@ dependencies = [
  "quote",
  "unicode-ident",
 ]
-
-[[package]]
-name = "task_automation"
-version = "0.0.1"
 
 [[package]]
 name = "unicode-ident"

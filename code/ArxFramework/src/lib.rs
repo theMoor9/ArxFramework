@@ -16,11 +16,6 @@ pub mod core;
 pub mod monitoring;
 pub mod cli;
 
-#[cfg(feature = "desktop")]
-compile_error!("desktop feature è attiva");
-
-#[cfg(not(feature = "desktop"))]
-compile_error!("desktop feature NON è attiva");
 /// Ottimizzazione in fase di compilazione grazie alle feature specificate nel `Cargo.toml`.
 ///
 /// Queste direttive permettono di includere o escludere moduli in base alle feature abilitate.
@@ -49,6 +44,7 @@ pub mod ml;
 
 #[cfg(feature = "frontend")]
 pub mod frontend;
+
 
 // ### Estensione del Framework
 //

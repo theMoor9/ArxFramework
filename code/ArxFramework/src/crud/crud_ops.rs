@@ -1,14 +1,15 @@
-#[cfg(any(feature = "automation", feature = "desktop", feature = "embedded"))]
-use crate::models::default::task_model::task_model::{Task,Allocation};  
+#[cfg(any(feature = "desktop", feature = "embedded", feature = "automation"))]
+use crate::crud::models::default::task::model::{Task}; 
 
-use crate::models::dev::*;
-use core::memory_management::{AllocationStrategy, MemoryManager};
-use config::global_config::MemoryConfig;
+
+use crate::crud::models::dev::*;
+use crate::core::memory_management::{AllocationStrategy, MemoryManager};
+use crate::config::global_config::MemoryConfig;
 //use crate::::connection; NECESSARIO PER LA CONNESSIONE AL DATABASE
 use log::{info};
 
 // Importazione variabili statiche per mantenere i modelli in memoria
-use core::memory_management::{
+use crate::core::memory_management::{
     TASKS_IN_MEMORY, 
     CONFIGURATIONS_IN_MEMORY, 
     DEVICES_IN_MEMORY, 
@@ -20,9 +21,16 @@ use core::memory_management::{
 };
 
 #[derive(Debug,Clone)]
-pub enum Allocation {
+pub enum AllocType {
     InMemory,
     Database,
+}
+#[derive(Debug)]
+pub enum CrudOperations {
+    Create,
+    Read,
+    Update,
+    Delete,
 }
 
 /// Trait che definisce l'operazione di creazione per un generico tipo `T`.
@@ -30,7 +38,7 @@ pub enum Allocation {
 /// Questo trait implementa la logica per creare un nuovo elemento di tipo `T`,
 /// utilizzando la memoria o il database a seconda della configurazione di allocazione.
 pub trait Create<T> {
-    fn create(item: T) -> Result<T, String>;
+    fn create(item: T) -> Result<T, CoreError>;
 }
 
 /// Trait che definisce l'operazione di lettura per un generico tipo `T`.
@@ -108,10 +116,10 @@ macro_rules! impl_crud_ops {
                         info!("Allocazione in memoria per Task");
                 
                         // Determina la dimensione da allocare. Supponiamo di voler allocare 1024 byte.
-                        let size = 1024 * memory_scale;
+                        let size: usize = 1024 * memory_scale;
                 
                         // Allocazione della memoria per il Task
-                        let task_memory = memory_manager::allocate(Some(AllocationStrategy::Standard), size)?;
+                        let task_memory = MemoryManager::allocate(,Some(AllocationStrategy::Standard), size);
                 
                         // Creazione del Task con i dati ricevuti
                         let mut task = Task::new(

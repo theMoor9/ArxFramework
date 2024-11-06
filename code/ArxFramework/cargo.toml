@@ -15,20 +15,20 @@ path = "src/main.rs"  # Path del CLI
 # Feature Flags
 [features]
 # Definizione delle feature per i moduli
-auth = ["dep:auth"]
-crud = ["dep:crud"]
-api = ["dep:api"]
-file_management = ["dep:file_management"]
-task_automation = ["dep:task_automation"]
-blockchain = ["dep:blockchain"]
-ml = ["dep:ml"]
-frontend = ["dep:frontend"]  # Da abilitare solo se si implementa un modulo Rust per frontend
+auth = []
+crud = []
+api = []
+file_management = []
+task_automation = []
+blockchain = []
+ml = []
+frontend = []  # Da abilitare solo se si implementa un modulo Rust per frontend
 
 # Definizione delle feature per i diversi tipi di applicazioni
-webapp = ["dep:auth", "dep:crud", "dep:api", "dep:frontend"]
-api_backend = ["dep:auth", "dep:crud", "dep:api"]
-desktop = ["dep:auth", "dep:crud", "dep:file_management", "dep:frontend"]
-automation = ["dep:task_automation"]
+webapp = ["auth", "crud", "api", "frontend"]
+api_backend = ["auth", "crud", "api"]
+desktop = ["auth", "crud", "file_management", "frontend"]
+automation = ["task_automation"]
 embedded = []  # I sistemi embedded utilizzano solo core e monitoring
 
 # Dipendenze comuni a tutti i moduli
@@ -39,16 +39,7 @@ colored = "2.0"  # Per colorare i messaggi di log
 clap = { version = "4.5.20", features = ["derive"] }  # Per il parsing del CLI
 once_cell = "1.17.1"  # Per la gestione di valori statici
 lazy_static = "1.4"  # Per la gestione di valori statici
-
-core = { path = "./src/core/"}
-auth = { path = "./auth/", optional = true }
-crud = { path = "./src/crud/", optional = true }
-api = { path = "./api/", optional = true }
-file_management = { path = "./file-management/", optional = true }
-task_automation = { path = "./task-automation/", optional = true }
-blockchain = { path = "./blockchain/", optional = true }
-ml = { path = "./ml/", optional = true }
-frontend = { path = "./frontend/", optional = true }
+log = "0.4.22"
 
 
 

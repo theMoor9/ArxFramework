@@ -8,11 +8,14 @@
 //!
 //! È possibile configurare la dimensione dei buffer e del pool utilizzando la struttura `MemoryConfig`.
 
-use config::global_config::{ApplicationType, MemoryConfig};
-use crate::system_core::CoreError;
+use crate::config::global_config::{ApplicationType, MemoryConfig};
+use crate::core::system_core::CoreError;
 use log::{info};
 use std::collections::VecDeque;
 use std::io::{self, Write};
+
+// Importing di lazy static per la creazione di strutture dati globali
+
 
 // struttura globale TASKS_IN_MEMORY che mantiene tutti i Task in memoria
 #[cfg(feature = "crud")]
@@ -22,27 +25,26 @@ use lazy_static::lazy_static;
 #[cfg(feature = "crud")]
 use std::collections::HashMap;
 #[cfg(feature = "crud")]
-use crate::crud::modules::default::{
-    task_model::Task,
-    device_model::Device,
-    job_model::Job,
-    macro_model::Macro,
-    sensor_data_model::SensorData,
-    log_event_model::LogEvent,
-    command_model::Command,
-    configuration_model::Configuration,
+use crate::crud::models::default::{
+    task::model::Task,
+    device::model::Device,
+    job::model::Job,
+    macro_::model::Macro,
+    sensor_data::model::SensorData,
+    log_event::model::LogEvent,
+    command::model::Command,
+    configuration::model::Configuration,
 };
-
 #[cfg(feature = "crud")]
 lazy_static! {
-    pub static ref TASKS_IN_MEMORY: Mutex<HashMap<u32, Task<'static>>> = Mutex::new(HashMap::new());
-    pub static ref CONFIGURATIONS_IN_MEMORY: Mutex<HashMap<u32, Configuration<'static>>> = Mutex::new(HashMap::new());
-    pub static ref DEVICES_IN_MEMORY: Mutex<HashMap<u32, Device<'static>>> = Mutex::new(HashMap::new());
-    pub static ref JOBS_IN_MEMORY: Mutex<HashMap<u32, Job<'static>>> = Mutex::new(HashMap::new());
-    pub static ref MACROS_IN_MEMORY: Mutex<HashMap<u32, Macro<'static>>> = Mutex::new(HashMap::new());
-    pub static ref SENSOR_DATA_IN_MEMORY: Mutex<HashMap<u32, SensorData<'static>>> = Mutex::new(HashMap::new());
-    pub static ref LOG_EVENTS_IN_MEMORY: Mutex<HashMap<u32, LogEvent<'static>>> = Mutex::new(HashMap::new());
-    pub static ref COMMANDS_IN_MEMORY: Mutex<HashMap<u32, Command<'static>>> = Mutex::new(HashMap::new());
+    pub static ref TASKS_IN_MEMORY: Mutex<HashMap<u32, Task>> = Mutex::new(HashMap::new());
+    pub static ref CONFIGURATIONS_IN_MEMORY: Mutex<HashMap<u32, Configuration>> = Mutex::new(HashMap::new());
+    pub static ref DEVICES_IN_MEMORY: Mutex<HashMap<u32, Device>> = Mutex::new(HashMap::new());
+    pub static ref JOBS_IN_MEMORY: Mutex<HashMap<u32, Job>> = Mutex::new(HashMap::new());
+    pub static ref MACROS_IN_MEMORY: Mutex<HashMap<u32, Macro>> = Mutex::new(HashMap::new());
+    pub static ref SENSOR_DATA_IN_MEMORY: Mutex<HashMap<u32, SensorData>> = Mutex::new(HashMap::new());
+    pub static ref LOG_EVENTS_IN_MEMORY: Mutex<HashMap<u32, LogEvent>> = Mutex::new(HashMap::new());
+    pub static ref COMMANDS_IN_MEMORY: Mutex<HashMap<u32, Command>> = Mutex::new(HashMap::new());
 }
 
 

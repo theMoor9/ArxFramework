@@ -1,2 +1,32 @@
 pub mod dev;
-pub mod default;
+pub mod default{
+    pub mod api_key;
+    pub mod article;
+    pub mod category;
+    pub mod command;
+    pub mod comment;
+    pub mod configuration;
+    pub mod device;
+    pub mod document;
+    pub mod endpoint;
+    pub mod exe_log;
+    pub mod file;
+    pub mod firmware_version;
+    pub mod job;
+    pub mod log_event;
+    pub mod macro_;
+    pub mod page;
+    pub mod permission;
+    pub mod preferences;
+    pub mod project;
+    pub mod rate_limit;
+    pub mod request_log;
+    pub mod schedule;
+    pub mod script;
+    pub mod sensor_data;
+    pub mod settings;
+    pub mod tag;
+    pub mod task;
+    pub mod token;
+    pub mod user;
+}

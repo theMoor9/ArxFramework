@@ -12,8 +12,9 @@
 //! La struttura del framework garantisce la compatibilità con la maggior parte delle applicazioni standard (WebApp, API Backend, Desktop App, ecc.),
 //! eseguendo in modo sicuro e centralizzato tutti i moduli, mentre per gli ambienti embedded offre flessibilità per le personalizzazioni richieste.
 
-use config::global_config::{CoreConfig, MemoryConfig, ApplicationType};
-use crate::memory_management::MemoryManager;
+use crate::config::global_config::{CoreConfig, MemoryConfig, ApplicationType};
+use crate::core::memory_management::MemoryManager;
+use crate::monitoring::logger;
 use log::{info, error};
 // Importa i modelli dalla cartella dev
 
