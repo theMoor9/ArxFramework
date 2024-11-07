@@ -13,7 +13,7 @@ pub mod model {
         pub store: AllocType,
     }
 
-    impl user::User {
+    impl User {
         pub fn new(id: u32, username: String, email: String, password: String) -> Self {
             Self {
                 id,
@@ -24,4 +24,5 @@ pub mod model {
             }
         }
     }
+    
 }

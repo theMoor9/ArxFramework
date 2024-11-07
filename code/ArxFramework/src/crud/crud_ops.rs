@@ -7,6 +7,7 @@ use crate::core::memory_management::{AllocationStrategy, MemoryManager};
 use crate::config::global_config::MemoryConfig;
 //use crate::::connection; NECESSARIO PER LA CONNESSIONE AL DATABASE
 use log::{info};
+use diesel::prelude::*;
 
 // Importazione variabili statiche per mantenere i modelli in memoria
 use crate::core::memory_management::{
@@ -38,14 +39,14 @@ pub enum CrudOperations {
 /// Questo trait implementa la logica per creare un nuovo elemento di tipo `T`,
 /// utilizzando la memoria o il database a seconda della configurazione di allocazione.
 pub trait Create<T> {
-    fn create(item: T) -> Result<T, CoreError>;
+    fn create(item: T) -> Result<T, String>;
 }
 
 /// Trait che definisce l'operazione di lettura per un generico tipo `T`.
 /// 
 /// Permette di leggere un elemento dal database o dalla memoria in base al suo ID.
 pub trait Read<T> {
-    fn read(id: u64) -> Result<T, String>;
+    fn read(id: u32) -> Result<T, String>;
 }
 
 /// Trait che definisce l'operazione di aggiornamento per un generico tipo `T`.
@@ -59,7 +60,7 @@ pub trait Update<T> {
 /// 
 /// Elimina un elemento dal database o dalla memoria in base al suo ID.
 pub trait Delete {
-    fn delete(id: u64) -> Result<(), String>;
+    fn delete(id: u32) -> Result<(), String>;
 }
 
 /// Trait che definisce l'operazione di elencazione per un generico tipo `T`.
@@ -80,7 +81,7 @@ pub trait Search<T> {
 /// 
 /// Revoca un elemento specifico in base al suo ID, come ad esempio un token o un permesso.
 pub trait Revoke {
-    fn revoke(id: u64) -> Result<(), String>;
+    fn revoke(id: u32) -> Result<(), String>;
 }
 
 /// Macro per implementare le operazioni CRUD comuni.
@@ -116,7 +117,7 @@ macro_rules! impl_crud_ops {
                         info!("Allocazione in memoria per Task");
                 
                         // Determina la dimensione da allocare. Supponiamo di voler allocare 1024 byte.
-                        let size: usize = 1024 * memory_scale;
+                        let size: usize = (1024 * memory_scale).into();
                 
                         // Allocazione della memoria per il Task
                         let task_memory = MemoryManager::allocate(,Some(AllocationStrategy::Standard), size);
@@ -136,38 +137,30 @@ macro_rules! impl_crud_ops {
                 
                         // Persistenza del Task
                         match task.store {
-                            Allocation::InMemory => {
+                            AllocType::InMemory => {
                                 // Memorizza il Task in memoria
                                 let mut tasks = TASKS_IN_MEMORY.lock().map_err(|e| format!("Errore di lock sul mutex: {}", e))?;
                                 tasks.insert(task.id, task.clone());
                             }
-                            Allocation::Database => {
+                            AllocType::Database => {
                                 // Memorizza il Task nel database
-                                sqlx::query!(
-                                    "INSERT INTO tasks (id, description) VALUES ($1, $2)",
-                                    task.id,
-                                    task.description,
-                                )
-                                .execute(&mut connection)  // Connessione a PostgreSQL da gestire nel modulo api_server.rs
-                                .map_err(|e| format!("Errore di inserimento nel database: {}", e))?;
+                                
                             }
                         }
                 
                         info!("Allocata memoria di {} byte per il Task con ID: {}", size, task.id);
-                        Ok(task)
+                        return Ok(task);
                     }
 
                     // Implementazione per altri modelli
 
                     _ => {
                         info!("Allocazione in memoria di Default per modello non gestito specificamente");
-                        let size = 1024 * memory_scale; // Size per modelli non gestiti dedicati 1024 byte per range applicativo di media 
-                        memory_manager::allocate(None, size)?;
-                        Ok(item)
+                        let size = (1024 * memory_scale).into(); // Size per modelli non gestiti dedicati 1024 byte per range applicativo di media 
+                        MemoryManager::allocate(,None, size)?;
+                        return Ok(item);
                     }
                 }
-                
-                Ok(item)
             }
         }
 
@@ -183,13 +176,15 @@ macro_rules! impl_crud_ops {
             /// # Ritorna
             /// - `Ok($model)` se l'elemento è stato trovato in memoria o nel database.
             /// - `Err(String)` se l'elemento non è stato trovato né in memoria né nel database.
-            fn read(id: u64) -> Result<$model, String> {
+            fn read(id: u32) -> Result<$model, String> {
                 match std::any::type_name::<$model>() {
                     // Task (InMemory)
                     "modules::default::task_model::Task" => {
                         let tasks = TASKS_IN_MEMORY.lock().map_err(|e| format!("Errore di lock sul mutex: {}", e))?;
                         if let Some(task) = tasks.get(&id) {
                             return Ok(task.clone());
+                        } else {
+                            return Err(format!("Task con ID {} non trovato", id));
                         }
                     }
 
@@ -209,7 +204,7 @@ macro_rules! impl_crud_ops {
         }
 
         impl Delete for $model {
-            fn delete(_id: u64) -> Result<(), String> {
+            fn delete(_id: u32) -> Result<(), String> {
                 // Simulazione della logica di eliminazione (rimozione dal database) per ogni modello che implementa il trait con `match`statement
                 Ok(())
             }
@@ -237,7 +232,7 @@ macro_rules! impl_search_and_revoke {
         }
 
         impl Revoke for $model {
-            fn revoke(_id: u64) -> Result<(), String> {
+            fn revoke(_id: u32) -> Result<(), String> {
                 // Simulazione della logica di revoca, ad esempio per chiavi API o token.
                 Ok(())
             }

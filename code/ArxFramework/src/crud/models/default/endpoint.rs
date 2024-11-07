@@ -13,10 +13,11 @@ pub mod model{
     }
 
     impl Endpoint {
-        pub fn new(id: u32, name: String) -> Self {
+        pub fn new(id: u32, name: String, path: String) -> Self {
             Self { 
                 id, 
                 name,
+                path,
                 store: AllocType::Database,
             }
         }
