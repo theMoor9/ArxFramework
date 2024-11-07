@@ -12,6 +12,7 @@ pub mod model {
         pub data: String,  // Puoi specificare il formato dei dati se necessario
         pub store: AllocType,
         pub memory: Box<[u8]>,
+        pub ops: CrudOperations,
     }
 
     impl SensorData {
@@ -22,13 +23,22 @@ pub mod model {
             data: String,
             memory: Box<[u8]>,
         ) -> Self {
-            Self {
+            SensorData {
                 id,
                 device_id,
                 timestamp,
                 data,
                 store: AllocType::InMemory,
                 memory,
+                ops:CrudOperations{
+                    create: true,
+                    read: true,
+                    update: false,
+                    delete: true,
+                    list: true,
+                    search: true,
+                    revoke: false,
+                },
             }
         }
     }

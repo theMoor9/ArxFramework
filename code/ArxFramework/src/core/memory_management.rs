@@ -29,7 +29,7 @@ use crate::crud::models::default::{
     task::model::Task,
     device::model::Device,
     job::model::Job,
-    macro_::model::Macro,
+    macro_script::model::Macro,
     sensor_data::model::SensorData,
     log_event::model::LogEvent,
     command::model::Command,

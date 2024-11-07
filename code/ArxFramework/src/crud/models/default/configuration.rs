@@ -16,6 +16,7 @@ pub mod model {
         pub value: String,
         pub store: AllocType,
         pub memory: Box<[u8]>,
+        pub ops: CrudOperations,
     }
 
     impl Configuration {
@@ -26,7 +27,7 @@ pub mod model {
             value: String,
             memory: Box<[u8]>,
         ) -> Self {
-            Self {
+            Configuration {
                 id,
                 #[cfg(feature = "embedded")]
                 device_id,
@@ -34,6 +35,15 @@ pub mod model {
                 value,
                 store: AllocType::InMemory,
                 memory,
+                ops: CrudOperations{
+                    create: true,
+                    read: true,
+                    update: true,
+                    delete: true,
+                    list: false,
+                    search: true,
+                    revoke: true,
+                } 
             }
         }
     }

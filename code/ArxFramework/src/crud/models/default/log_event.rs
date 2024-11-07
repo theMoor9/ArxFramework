@@ -13,6 +13,7 @@ pub mod model {
         pub description: String,
         pub store: AllocType,
         pub memory: Box<[u8]>,
+        pub ops: CrudOperations,
     }
 
     impl LogEvent {
@@ -32,6 +33,15 @@ pub mod model {
                 description,
                 store: AllocType::InMemory,
                 memory,
+                ops: CrudOperations{
+                    create: true,
+                    read: true,
+                    update: false,
+                    delete: false,
+                    list: false,
+                    search: true,
+                    revoke: false,
+                } 
             }
         }
     }

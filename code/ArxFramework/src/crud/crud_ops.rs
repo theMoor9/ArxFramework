@@ -2,7 +2,7 @@
 use crate::crud::models::default::task::model::{Task}; 
 
 
-use crate::crud::models::dev::*;
+
 use crate::core::memory_management::{AllocationStrategy, MemoryManager};
 use crate::config::global_config::MemoryConfig;
 //use crate::::connection; NECESSARIO PER LA CONNESSIONE AL DATABASE
@@ -26,12 +26,15 @@ pub enum AllocType {
     InMemory,
     Database,
 }
-#[derive(Debug)]
-pub enum CrudOperations {
-    Create,
-    Read,
-    Update,
-    Delete,
+#[derive(Debug,Clone)]
+pub struct CrudOperations {
+    pub create: bool,
+    pub read: bool,
+    pub update: bool,
+    pub delete: bool,
+    pub list: bool,
+    pub search: bool,
+    pub revoke: bool,
 }
 
 /// Trait che definisce l'operazione di creazione per un generico tipo `T`.
@@ -216,16 +219,8 @@ macro_rules! impl_crud_ops {
                 vec![]
             }
         }
-    };
-}
-
-/// Macro per implementare le operazioni di Search e Revoke.
-/// 
-/// Questa macro aggiunge la funzionalità di ricerca e revoca per un tipo specificato.
-macro_rules! impl_search_and_revoke {
-    ($model:ty) => {
         impl Search<$model> for $model {
-            fn search(query: &str) -> Vec<$model> {
+            fn search(_query: &str) -> Vec<$model> {
                 // Simulazione della logica di ricerca nel database o in memoria.
                 vec![]
             }

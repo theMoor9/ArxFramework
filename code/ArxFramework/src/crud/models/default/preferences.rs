@@ -9,15 +9,25 @@ pub mod model {
         pub language: String,
         pub auto_save: bool,
         pub store: AllocType,
+        pub ops: CrudOperations,
     }
 
     impl Preferences {
         pub fn new(id: u32, language: String, auto_save: bool) -> Self {
-            Self {
+            Preferences {
                 id,
                 language,
                 auto_save,
                 store: AllocType::Database,
+                ops: CrudOperations{
+                    create: true,
+                    read: true,
+                    update: true,
+                    delete: true,
+                    list: true,
+                    search: false,
+                    revoke: false,
+                }
             }
         }
     }

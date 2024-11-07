@@ -10,6 +10,7 @@ pub mod model {
         pub token: String,
         pub user_id: u32,
         pub store: AllocType,
+        pub ops: CrudOperations,
     }
 
     impl Token {
@@ -19,6 +20,15 @@ pub mod model {
                 token,
                 user_id,
                 store: AllocType::Database,
+                ops: CrudOperations{
+                    create: true,
+                    read: true,
+                    update: false,
+                    delete: true,
+                    list: true,
+                    search: true,
+                    revoke: true,
+                },
             }
         }
     }

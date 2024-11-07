@@ -10,15 +10,25 @@ pub mod model {
         pub title: String,
         pub content: String,
         pub store: AllocType,
+        pub ops: CrudOperations,
     }
     
     impl Page {
         pub fn new(id: u32, title: String, content: String) -> Self {
-            Self {
+            Page {
                 id,
                 title,
                 content,
                 store: AllocType::Database,
+                ops: CrudOperations{
+                    create: true,
+                    read: true,
+                    update: true,
+                    delete: true,
+                    list: true,
+                    search: true,
+                    revoke: false,
+                }
             }
         }
     }

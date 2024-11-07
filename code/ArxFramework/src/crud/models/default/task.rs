@@ -21,7 +21,9 @@ pub mod model {
 
         pub store: AllocType,
         pub memory: Box<[u8]>,
-    }
+        pub ops: CrudOperations,
+    } 
+
 
     impl Task {
         pub fn new(
@@ -43,6 +45,15 @@ pub mod model {
                 device_id,
                 store: AllocType::InMemory,
                 memory,
+                ops:CrudOperations{
+                    create: true,
+                    read: true,
+                    update: true,
+                    delete: true,
+                    list: true,
+                    search: false,
+                    revoke: false,
+                },
             }
         }
     }

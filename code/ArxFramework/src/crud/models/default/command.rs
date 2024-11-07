@@ -12,6 +12,7 @@ pub mod model {
         pub issued_at: String,
         pub store: AllocType,
         pub memory: Box<[u8]>,
+        pub ops: CrudOperations,
     }
 
     impl Command {
@@ -22,13 +23,23 @@ pub mod model {
             issued_at: String,
             memory: Box<[u8]>,
         ) -> Self {
-            Self {
+
+            Command {
                 id,
                 device_id,
                 command_type,
                 issued_at,
                 store: AllocType::InMemory,
                 memory,
+                ops: CrudOperations{
+                    create: true,
+                    read: true,
+                    update: true,
+                    delete: true,
+                    list: true,
+                    search: true,
+                    revoke: true,
+                },
             }
         }
     }

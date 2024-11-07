@@ -10,15 +10,25 @@ pub mod model{
         pub name: String,
         pub path: String,
         pub store: AllocType,
+        pub ops: CrudOperations,
     }
 
     impl Endpoint {
         pub fn new(id: u32, name: String, path: String) -> Self {
-            Self { 
+            Endpoint { 
                 id, 
                 name,
                 path,
                 store: AllocType::Database,
+                ops: CrudOperations{
+                    create: true,
+                    read: true,
+                    update: true,
+                    delete: true,
+                    list: true,
+                    search: false,
+                    revoke: false,
+                } 
             }
         }
     }

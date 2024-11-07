@@ -11,16 +11,26 @@ pub mod model {
         pub device_type: String,
         pub store: AllocType,
         pub memory: Box<[u8]>,
+        pub ops: CrudOperations,
     }
 
     impl Device {
         pub fn new(id: u32, name: String, memory: Box<[u8]> ) -> Self {
-            Self { 
+            Device { 
                 id, 
                 name,
                 device_type: "default".to_string(),
                 store: AllocType::InMemory,
                 memory,
+                ops: CrudOperations{
+                    create: true,
+                    read: true,
+                    update: true,
+                    delete: true,
+                    list: true,
+                    search: true,
+                    revoke: true,
+                } 
             }
         }
     }

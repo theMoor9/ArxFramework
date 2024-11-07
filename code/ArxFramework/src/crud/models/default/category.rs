@@ -9,14 +9,24 @@ pub mod model {
         pub id: u32,
         pub name: String,
         pub store: AllocType,
+        pub ops: CrudOperations,
     }
 
     impl Category {
         pub fn new(id: u32, name: String) -> Self {
-            Self {
+            Category {
                 id,
                 name,
                 store: AllocType::Database,
+                ops: CrudOperations{
+                    create: true,
+                    read: true,
+                    update: true,
+                    delete: true,
+                    list: true,
+                    search: false,
+                    revoke: false,
+                },
             }
         }
     }

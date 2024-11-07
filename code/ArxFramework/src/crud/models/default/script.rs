@@ -10,15 +10,25 @@ pub mod model {
         pub name: String,
         pub code: String,
         pub store: AllocType,
+        pub ops: CrudOperations,
     }
 
     impl Script {
         pub fn new(id: u32, name: String, code: String) -> Self {
-            Self { 
+            Script { 
                 id, 
                 name,
                 code,
                 store: AllocType::Database,
+                ops: CrudOperations{
+                    create: true,
+                    read: true,
+                    update: true,
+                    delete: true,
+                    list: false,
+                    search: true,
+                    revoke: false,
+                },
             }
         }
     }

@@ -11,6 +11,7 @@ pub mod model {
         pub description: String,
         pub store: AllocType,
         pub memory: Box<[u8]>,
+        pub ops: CrudOperations,
     }
 
     impl Job {
@@ -20,12 +21,21 @@ pub mod model {
             description: String,
             memory: Box<[u8]>,
         ) -> Self {
-            Self {
+            Job {
                 id,
                 name,
                 description,
                 store: AllocType::InMemory,
                 memory,
+                ops: CrudOperations{
+                    create: true,
+                    read: true,
+                    update: true,
+                    delete: true,
+                    list: true,
+                    search: false,
+                    revoke: true,
+                } 
             }   
         }
     }

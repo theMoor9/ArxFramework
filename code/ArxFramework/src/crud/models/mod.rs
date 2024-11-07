@@ -14,7 +14,7 @@ pub mod default{
     pub mod firmware_version;
     pub mod job;
     pub mod log_event;
-    pub mod macro_;
+    pub mod macro_script;
     pub mod page;
     pub mod permission;
     pub mod preferences;
