@@ -1,13 +1,45 @@
-#[cfg(any(feature = "desktop", feature = "embedded", feature = "automation"))]
-use crate::crud::models::default::task::model::{Task}; 
+use log::{info};
 
-
+use cfg_if::cfg_if;
+cfg_if! {
+    if #[cfg(feature = "webapp")] {
+        use crate::crud::models::default::{
+            user::model::User, article::model::Article, comment::model::Comment, category::model::Category,
+            tag::model::Tag, file::model::File, page::model::Page,
+        };
+    } else if #[cfg(feature = "api_backend")] {
+        use crate::crud::models::default::{
+            user::model::User, api_key::model::ApiKey, token::model::Token, request_log::model::RequestLog,
+            endpoint::model::Endpoint, permission::model::Permission, rate_limit_rule::model::RateLimitRule,
+        };
+    } else if #[cfg(feature = "desktop")] {
+        use crate::crud::models::default::{
+            user::model::User, settings::model::Settings, document::model::Document, file::model::File,
+            preferences::model::Preferences, task::model::Task, project::model::Project,
+        };
+    } else if #[cfg(feature = "automation")] {
+        use crate::crud::models::default::{
+            script::model::Script, task::model::Task, execution_log::model::ExecutionLog,
+            schedule::model::Schedule, configuration::model::Configuration, job::model::Job,
+            macro_script::model::MacroScript,
+        };
+    } else if #[cfg(feature = "embedded")] {
+        use crate::crud::models::default::{
+            device::model::Device, sensor_data::model::SensorData, configuration::model::Configuration,
+            firmware_version::model::FirmwareVersion, log_event::model::LogEvent, command::model::Command, task::model::Task,
+        };
+    }
+}
 
 use crate::core::memory_management::{AllocationStrategy, MemoryManager};
-use crate::config::global_config::MemoryConfig;
-//use crate::::connection; NECESSARIO PER LA CONNESSIONE AL DATABASE
-use log::{info};
-use diesel::prelude::*;
+use crate::config::memory_config::MemoryConfig;
+
+//DATABASE
+//use diesel::prelude::*;
+//use crate::::connection; 
+
+
+
 
 // Importazione variabili statiche per mantenere i modelli in memoria
 use crate::core::memory_management::{

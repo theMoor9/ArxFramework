@@ -1,8 +1,8 @@
 //! Modulo per la gestione della configurazione globale del sistema.
 //!
 //! Questo modulo fornisce la configurazione globale del sistema, inclusi i tipi di applicazioni supportati
-//! e le impostazioni di memoria. È possibile estendere il sistema con nuove variabili di configurazione
-//! in modo compatibile e sicuro, mantenendo la semplicità. Perfetto per i dev che piace "incespicare" :D
+//! È possibile estendere il sistema con nuove variabili di configurazione
+//! in modo compatibile e sicuro, mantenendo la semplicità. Perfetto per i dev a cui piace "incespicare" :D
 //!
 //! Per aggiungere una nuova variabile di configurazione, basta creare una nuova struttura di configurazione
 //! e integrarla nel `CoreConfig`. Ecco come aggiungere nuove variabili mantenendo la compatibilità con il framework.
@@ -16,6 +16,7 @@ pub enum ApplicationType {
     DesktopApp,
     AutomationScript,
     EmbeddedSystem,
+    None,
 }
 
 /// Configurazione globale del sistema.
@@ -28,38 +29,11 @@ pub struct CoreConfig {
     pub max_threads: u8,
 }
 
-/// Configurazione della memoria per il sistema.
-///
-/// Questa configurazione è utilizzata per gestire le impostazioni relative alla memoria,
-/// come la dimensione del pool di buffer o la dimensione del buffer nei sistemi embedded.
-pub struct MemoryConfig {
-    pub pool_size: usize,    // Dimensione del pool di buffer (per PoolBased)
-    pub buffer_size: usize,  // Dimensione del buffer (per Embedded)
-    pub memory_scale: u8,   // Scala per la dimensione della memoria dei modelli
-}
-
-/// Implementazione del valore di default per `MemoryConfig`.
-///
-/// Fornisce impostazioni predefinite per la configurazione della memoria.
-impl Default for MemoryConfig {
+impl Default for CoreConfig {
     fn default() -> Self {
-        MemoryConfig {
-            pool_size: 10,      // Valore di default: 10 buffer per il pool
-            buffer_size: 1024,   // Valore di default: 1024 byte per buffer
-            memory_scale: 1,  // Valore di default: scala 1.0 per la dimensione della memoria
-        }
-    }
-}
-
-/// Implementazione della configurazione della memoria.
-/// Questa struttura contiene le impostazioni per la dimensione del pool e dei buffer e si trova in global_config.rs
-impl MemoryConfig {
-    /// Crea una nuova configurazione della memoria con le impostazioni predefinite.
-    pub fn new(pool_size: usize, buffer_size: usize, memory_scale: u8) -> Self {
-        MemoryConfig {
-            pool_size,
-            buffer_size,
-            memory_scale,
+        CoreConfig {
+            app_type: ApplicationType::None,
+            max_threads: 4,
         }
     }
 }
@@ -78,13 +52,5 @@ impl MemoryConfig {
 //     pub cache_size: usize, // Nuova variabile per gestire la dimensione della cache
 // }
 // 
-// impl Default for CoreConfig {
-//     fn default() -> Self {
-//         CoreConfig {
-//             app_type: ApplicationType::WebApp,
-//             max_threads: 4,
-//             cache_size: 256, // Imposta un valore di default per la cache
-//         }
-//     }
-// }
+
 // ```

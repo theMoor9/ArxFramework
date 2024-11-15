@@ -1,6 +1,9 @@
 use arx_framework::cli::{parse_arguments,Commands};
 use arx_framework::core::system_core::CoreSystem;
-use arx_framework::config::global_config::{CoreConfig,MemoryConfig};
+use arx_framework::config::{
+    global_config::{CoreConfig},
+    memory_config::MemoryConfig,
+};
 use arx_framework::monitoring::logger::setup_logging;
 use log::info;
 

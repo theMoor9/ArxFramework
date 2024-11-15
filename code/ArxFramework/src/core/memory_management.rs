@@ -8,7 +8,10 @@
 //!
 //! È possibile configurare la dimensione dei buffer e del pool utilizzando la struttura `MemoryConfig`.
 
-use crate::config::global_config::{ApplicationType, MemoryConfig};
+use crate::config::{
+    global_config::ApplicationType,
+    memory_config::MemoryConfig,
+};
 use crate::core::system_core::CoreError;
 use log::{info};
 use std::collections::VecDeque;
@@ -87,6 +90,9 @@ impl MemoryManager {
             ApplicationType::DesktopApp => AllocationStrategy::Standard,
             ApplicationType::AutomationScript => AllocationStrategy::Standard,
             ApplicationType::EmbeddedSystem => AllocationStrategy::CustomEmbedded,
+            _ => {
+                return Err(CoreError::ConfigurationError("Tipo di applicazione non supportato considera implementazione".to_string()));
+            },
         };
 
         // Inizializza il pool solo se la strategia è `PoolBased`, utilizzando il `pool_size` configurato.
@@ -231,6 +237,7 @@ pub fn define_buffer_size(app_type: ApplicationType, buffer_size: usize) -> usiz
         ApplicationType::DesktopApp => 4 * 1024 * 1024, // 4 MB
         ApplicationType::AutomationScript => 2 * 1024 * 1024, // 2 MB
         ApplicationType::EmbeddedSystem => 512 * 1024, // 512 KB
+        _ => 0,
     }
 }
 
@@ -249,6 +256,7 @@ pub fn define_pool_size(app_type: ApplicationType, pool_size: usize) -> usize {
         ApplicationType::DesktopApp => 50 * 1024 * 1024, // 50 MB
         ApplicationType::AutomationScript => 30 * 1024 * 1024, // 30 MB
         ApplicationType::EmbeddedSystem => 5 * 1024 * 1024, // 5 MB
+        _ => 0,
     }
 }
 
@@ -292,6 +300,7 @@ pub fn define_multiplier(app_type: ApplicationType, memory_scale: u8) -> u8 {
         ApplicationType::DesktopApp => 1,
         ApplicationType::AutomationScript => 1,
         ApplicationType::EmbeddedSystem => 1,
+        _ => 0,
     }
 }
 
