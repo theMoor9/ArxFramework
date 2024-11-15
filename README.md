@@ -46,18 +46,19 @@ ArxFramework offers a solid and flexible foundation for the development of modul
 
 ## Modular Structure Table for 5 Solutions
 
-|Module|Web App|API Backend|Desktop App|Automation & Scripting|Embedded Systems|
-|---|---|---|---|---|---|
-|Core System (Rust)|✓|✓|✓|✓|✓|
-|Authentication & Security|✓|✓|✓|○|○|
-|CRUD Management|✓|✓|✓|○|○|
-|API Layer|✓|✓|○|○|○|
-|File/Resource Management|○|○|✓|✓|○|
-|Monitoring & Logging|✓|✓|✓|✓|✓|
-|Task Automation|○|○|○|✓|○|
-|Dynamic Frontend|✓|○|✓|○|○|
-|Blockchain Integration|✓|✓|✓|✓|✓|
-|Machine Learning|✓|✓|✓|✓|✓|
+| Module                    | Web App | API Backend | Desktop App | Automation & Scripting | Embedded Systems |
+| ------------------------- | ------- | ----------- | ----------- | ---------------------- | ---------------- |
+| Core System (Rust)        | ✓       | ✓           | ✓           | ✓                      | ✓                |
+| Authentication & Security | ✓       | ✓           | ✓           | ○                      | ○                |
+| CRUD Management           | ✓       | ✓           | ✓           | ○                      | ○                |
+| API Layer                 | ✓       | ✓           | ○           | ○                      | ○                |
+| Network                   | ✓<br>   | ✓<br>       | ✓<br>       | ✓<br>                  | ✓<br>            |
+| File/Resource Management  | ○       | ○           | ✓           | ✓                      | ○                |
+| Monitoring & Logging      | ✓       | ✓           | ✓           | ✓                      | ✓                |
+| Task Automation           | ○       | ○           | ○           | ✓                      | ○                |
+| Dynamic Frontend          | ✓       | ○           | ✓           | ○                      | ○                |
+| Blockchain Integration    | ✓       | ✓           | ✓           | ✓                      | ✓                |
+| Machine Learning          | ✓       | ✓           | ✓           | ✓                      | ✓                |
 
 Legend:
 
@@ -66,18 +67,19 @@ Legend:
 
 ### Expanded Module Details for Development
 
-|Module|Primary Language|Support Language|Wrapping|Main Framework/Libraries|
-|---|---|---|---|---|
-|Core System|Rust|-|-|tokio (async runtime)|
-|Authentication & Security|Rust|Python|Yes|jsonwebtoken, bcrypt|
-|CRUD Management|Rust|-|-|diesel (ORM)|
-|API Layer|Rust (warp/actix-web)|Python (FastAPI)|No|serde (serialization)|
-|File/Resource Management|Rust|-|-|std::fs, tokio::fs|
-|Monitoring & Logging|Rust|-|-|tracing, prometheus|
-|Task Automation|Rust|Python|Yes|rayon (parallelism)|
-|Dynamic Frontend|Svelte (TypeScript)|-|-|SvelteKit, DaisyUI (CSS)|
-|Blockchain Integration|Rust|Python|Yes|Solana web3|
-|Machine Learning|Python|Rust|Yes|PyTorch, scikit-learn|
+| Module                    | Primary Language      | Support Language | Wrapping | Main Framework/Libraries |
+| ------------------------- | --------------------- | ---------------- | -------- | ------------------------ |
+| Core System               | Rust                  | -                | -        | tokio (async runtime)    |
+| Authentication & Security | Rust                  | Python           | Yes      | jsonwebtoken, bcrypt     |
+| CRUD Management           | Rust                  | -                | -        | diesel (ORM)             |
+| API Layer                 | Rust (warp/actix-web) | Python (FastAPI) | No       | serde (serialization)    |
+| Network                   | Rust<br>              | -<br>            | -        | Diesel,Tokio,pyo3        |
+| File/Resource Management  | Rust                  | -                | -        | std::fs, tokio::fs       |
+| Monitoring & Logging      | Rust                  | -                | -        | tracing, prometheus      |
+| Task Automation           | Rust                  | Python           | Yes      | rayon (parallelism)      |
+| Dynamic Frontend          | Svelte (TypeScript)   | -                | -        | SvelteKit, DaisyUI (CSS) |
+| Blockchain Integration    | Rust                  | Python           | Yes      | Solana web3              |
+| Machine Learning          | Python                | Rust             | Yes      | PyTorch, scikit-learn    |
 
 Additional Notes:
 
@@ -148,6 +150,7 @@ ArxFramework/
 ├── crud/                 # CRUD Management (Rust)
 | └── models/               # Models folder
 ├── api/                  # API Layer (Primary Rust, optional Python FastAPI)
+├── network/              # Handles networking
 ├── file_management/      # File/Resource Management (Rust)
 ├── monitoring/           # Monitoring and logging (Rust)
 | └── logs/               # Logs folder
@@ -186,6 +189,20 @@ ArxFramework/
 - `api_server.rs`: Main API server
 - `routes.rs`: API route definitions
 - `fastapi_integration.py`: Integration with FastAPI
+
+**network/**
+
+- `connection_manager.rs`: Manages active connections and the connection pool.  
+	- Functions to establish, maintain, and close persistent connections.  
+	- Retry handling for failed connections.
+
+- `load_balancer.rs`: Implements various load-balancing algorithms.  
+	- Data structures to monitor the load on each server (e.g., the number of active connections).  
+	- Functions to distribute requests based on the chosen balancing algorithm.
+
+ - `resource_pool.rs`: Centrally manages network resources, such as connections.  
+	- Connection pooling to minimize latency.  
+	- Configurable options to limit the maximum number of simultaneous connections
 
 **file_management/**
 
@@ -230,6 +247,7 @@ ArxFramework/
 **config/**
 
 - `global_config.rs`: Configuration file for the entire framework
+- `network_config.rs`: Guess what
 
 **src/**
 

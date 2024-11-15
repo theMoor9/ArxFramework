@@ -3,8 +3,6 @@
 | -------------------------- | --------------------- | ---------------------- | -------- | ----------------------------- |
 | Monitoraggio e logging     | Rust                  | -                      | -        | tracing, prometheus           |
 
-#Modulo-Layer-1-per-Code-Base 
-
 ---
 
 ### Istruzioni e note

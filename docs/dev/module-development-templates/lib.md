@@ -1,8 +1,6 @@
 
 # src/
 
-#Modulo-Layer-1-per-Code-Base 
-
 ---
 
 # `lib.rs`

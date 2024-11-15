@@ -21,7 +21,7 @@
 
 # Elementi
 
-### **core/**
+### core/
 
 - [ ]  `system_core.rs`: Gestione centrale del sistema implementata.
     - [x]  code
@@ -40,7 +40,7 @@
     - [ ]  Unit test
     - [ ]  Review
 
-### **monitoring/**
+### monitoring/
 
 -  `logger.rs`: Sistema di logging configurato e funzionante.
     
@@ -59,7 +59,7 @@
     - [ ]  In-code Documentation
     - [ ]  Unit test
 
-### **auth/**
+### auth/
 
 - [ ]  `auth_core.rs`: Funzionalità di autenticazione core definite.
     - [ ]  code
@@ -76,7 +76,7 @@
     - [ ]  In-code Documentation
     - [ ]  Unit test
 
-### **crud/**
+### crud/
 
 - [ ]  `crud_operations.rs`: Operazioni CRUD implementate per tutti i casi d'uso.
     - [ ]  code
@@ -95,7 +95,7 @@
     - [x]  In-code Documentation
     - [ ]  Unit test
 
-### **api/**
+### api/
 
 - [ ]  `api_server.rs`: Server API principale avviabile e funzionante.
     - [ ]  code
@@ -119,7 +119,30 @@
     - [ ]  In-code Documentation
     - [ ]  Unit test
 
-### **file_management/**
+### network/
+- [ ] `connection_manager.rs`: gestisce le connessioni attive e il pool di connessioni.
+	- [ ]  code
+    - [ ]  dev documentation
+    - [ ]  documentation
+    - [ ]  Logger
+    - [ ]  In-code Documentation
+    - [ ]  Unit test
+- [ ] `load_balancer.rs` : implementa vari algoritmi di load balancing.
+	- [ ]  code
+    - [ ]  dev documentation
+    - [ ]  documentation
+    - [ ]  Logger
+    - [ ]  In-code Documentation
+    - [ ]  Unit test
+- [ ] `resource_pool.rs`: gestisce le risorse di rete, come connessioni, in modo centralizzato.
+    - [ ]  code
+    - [ ]  dev documentation
+    - [ ]  documentation
+    - [ ]  Logger
+    - [ ]  In-code Documentation
+    - [ ]  Unit test
+
+### file_management/
 
 - [ ]  `file_ops.rs`: Operazioni su file implementate e testate.
     - [ ]  code
@@ -136,7 +159,7 @@
     - [ ]  In-code Documentation
     - [ ]  Unit test
 
-### **frontend/**
+### frontend/
 
 - [ ]  `App.svelte`: Componente root Svelte sviluppato e funzionante.
     - [ ]  code
@@ -161,7 +184,7 @@
     - [ ]  In-code Documentation
     - [ ]  Unit test
 
-### **task_automation**
+### task_automation/
 
 - [ ]  `task_core.rs`: Funzioni core per automazione sviluppate.
     - [ ]  code
@@ -178,7 +201,7 @@
     - [ ]  In-code Documentation
     - [ ]  Unit test
 
-### **blockchain/**
+### blockchain/
 
 - [ ]  `blockchain_integration.rs`: Interfaccia blockchain funzionante.
     - [ ]  code
@@ -195,7 +218,7 @@
     - [ ]  In-code Documentation
     - [ ]  Unit test
 
-### **ml/**
+### ml/
 
 - [ ]  `ml_models.py`: Modelli ML implementati e funzionanti.
     - [ ]  code
@@ -212,7 +235,7 @@
     - [ ]  In-code Documentation
     - [ ]  Unit test
 
-### **config/**
+### config/
 
 - [ ]  `global_config.rs`: File di configurazione globale completo e configurato.
     - [ ]  code
@@ -221,8 +244,22 @@
     - [ ]  Logger
     - [x]  In-code Documentation
     - [ ]  Unit test
+- [ ] `network_config.rs`: file di configurazione per settare parametri come il numero massimo di connessioni, timeout delle connessioni e algoritmo di bilanciamento.
+    - [ ]  code
+    - [ ]  dev documentation
+    - [ ]  documentation
+    - [ ]  Logger
+    - [ ]  In-code Documentation
+    - [ ]  Unit test
+- [ ] `memory_config.rs`
+    - [ ]  code
+    - [x]  dev documentation
+    - [ ]  documentation
+    - [ ]  Logger
+    - [x]  In-code Documentation
+    - [ ]  Unit test
 
-### **src/**
+### src/
 
 - [ ]  `main.rs`: Main costruito con standard procedures.
     - [ ]  code
@@ -254,54 +291,6 @@
     - Implementare i moduli esterni secondo l'interfaccia definita dal trait `SystemComponent`.
     - Assicurarsi che ogni modulo gestisca correttamente l'inizializzazione, lo shutdown e la gestione degli errori.
 
-### crud/
-
-####  CRUD Models
-- [x]  
-##### **1. Web App**
-User, Article/Blog Post, Comment, Category, Tag, File/Image, Page
-##### **2. API Backend**
-User, API Key, Token, Request Log, Endpoint, Permission, Rate Limit Rule
-##### **3. Desktop App**
-User, Settings, Document, File, Preferences, Task, Project
-##### **4. Automazione e Scripting**
-Script, Task, Execution Log, Schedule, Configuration, Job, Macro
-##### **5. Sistemi Embedded**
-Device, Sensor Data, Configuration, Firmware Version, Log/Event, Command, Task
-
-#### CRUD Operations
-- [ ] 
-Per **ogni modello** avremo le seguenti operazioni:
-
-- [x] **Create**: Crea un nuovo elemento nel database.
-- [x] **Read**: Legge un elemento specifico dal database.
-- [ ] **Update**: Aggiorna i dati di un elemento esistente.
-- [ ] **Delete**: Elimina un elemento specifico dal database.
-- [ ] **List**: Restituisce una lista di tutti gli elementi o una selezione.
-- [ ] **Search**: (Facoltativa) Ricerca avanzata di elementi nel database.
-- [ ] **Revoke**: (Facoltativa) Invalida o revoca un elemento (usata per chiavi API o token).
-
-#####  Operazioni CRUD Applicabili ai Modelli
-
-- **Create**: User, Article, Comment, Category, Tag, File/Image, Page, API Key, Token, Request Log, Endpoint, Permission, Rate Limit Rule, Settings, Document, Preferences, Task, Project
-- **Read**: User, Article, Comment, Category, Tag, File/Image, Page, API Key, Token, Request Log, Endpoint, Permission, Rate Limit Rule, Settings, Document, Preferences, Task, Project
-- **Update**: User, Article, Comment, Category, Tag, File/Image, Page, Endpoint, Permission, Rate Limit Rule, Settings, Document, Preferences, Task, Project
-- **Delete**: User, Article, Comment, Category, Tag, File/Image, Page, API Key, Token, Request Log, Endpoint, Permission, Rate Limit Rule, Settings, Document, Preferences, Task, Project
-- **List**: User, Article, Comment, Category, Tag, File/Image, Page, API Key, Token, Request Log, Endpoint, Permission, Rate Limit Rule, Settings, Document, Preferences, Task, Project
-- **Search**: Article, Comment, File/Image, Page, Document
-- **Revoke**: API Key, Token
-
-##### Memory integration
-
-- **Per database tradizionale (PostgreSQL)**:
-    - Una libreria Rust come **`sqlx`**.
-    - Un server PostgreSQL locale o remoto. (Dettaglio che andrà sviluppato dinamicamente visto che non riguarda la possibile app)
-- **Per Solana**:
-    - La libreria **`solana-client`** in Rust.
-    - Un nodo RPC o una connessione alla rete Solana
-
-### Integration
-- [ ] 
 #### Passo 1: Integrare il Main e il CLI e la Configurazione del Main
 - [x] 
 Devi prima finalizzare l'integrazione del **CLI** con il **main.rs** per poter estrarre correttamente le variabili di configurazione. La configurazione includerà:
@@ -320,18 +309,73 @@ Il prossimo passo sarà garantire che il **main.rs** inizializzi correttamente i
 - Le configurazioni del sistema siano propagate al resto del framework (es. tipo di applicazione, dimensioni del pool di memoria).
 - Moduli come **memory_management.rs** ricevano la configurazione appropriata.
 
-#### Passo 3: Creare il Modulo per la Connessione Server 
+#### Passo 3: Sviluppo del Modulo di Rete
 
-creare un modulo indipendente (es. **server/** o **db_connection/**) che gestisce tutte le connessioni server e di database. Questo modulo si occuperebbe di:
+- **Obiettivo**: Fornire funzionalità di connessione server, inclusi _connection pooling_, _load balancing_ e gestione delle connessioni persistenti, se necessario.
+- **Dipendenze**: Questo modulo sarà la base per il sistema CRUD lato server. Dovrà quindi prevedere i tipi di connessione (es. WebSocket per connessioni persistenti o HTTP per richieste stateless).
+- **Interfaccia di rete**: Assicurati che ci sia un’interfaccia semplice e unificata per altre componenti, come il CRUD, che possano invocare richieste di rete.
 
-- **Inizializzare** la connessione al database.
-- **Gestire** eventuali configurazioni specifiche (es. pool di connessioni, timeout).
-- **Esportare** una variabile `connection` riutilizzabile da qualsiasi parte del framework, sia che si tratti di un'app API, un'app web, o operazioni CRUD.
+#### Passo 4: Modulo di Autenticazione
+    
+- **Obiettivo**: Assicurarsi che ogni richiesta CRUD e ogni operazione di rete sia autorizzata.
+- **Dipendenze**: Il modulo di autenticazione dovrà integrarsi con il modulo di rete, gestendo token di accesso e identificatori di sessione, oltre a eventuali chiavi API.
+- **Integrazione con CRUD**: Prepara una funzione di verifica di autenticazione che possa essere richiamata nel modulo CRUD prima di eseguire operazioni lato server.
 
-#### Passo 4: Finalizzare `crud_ops.rs`
+#### Passo 5: Implementazione delle Operazioni CRUD
 
 Una volta stabilita la connessione al database e propagata la configurazione, puoi completare **crud_ops.rs** e implementare le operazioni CRUD per i modelli. In questo passaggio, `crud_ops.rs` utilizzerà la connessione centralizzata per eseguire operazioni come `INSERT`, `UPDATE`, `DELETE`, ecc.
 
+- **In Memory**: Continua con le operazioni in memoria (creazione, lettura, aggiornamento, eliminazione) per garantire che la logica CRUD sia chiara e funzionante.
+- **Estensione per Server**: Integra il modulo CRUD con la rete, aggiungendo logica per decidere se l'operazione è locale (in memory) o remota (server).
+- **Sicurezza**: Assicurati che tutte le operazioni lato server richiamino il modulo di autenticazione per la verifica delle autorizzazioni.
+
+- ##### Implementazione crud/
+
+	- [x] **CRUD Default Models**
+	 **1. Web App**
+		User, Article/Blog Post, Comment, Category, Tag, File/Image, Page
+	 **2. API Backend**
+		User, API Key, Token, Request Log, Endpoint, Permission, Rate Limit Rule
+	 **3. Desktop App**
+		User, Settings, Document, File, Preferences, Task, Project
+	 **4. Automazione e Scripting**
+		Script, Task, Execution Log, Schedule, Configuration, Job, Macro Script
+	 **5. Sistemi Embedded**
+		Device, Sensor Data, Configuration, Firmware Version, Log/Event, Command, Task
+	
+	- [ ]  **CRUD Operations**
+		Per **ogni modello** avremo le seguenti possibili operazioni:
+		
+		- [ ] **Create**: Crea un nuovo elemento nel database.
+		- [ ] **Read**: Legge un elemento specifico dal database.
+		- [ ] **Update**: Aggiorna i dati di un elemento esistente.
+		- [ ] **Delete**: Elimina un elemento specifico dal database.
+		- [ ] **List**: Restituisce una lista di tutti gli elementi o una selezione.
+		- [ ] **Search**: (Facoltativa) Ricerca avanzata di elementi nel database.
+		- [ ] **Revoke**: (Facoltativa) Invalida o revoca un elemento (usata per chiavi API o token).
+		
+		######  Operazioni CRUD Applicabili ai Modelli
+		
+		- **Create**: User, Article, Comment, Category, Tag, File/Image, Page, API Key, Token, Request Log, Endpoint, Permission, Rate Limit Rule, Settings, Document, Preferences, Task, Project, Command, Sensor Data, Script, Schedule, Log Event, Macro Script, Firmware Version, Device, Configuration
+		- **Read**: User, Article, Comment, Category, Tag, File/Image, Page, API Key, Token, Request Log, Endpoint, Permission, Rate Limit Rule, Settings, Document, Preferences, Task, Project, Command, Sensor Data, Script, Schedule, Log Event, Macro Script, Firmware Version, Device, Configuration
+		- **Update**: User, Article, Comment, Category, Tag, File/Image, Page, Endpoint, Permission, Rate Limit Rule, Settings, Document, Preferences, Task, Project, Command, Script, Script, Schedule, Macro Script, Firmware Version, Device, Configuration
+		- **Delete**: User, Article, Comment, Category, Tag, File/Image, Page, API Key, Token, Request Log, Endpoint, Permission, Rate Limit Rule, Settings, Document, Preferences, Task, Project, Sensor Data, Script, Script, Schedule, Log Event, Macro Script, Device, Configuration
+		- **List**: User, Article, Comment, Category, Tag, File/Image, Page, API Key, Token, Request Log, Endpoint, Permission, Rate Limit Rule, Settings, Document, Preferences, Task, Project, Command, Sensor Data, Schedule, Macro Script, Device
+		- **Search**: Article, Comment, File/Image, Page, Document, Command,Token, Sensor Data, Script, Schedule, Log Event, Firmware Version,Device, Configuration
+		- **Revoke**: API Key, Token, Command, Schedule, Firmware Version, Device, Configuration
+	
+	- [ ] **Memory integration**
+	
+	- **Per database tradizionale (PostgreSQL)**:
+	    - Una libreria Rust come **`Diesel`**.
+	    - Un server PostgreSQL locale o remoto. (Dettaglio che andrà sviluppato dinamicamente visto che non riguarda la possibile app)
+	- **Per Solana**:
+	    - La libreria **`solana-client`** in Rust.
+	    - Un nodo RPC o una connessione alla rete Solana
+	    
+#### Passo 6: Testing dell'Integrazione
+    
+- Una volta stabilita la rete, procedi con test combinati per CRUD e autenticazione su server. Questo ti permette di rilevare eventuali problematiche nelle dipendenze, come ritardi di autenticazione o problemi di timeout nelle connessioni.
 
 ### System Core Initialize module
 - [ ] Sviluppare la funzione `initialize_module` per ogni modulo.

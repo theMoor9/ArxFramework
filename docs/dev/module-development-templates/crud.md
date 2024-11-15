@@ -4,8 +4,6 @@
 | ------------- | --------------------- | ---------------------- | -------- | ----------------------------- | ------------------------------------------------------ |
 | Gestione CRUD | Rust                  | -                      | -        | diesel (ORM)                  | Design pattern Repository, astrazione del database<br> |
 
-#Modulo-Layer-1-per-Code-Base 
-
 Il modulo **CRUD** si trova all'interno della cartella `modules/`, che contiene due sotto-cartelle principali:
 
 - **`modules/default/`**: Questa cartella contiene i modelli standard predefiniti, necessari al funzionamento di base dell'applicazione. Ogni file all'interno di questa cartella segue la convenzione di essere nomenclato con il suffisso `_model.rs` e definisce i modelli base, come `user_model.rs`, `article_model.rs`, e simili.

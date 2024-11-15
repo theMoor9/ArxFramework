@@ -4,9 +4,46 @@
 | ------------ | --------------------- | ---------------------- | -------- | ----------------------------- | ---------------------------------- |
 | Core Sistema | Rust                  | -                      | -        | tokio (async runtime)         | Ottimizzazione per concorre        |
 
+# Scope
 
-#Modulo-Layer-1-per-Code-Base 
+### **1. Web App**
 
+- **Necessità**: Gestire sessioni, autenticazioni e transazioni dell'utente.
+- **Funzioni di `system_core`**: Coordinare il ciclo di vita dell'applicazione, caricare moduli specifici per il web (es. autenticazione, CRUD, frontend).
+- **Considerazioni**: Richiede una gestione efficiente delle risorse per un numero variabile di utenti e richieste simultanee.
+
+### **2. API Backend**
+
+- **Necessità**: Elaborazione di richieste API, gestione delle connessioni, e controllo delle risorse di backend.
+- **Funzioni di `system_core`**: Sincronizzazione dei moduli API, gestione delle chiavi API e dei log.
+- **Considerazioni**: Necessità di supportare molteplici endpoint e un'interazione stabile con il database.
+
+### **3. Desktop App**
+
+- **Necessità**: Avvio dell'interfaccia utente, gestione della persistenza locale dei dati e del ciclo di vita dell'applicazione.
+- **Funzioni di `system_core`**: Inizializzazione delle impostazioni locali, caricamento dei moduli necessari per un'app desktop.
+- **Considerazioni**: Prestazioni rapide e leggerezza.
+
+### **4. Automazione e Scripting**
+
+- **Necessità**: Esecuzione di script e automazione di task predefiniti.
+- **Funzioni di `system_core`**: Avvio dei task programmati, gestione del logging e dei risultati.
+- **Considerazioni**: Richiede la gestione efficiente di task asincroni e accesso alle risorse di sistema.
+
+### **5. Sistemi Embedded**
+
+- **Necessità**: Controllo hardware, gestione della memoria e del consumo energetico.
+- **Funzioni di `system_core`**: Caricamento di moduli di gestione della memoria e del firmware, interazione con sensori e dispositivi.
+- **Considerazioni**: Necessità di bassa latenza e gestione ottimizzata delle risorse di sistema.
+
+
+### Scope Generale di `system_core.rs`
+
+Il modulo `system_core.rs` dovrebbe garantire:
+
+1. **Inizializzazione modulare**: Il `system_core` dovrebbe essere in grado di caricare moduli specifici in base all'applicazione che si sta eseguendo.
+2. **Gestione centralizzata degli errori**: Ogni operazione del `system_core` deve gestire in modo sicuro gli errori, con log appropriati e tentativi di recupero quando possibile.
+3. **Scalabilità e ottimizzazione delle risorse**: Deve essere progettato per garantire che i moduli siano eseguiti solo quando necessario, risparmiando risorse per applicazioni meno esigenti (ad esempio, un'API Backend potrebbe richiedere più risorse rispetto a un'app di automazione).
 
 ---
 
@@ -133,10 +170,10 @@ impl CoreSystem {
 
 ```Rust
 // Inizializza il CoreSystem con la configurazione ricevuta
-let core_system = CoreSystem::new(config).expect("Errore nell'inizializzazione del Core System");
+let system_core = CoreSystem::new(config).expect("Errore nell'inizializzazione del Core System");
     
 // Esegui il core system
-core_system.run()?;
+system_core.run()?;
 
 ```
 
