@@ -1,10 +1,10 @@
-use arx_framework::cli::{parse_arguments,Commands};
-use arx_framework::core::system_core::CoreSystem;
-use arx_framework::config::{
+use solid_arx::cli::{parse_arguments,Commands};
+use solid_arx::core::system_core::CoreSystem;
+use solid_arx::config::{
     global_config::{CoreConfig},
     memory_config::MemoryConfig,
 };
-use arx_framework::monitoring::logger::setup_logging;
+use solid_arx::monitoring::logger::setup_logging;
 use log::info;
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
@@ -29,9 +29,9 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 app_type:app_type.clone(),
                 max_threads,
             };
-            use arx_framework::core::memory_management::define_pool_size;
-            use arx_framework::core::memory_management::define_buffer_size;
-            use arx_framework::core::memory_management::define_multiplier;
+            use solid_arx::core::memory_management::define_pool_size;
+            use solid_arx::core::memory_management::define_buffer_size;
+            use solid_arx::core::memory_management::define_multiplier;
             let defined_ps = define_pool_size(app_type.clone(),pool_size); // Imposta il valore di default per pool_size
             let defined_bs = define_buffer_size(app_type.clone(),buffer_size); // Imposta il valore di default per buffer_size
             let defined_ms = define_multiplier(app_type.clone(), memory_scale); // Imposta il valore di default per memory_scale
@@ -47,19 +47,8 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 
             (core_config,memory_config) // Restituisci la configurazione
         },
-        Commands::Help => {
-            println!("HELP");
-            println!("arx init --app_type webapp   # Init app");
-            // Lista delle applicazioni
-            println!("Application types:");
-            println!("WebApp");
-            println!("ApiBackend");
-            println!("DesktopApp");
-            println!("AutomationScript");
-            println!("EmbeddedSystem");
-            println!("arx --memory_scale 1           # Set Memory Multiplier, DEFAULT: 1");
-            println!("arx --max_threads 8            # Set Max Threads, DEFAULT: 8");
-            println!("arx --version                  # Display Version");
+        Commands::Help { message }=> {
+            println!("{}", message);
             return Ok(());
         }
     };

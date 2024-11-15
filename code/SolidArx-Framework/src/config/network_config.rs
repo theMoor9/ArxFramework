@@ -26,51 +26,117 @@ pub enum DatabaseType {
 impl DatabaseType {
     /// Crea una nuova istanza di `DatabaseType` in base alla configurazione dell'applicazione.
     /// Restituisce un `Result` che contiene un errore se nessuna configurazione è definita per l'app corrente.
-    pub fn new() -> Result<Self, &'static str> {
+    pub fn new(database_url, max_connections, retry_attempts, max_idle_time, connection_timeout) -> Result<Self, &'static str> {
+
+        match database_url {
+            None => {
+                error!("Database URL not set for the application");
+                return Err("Database URL not set for the application try use the CLI command to set the database URL.\
+                            Type 'Arx Help' for more information");
+            }
+            Some(url) => {
+                if max_connection == None {
+                    #[cfg(feature = "webapp")]
+                    apply_max_connections = Some(100);
+                    #[cfg(feature = "api_backend")]
+                    apply_max_connections = Some(50);
+                    #[cfg(feature = "desktop")]
+                    apply_max_connections = Some(5);
+                    #[cfg(feature = "automation")]
+                    apply_max_connections = Some(20);
+                    #[cfg(feature = "embedded")]
+                    apply_max_connections = Some(1);
+                }
+        
+                if retry_attempts == None {
+                    #[cfg(feature = "webapp")]
+                    apply_retry_attempts = Some(3);
+                    #[cfg(feature = "api_backend")]
+                    apply_retry_attempts = Some(3);
+                    #[cfg(feature = "desktop")]
+                    apply_retry_attempts = Some(1);
+                    #[cfg(feature = "automation")]
+                    apply_retry_attempts = Some(5);
+                    #[cfg(feature = "embedded")]
+                    apply_retry_attempts = Some(1);
+                }
+                
+                if max_idle_time == None {
+                    #[cfg(feature = "webapp")]
+                    apply_max_idle_time = Some(Duration::from_secs(300));
+                    #[cfg(feature = "api_backend")]
+                    apply_max_idle_time = Some(Duration::from_secs(600));
+                    #[cfg(feature = "desktop")]
+                    apply_max_idle_time = Some(Duration::from_secs(1200));
+                    #[cfg(feature = "automation")]
+                    apply_max_idle_time = Some(Duration::from_secs(3600));
+                    #[cfg(feature = "embedded")]
+                    apply_max_idle_time = Some(Duration::from_secs(600));
+                }
+        
+                if connection_timeout == None {
+                    #[cfg(feature = "webapp")]
+                    apply_connection_timeout = Some(Duration::from_secs(5));
+                    #[cfg(feature = "api_backend")]
+                    apply_connection_timeout = Some(Duration::from_secs(10));
+                    #[cfg(feature = "desktop")]
+                    apply_connection_timeout = Some(Duration::from_secs(15));
+                    #[cfg(feature = "automation")]
+                    apply_connection_timeout = Some(Duration::from_secs(30));
+                    #[cfg(feature = "embedded")]
+                    apply_connection_timeout = Some(Duration::from_secs(5));
+                }
+        
+                
+            }
+        }
+       
+
+
         // Configurazione per applicazioni Web, utilizzando PostgreSQL
         #[cfg(feature = "webapp")]
         return Ok(DatabaseType::PostgreSQL(ConnectionConfig {
-            database_url: "postgres://localhost/webapp_db".to_string(),
-            max_connections: Some(100),
-            retry_attempts: Some(3),
-            max_idle_time: Some(Duration::from_secs(300)),       // 5 minuti
-            connection_timeout: Some(Duration::from_secs(5)),   // 30 secondi
+            database_url,
+            apply_max_connections,
+            apply_retry_attempts,
+            apply_max_idle_time,       
+            apply_connection_timeout,   
         }));
         // Configurazione per API backend, utilizzando PostgreSQL
         #[cfg(feature = "api_backend")]
         return Ok(DatabaseType::PostgreSQL(ConnectionConfig {
-            database_url: "postgres://localhost/api_backend_db".to_string(),
-            max_connections: Some(50),
-            retry_attempts: Some(3),
-            max_idle_time: Some(Duration::from_secs(600)),
-            connection_timeout: Some(Duration::from_secs(10)),
+            database_url,
+            apply_max_connections,
+            apply_retry_attempts,
+            apply_max_idle_time,
+            apply_connection_timeout,
         }));
         // Configurazione per applicazioni desktop, utilizzando SQLite
         #[cfg(feature = "desktop")]
         return Ok(DatabaseType::SQLite(ConnectionConfig {
             database_url: "sqlite://desktop_app.db".to_string(),
-            max_connections: Some(5),
-            retry_attempts: Some(1),
-            max_idle_time: Some(Duration::from_secs(1200)),
-            connection_timeout: Some(Duration::from_secs(15)),
+            apply_max_connection,
+            apply_retry_attempts,
+            apply_max_idle_time,
+            apply_connection_timeout,
         }));
         // Configurazione per applicazioni embedded, utilizzando SQLite
         #[cfg(feature = "automation")]
         return Ok(DatabaseType::MongoDB(ConnectionConfig {
             database_url: "mongodb://localhost:27017/automation_db".to_string(),
-            max_connections: Some(20),
-            retry_attempts: Some(5),
-            max_idle_time: Some(Duration::from_secs(3600)),  // 10 minuti
-            connection_timeout: Some(Duration::from_secs(30)),
+            apply_max_connections,
+            apply_retry_attempts,
+            apply_max_idle_time,  
+            apply_connection_timeout,
         }));
         // Configurazione per applicazioni embedded, utilizzando SQLite
         #[cfg(feature = "embedded")]
         return Ok(DatabaseType::SQLite(ConnectionConfig {
             database_url: "sqlite://embedded_app.db".to_string(),
-            max_connections: Some(1),
-            retry_attempts: Some(1),
-            max_idle_time: Some(Duration::from_secs(600)),
-            connection_timeout: Some(Duration::from_secs(5)),
+            apply_max_connections,
+            apply_retry_attempts,
+            apply_max_idle_time,
+            apply_connection_timeout,
         }));
 
         Err("Database configuration not set for the application")
