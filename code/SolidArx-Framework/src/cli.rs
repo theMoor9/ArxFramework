@@ -33,8 +33,12 @@ pub enum Commands {
         pool_size: usize,
     },
     Database {
-        #[arg(short = 'd', long = "database_url")]
-        database_url: String,
+        /// Disabilita l'utilizzo del database
+        #[arg(short = 'd', long = "disable_database")]
+        disable_database: bool,
+
+        #[arg(short = 'url', long = "database_url")]
+        database_url: Option<String>,
 
         #[arg(short = 'c', long = "max_connections", default_value_t = None)]
         max_connections: Option<u32>,
@@ -45,37 +49,39 @@ pub enum Commands {
         #[arg(short = 'i', long = "max_idle_time", default_value_t = None)]
         max_idle_time: Option<u64>,
 
-        #[arg(short = 'o', long = "connection_timeout", default_value_t = None)]
+        #[arg(short = 't', long = "connection_timeout", default_value_t = None)]
         connection_timeout: Option<u64>,
     }
     Help{
         "HELP\n
         Command: Arx\n
-        arx init --app_type <webapp>   # Init app\n
+        arx init  # Init app\n
+
+        Options:\n 
+        --app_type or -a\n
         \n
-        Application types:\n
-        --app_type <WebApp>\n
-        --app_type <ApiBackend>\n
-        --app_type <DesktopApp>\n
-        --app_type <AutomationScript>\n
-        --app_type <EmbeddedSystem>\n
+            Application types:\n
+            --app_type <WebApp>\n
+            --app_type <ApiBackend>\n
+            --app_type <DesktopApp>\n
+            --app_type <AutomationScript>\n
+            --app_type <EmbeddedSystem>\n
         \n
-        Options:\n  
-        --memory_scale 1           # Set Memory Multiplier, DEFAULT: 1\n
-        --max_threads 8            # Set Max Threads, DEFAULT: 8\n
-        --version                  # Display Version\n
+        --memory_scale u8 or --m u8           # Set Memory Multiplier, DEFAULT: 1\n
+        --max_threads u8 or --t u8            # Set Max Threads, DEFAULT: 8\n
+        --buffer_size usize or --b usize      # Set Buffer Size, DEFAULT: 1024\n
+        --version or --v                      # Display Version\n
         \n
         Command: Arx database\n
-        arx database --database_url <url> --max_connections <max_connections> --retry_attempts <retry_attempts> --max_idle_time <max_idle_time> --connection_timeout <connection_timeout>\n
+        arx database #Define Database\n 
         \n
         Options:\n
-        --database_url <url>                        # Set Database URL, Default: None\n
-        --max_connections <max_connections>         # Set Max Connections, Default: None\ \n
-        --retry_attempts <retry_attempts>           # Set Retry Attempts, Default: None\\n
-        --max_idle_time <max_idle_time>             # Set Max Idle Time, Default: None\\n
-        --connection_timeout <connection_timeout>   # Set Connection Timeout, Default: None\\n"
-
-
+        --disable_database <Bool> or --d <Bool>                         # Disable Database, Default: None\n
+        --database_url Option<String>  or --url Option<String>          # Set Database URL, Default: None\n
+        --max_connections Option<u32> or --c Option<u32>                # Set Max Connections, Default: None\ \n
+        --retry_attempts Option<u32> or --r Option<u32>                 # Set Retry Attempts, Default: None\\n
+        --max_idle_time Option<u64> or --i Option<u64>                  # Set Max Idle Time, Default: None\\n
+        --connection_timeout Option<u64> or --t Option<u64>             # Set Connection Timeout, Default: None\\n"
     },
 }
 

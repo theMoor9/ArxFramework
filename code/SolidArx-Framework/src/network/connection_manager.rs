@@ -70,9 +70,9 @@ impl ConnectionManager {
                     // Attende per il periodo definito in `retry_timeout` con backoff esponenziale basato sui tentativi
                     info!(
                         "Ritenterò tra {:?} secondi...",
-                        self.config.retry_timeout.as_secs()
+                        self.config.retry_timeout.unwrap().as_secs()
                     );
-                    sleep(self.config.retry_timeout.pow(attempts));
+                    sleep(self.config.retry_timeout.unwrap().pow(attempts));
                 }
             }
         }

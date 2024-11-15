@@ -11,8 +11,8 @@ pub struct ConnectionConfig {
     pub database_url: String,
     pub max_connections: Option<u32>,
     pub retry_attempts: Option<u32>,
-    pub max_idle_time: Option<Duration>,       // Durata massima per mantenere una connessione inattiva
-    pub connection_timeout: Option<Duration>,  // Tempo massimo di attesa per stabilire una connessione
+    pub max_idle_time: Option<u64>,       // Durata massima per mantenere una connessione inattiva
+    pub connection_timeout: Option<u64>,  // Tempo massimo di attesa per stabilire una connessione
 }
 
 /// Enum per definire i diversi tipi di sistemi di database supportati.

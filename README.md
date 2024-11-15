@@ -1,8 +1,8 @@
-# ArxFramework
+# SolidArx-Framework
 
 ## Introduction
 
-**ArxFramework** is a modular and flexible library that takes the form of a "Boilerplate" once configured, facilitating the development of a designated application. It is designed to support the development of various types of applications, including web applications, API backends, desktop applications, automation and scripting systems, and embedded systems.
+**SolidArx** is a Framework which acts as a modular and flexible library that takes the form of a "Boilerplate" once configured, facilitating the development of a designated application. It is designed to support the development of various types of applications, including web applications, API backends, desktop applications, automation and scripting systems, and embedded systems.
 
 ### Key Features:
 
