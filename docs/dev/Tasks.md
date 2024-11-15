@@ -26,7 +26,7 @@
 - [ ]  `system_core.rs`: Gestione centrale del sistema implementata.
     - [x]  code
     - [x]  dev documentation
-    - [x]  documentation
+    - [ ]  documentation
     - [x]  Logger
     - [x]  In-code Documentation
     - [ ]  Unit test
@@ -34,7 +34,7 @@
 - [ ]  `memory_management.rs`: Ottimizzazione della memoria gestita correttamente.
     - [x]  code
     - [x]  dev documentation
-    - [x]  documentation
+    - [ ]  documentation
     - [x]  Logger
     - [x]  In-code Documentation
     - [ ]  Unit test
@@ -46,7 +46,7 @@
     
     - [x]  code
     - [x]  dev documentation
-    - [x]  documentation
+    - [ ]  documentation
     - [x]  In-code Documentation
     - [ ]  Unit test
     - [ ]  Review
@@ -83,14 +83,14 @@
     - [ ]  implementare `connection` con api_server.rs con sqlx
     - [x]  Recupero dati da variabile di config inizializzata nel `main.rs` per la variabile globale atta allo scalo della memoria `STATIC_MEMORY_SCALE`.
     - [x]  dev documentation
-    - [x]  documentation
+    - [ ]  documentation
     - [x]  Logger
     - [ ]  In-code Documentation
     - [ ]  Unit test
 - [x]  `models.rs`: Modelli dati definiti e mappati correttamente.
     - [x]  code
     - [x]  dev documentation
-    - [x]  documentation
+    - [ ]  documentation
     - [x]  Logger
     - [x]  In-code Documentation
     - [ ]  Unit test
@@ -238,26 +238,26 @@
 ### config/
 
 - [ ]  `global_config.rs`: File di configurazione globale completo e configurato.
-    - [ ]  code
+    - [x]  code
     - [x]  dev documentation
     - [ ]  documentation
-    - [ ]  Logger
+    - [x]  Logger
     - [x]  In-code Documentation
-    - [ ]  Unit test
+    - [x]  Unit test
 - [ ] `network_config.rs`: file di configurazione per settare parametri come il numero massimo di connessioni, timeout delle connessioni e algoritmo di bilanciamento.
-    - [ ]  code
-    - [ ]  dev documentation
+    - [x]  code
+    - [x]  dev documentation
     - [ ]  documentation
-    - [ ]  Logger
-    - [ ]  In-code Documentation
+    - [x]  Logger
+    - [x]  In-code Documentation
     - [ ]  Unit test
 - [ ] `memory_config.rs`
-    - [ ]  code
+    - [x]  code
     - [x]  dev documentation
     - [ ]  documentation
-    - [ ]  Logger
+    - [x]  Logger
     - [x]  In-code Documentation
-    - [ ]  Unit test
+    - [x]  Unit test
 
 ### src/
 
