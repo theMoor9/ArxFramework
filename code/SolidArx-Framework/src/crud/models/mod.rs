@@ -30,3 +30,5 @@ pub mod default{
     pub mod token;
     pub mod user;
 }
+pub mod table_scraper;
+pub mod table_generator;

@@ -1,1 +1,0 @@
-//scraping dei modelli presenti in default e dev generazione json per le tables
