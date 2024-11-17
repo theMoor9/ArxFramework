@@ -9,9 +9,31 @@ use diesel::sqlite::SqliteConnection;
 use diesel::pg::PgConnection;
 use log::{error, info};
 use std::time::Duration;
-use std::thread::sleep;
+use tokio::time::sleep;
 
 use crate::config::network_config::{ConnectionConfig, DatabaseType};
+
+/// Enum per rappresentare errori di connessione al database
+#[derive(Debug)]
+enum ConnectionErrors {
+    Postgres(String),
+    SQLite(String),
+    Mongo(String),
+    UnknownError(String),
+}
+
+impl std::fmt::Display for ConnectionErrors {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        match self {
+            ConnectionErrors::Postgres(msg) => write!(f, "Errore PostgreSQL: {}", msg),
+            ConnectionErrors::SQLite(msg) => write!(f, "Errore SQLite: {}", msg),
+            ConnectionErrors::Mongo(msg) => write!(f, "Errore MongoDB: {}", msg),
+            ConnectionErrors::UnknownError(msg) => write!(f, "Errore sconosciuto: {}", msg),
+        }
+    }
+}
+
+impl std::error::Error for ConnectionErrors {}
 
 enum DbConnection {
     Postgres(PgConnection),
@@ -36,7 +58,7 @@ impl ConnectionManager {
     /// # Ritorna
     /// Una nuova istanza di `ConnectionManager`
     pub fn new(config: ConnectionConfig) -> Self {
-        Self { config }
+        Self { config }  
     }
 
     /// Inizializza la connessione al database con un meccanismo di retry per i tentativi falliti.
@@ -45,14 +67,14 @@ impl ConnectionManager {
     /// riprovando in caso di fallimento fino al numero massimo di tentativi definiti.
     ///
     /// # Ritorna
-    /// - `Ok(PgConnection)`: Connessione stabilita con successo.
-    /// - `Err(diesel::ConnectionError)`: Errore se il massimo numero di tentativi è superato.
-    pub fn initialize_connection(&self) -> Result<PgConnection, diesel::ConnectionError> {
+    /// - `Ok(DbConnection)`: Connessione stabilita con successo.
+    /// - `Err(Box<dyn Error>)`: Errore se il massimo numero di tentativi è superato.
+    async pub fn initialize_connection(&self) -> Result<PgConnection, diesel::ConnectionError> {
         let mut attempts = 0;
         
         loop {
             // Tenta di stabilire la connessione
-            match self.connect() {
+            match self.connect().await {
                 Ok(connection) => {
                     info!("Connessione stabile.");
                     return Ok(connection);
@@ -61,18 +83,16 @@ impl ConnectionManager {
                     attempts += 1;
                     error!("Tentativo {} fallito: {}", attempts, e);
 
-                    // Controlla se il numero massimo di tentativi è stato raggiunto.
+                    // Controlla se il numero massimo di tentativi è stato raggiunto
                     if attempts >= self.config.max_retries {
                         error!("Superato il numero massimo di tentativi di connessione.");
-                        return Err(e);
+                        return Err(Box::new(e));
                     }
 
-                    // Attende per il periodo definito in `retry_timeout` con backoff esponenziale basato sui tentativi
-                    info!(
-                        "Ritenterò tra {:?} secondi...",
-                        self.config.retry_timeout.unwrap().as_secs()
-                    );
-                    sleep(self.config.retry_timeout.unwrap().pow(attempts));
+                    // Attende per il periodo definito in `retry_timeout` con backoff esponenziale
+                    let backoff = self.config.retry_timeout.unwrap().as_secs() * (attempts as u64);
+                    info!("Ritenterò tra {} secondi...", backoff);
+                    sleep(Duration::from_secs(backoff)).await;
                 }
             }
         }
@@ -85,30 +105,32 @@ impl ConnectionManager {
     /// # Ritorna
     /// - `Ok(())`: Se la connessione è stabilita con successo.
     /// - `Err(Box<dyn Error>)`: Se si verifica un errore durante il tentativo di connessione.
-    async fn connect(&self) -> Result<DbConnection, Box<dyn Error>> {
+    async fn connect(&self) -> Result<DbConnection, ConnectionErrors> {
 
         match self.config.database_type {
             #[cfg(any(feature = "webapp", feature = "api_backend"))]
             DatabaseType::Postgres => {
-                let result = PgConnection::establish(&self.config.database_url)
-                    .map_err(|e| Box::new(e) as Box<dyn Error>)?;
+                PgConnection::establish(&self.config.database_url)
+                    .map(DbConnection::Postgres)
+                    .map_err(|e| ConnectionErrors::Postgres(e.to_string()))
                 info!("Connessione stabilita con successo al database PostgreSQL.");
-                Ok(result)
             }
             #[cfg(any(feature = "desktop", feature = "embedded"))]
             DatabaseType::SQLite => {
-                let result = SqliteConnection::establish(&self.config.database_url)
-                    .map_err(|e| Box::new(e) as Box<dyn Error>)?;
+                SqliteConnection::establish(&self.config.database_url)
+                    .map(DbConnection::SQLite)
+                    .map_err(|e| ConnectionErrors::SQLite(e.to_string()))
                 info!("Connessione stabilita con successo al database SQLite.");
-                Ok(result)
             }
             #[cfg(feature = "automation")]
             DatabaseType::MongoDB => {
                 // Parsing delle opzioni di connessione MongoDB dalla URL
-                let client_options = ClientOptions::parse(&self.config.database_url).await?;
-                let client = Client::with_options(client_options)?;
-                info!("Connessione stabilita con successo al database MongoDB.");
-                Ok(client)
+                let client_options = ClientOptions::parse(&self.config.database_url)
+                    .await
+                    .map_err(|e| ConnectionErrors::Mongo(e.to_string()))?;
+                let client = Client::with_options(client_options)
+                    .map_err(|e| ConnectionErrors::Mongo(e.to_string()))?;
+                Ok(DbConnection::MongoDB(client))
             }
         }
     }

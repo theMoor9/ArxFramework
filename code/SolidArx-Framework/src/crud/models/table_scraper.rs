@@ -3,20 +3,18 @@ use std::path::Path;
 use syn::{self, Item, ItemStruct, ItemMod};
 use std::collections::HashMap;
 
-
-
-/// Funzione per fare il parsing di un modulo .
-/// Restituisce una lista di struct presenti nel modulo.
+/// Funzione che esegue il parsing di un modulo Rust e restituisce le struct trovate all'interno.
 /// 
 /// # Argomenti
 /// * `item_mod` - Il modulo da analizzare.
 /// 
 /// # Ritorna
 /// Un `Result<Vec<ItemStruct>, String>` che contiene una lista di struct trovate nel modulo,
+/// oppure un messaggio di errore in caso di fallimento del parsing.
 fn parse_mod_items(item_mod: &ItemMod) -> Result<Vec<ItemStruct>, String> {
     let mut structs = Vec::new();
 
-    // Verifica se il modulo ha un file associato (se è un file separato)
+    // Verifica se il modulo ha contenuti (ad esempio, file separati o item inclusi)
     if let Some(module_path) = &item_mod.content {
         for mod_item in module_path.1.clone() {
             match mod_item {
@@ -24,7 +22,7 @@ fn parse_mod_items(item_mod: &ItemMod) -> Result<Vec<ItemStruct>, String> {
                     structs.push(item_struct); // Aggiungi la struct trovata
                 }
                 Item::Mod(item_submod) => {
-                    // Se c'è un altro modulo, esplora anche quello
+                    // Se c'è un sottogruppo di moduli, esplora anche quello
                     structs.extend(parse_mod_items(&item_submod)?);
                 }
                 _ => {} // Ignora altri tipi di item
@@ -35,8 +33,40 @@ fn parse_mod_items(item_mod: &ItemMod) -> Result<Vec<ItemStruct>, String> {
     Ok(structs)
 }
 
+/// Funzione che mappa i tipi Rust a tipi SQL corrispondenti.
+/// 
+/// # Argomenti
+/// * `type_name` - Il nome del tipo Rust da mappare.
+/// 
+/// # Ritorna
+/// Una stringa che rappresenta il tipo SQL corrispondente.
+fn map_rust_type_to_sql(type_name: &str) -> &str {
+    match type_name {
+        // Tipi numerici
+        "u32" | "i32" => "INTEGER",
+        "u64" | "i64" => "BIGINT",
+        "String" => "TEXT",
+        "bool" => "BOOLEAN",
+        "f32" => "REAL",
+        "f64" => "DOUBLE PRECISION",
+        
+        // Tipi opzionali (nullabili)
+        "Option<u32>" | "Option<i32>" => "INTEGER NULL",
+        "Option<String>" => "TEXT NULL",
+        
+        // Tipi personalizzati o complessi
+        "AllocType" => "TEXT", // Rappresentabile come stringa
+        "CrudOperations" => "JSON", // JSON per flessibilità
+        "Box<[u8]>" => "BYTEA", // Tipico per dati binari
+        "ExeLogStatus" | "MacroStatus" | "ProjectStatus" => "TEXT CHECK (value IN ('Active', 'Disabled', 'Completed'))", // Enum con vincoli
+        "ExecutionFrequency" => "TEXT", // Frequenze come stringhe
+        "Option<ProjectMetadata>" => "JSON NULL", // Serializzato come JSON
+        "chrono::NaiveDateTime" => "TIMESTAMP", // Data e ora
+        _ => "TEXT", // Default per tipi sconosciuti
+    }
+}
+
 /// Funzione che genera un messaggio per ogni struct trovata in un file `.rs`.
-/// Restituisce un messaggio informativo per testare lo script.
 /// 
 /// # Argomenti
 /// * `struct_name` - Il nome della struct da analizzare.
@@ -50,19 +80,14 @@ fn generate_struct_message(struct_name: &str, fields: &[&syn::Field]) -> Result<
     // Per ogni campo della struct, aggiungi una descrizione
     for field in fields {
         let field_name = field.ident.as_ref().map(|f| f.to_string()).unwrap_or_else(|| "Unnamed".to_string());
-        let field_type = match &field.ty {
-            syn::Type::Path(p) if p.path.is_ident("String") => "String",
-            syn::Type::Path(p) if p.path.is_ident("i32") => "i32",
-            syn::Type::Path(p) if p.path.is_ident("f64") => "f64",
-            _ => "Custom", // Default tipo
-        };
-        message.push_str(&format!("{}:{}\n", field_name, field_type));
+        let field_type = map_rust_type_to_sql(&field.ty);
+        message.push_str(&format!("{}\n{}\n", field_name, field_type));
     }
 
     Ok(message)
 }
 
-/// Funzione per fare il parsing di un file `.rs` e restituire tutte le struct presenti.
+/// Funzione che esegue il parsing di un file `.rs` e restituisce tutte le struct presenti al suo interno.
 /// 
 /// # Argomenti
 /// * `file_path` - Il percorso del file `.rs` da analizzare.
@@ -84,10 +109,10 @@ fn parse_rs_file(file_path: &str) -> Result<Vec<ItemStruct>, String> {
     for item in syntax.items {
         match item {
             Item::Mod(item_mod) => {
-                structs.extend(parse_mod_items(&item_mod)?); // Estendi la lista con le struct nei moduli
+                structs.extend(parse_mod_items(&item_mod)?); // Estende la lista con le struct nei moduli
             }
             Item::Struct(item_struct) => {
-                structs.push(item_struct); // Aggiungi direttamente la struct in caso non sia incapsulata in un modulo
+                structs.push(item_struct); // Aggiungi direttamente la struct se non è incapsulata in un modulo
             }
             _ => {} // Ignora altri tipi di item
         }
@@ -124,41 +149,55 @@ fn read_rs_dir(directory: &str) -> Result<Vec<String>, String> {
     Ok(files)
 }
 
-/// Funzione che esegue il processo di scraping per tutti i file nella cartella.
-/// Ritorna dei messaggi di debug invece di generare SQL o strutture MongoDB.
+/// Funzione che esegue lo scraping dei file `.rs` in una cartella e raccoglie le struct e i loro campi.
+/// Ritorna una lista di mappe contenenti il nome delle struct e i rispettivi campi con i loro tipi SQL.
 /// 
 /// # Argomenti
 /// * `directory` - La cartella contenente i file `.rs` da scansionare e analizzare.
 /// 
 /// # Ritorna
-/// Un `Result<(), String>` che indica se il processo è stato completato correttamente o se si è verificato un errore.
-pub fn scrape(directory: &str) -> Result<(), String> {
-    // Ottieni tutti i file .rs dalla cartella specificata
+/// Un `Result<Vec<HashMap<String, HashMap<String, String>>>, String>` che contiene
+/// una lista di strutture mappate (nome struct -> campi -> tipi SQL), oppure un messaggio di errore.
+pub fn scrape(directory: &str) -> Result<Vec<HashMap<String, HashMap<String, String>>>, String> {
+    // Ottieni tutti i file `.rs` dalla cartella specificata
     let files = read_rs_dir(directory)?;
+
+    // Vettore per raccogliere le strutture
+    let mut all_structs = Vec::new();
 
     // Itera su ciascun file trovato
     for file_path in files {
         println!("Elaborando il file: {}", file_path);
+        
         // Parsea ciascun file per ottenere le struct presenti
         let structs = parse_rs_file(&file_path)?;
 
         if structs.is_empty() {
             println!("Nessuna struct trovata nel file: {}", file_path);
         }
-        // Per ogni struct trovata, genera un messaggio di debug
+
+        // Per ogni struct trovata, genera una mappa con il nome della struct e i campi
+        let mut struct_map = HashMap::new();
+        
         for item in structs.iter() {
             let struct_name = item.ident.to_string();  // Nome della struct
             let fields = item.fields.iter().collect::<Vec<_>>();  // Campi della struct
-            
-            // Genera un messaggio con informazioni sulla struct
-            let message = generate_struct_message(&struct_name, &fields);
-            match message {
-                Ok(msg) => println!("{}", msg),
-                Err(err) => eprintln!("Errore nella generazione del messaggio: {}", err),
+
+            // Crea una mappa per i campi della struct
+            let mut fields_map = HashMap::new();
+            for field in fields {
+                let field_name = field.ident.as_ref().map(|f| f.to_string()).unwrap_or_else(|| "Unnamed".to_string());
+                let field_type = map_rust_type_to_sql(&field.ty);  // Mappa il tipo Rust al tipo SQL
+                fields_map.insert(field_name, field_type);
             }
+
+            // Inserisce la struct con i relativi campi nella mappa
+            struct_map.insert(struct_name, fields_map);
         }
+
+        // Aggiunge struct_map al vettore all_structs
+        all_structs.push(struct_map);
     }
 
-    Ok(())
+    Ok(all_structs)
 }
-

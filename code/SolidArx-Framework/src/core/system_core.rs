@@ -20,9 +20,13 @@ use crate::config::{
 use crate::core::memory_management::MemoryManager;
 use crate::monitoring::logger;
 use log::{info, error};
-// Importa i modelli dalla cartella dev
 
-// Importa i modelli dalla cartella default
+
+/// Sezione di importin per la gestione della connessione al database
+use crate::network::connection_management::ConnectionManager;
+// Importa la funzione per la generazione delle tables nel database
+use crate::crud::models::table_generator::generate_tables;
+/*DEV: IL data base si inizializza in new() ricevendo nel costruttore le configurazione dal cli del main */
 
 
 #[cfg(feature = "auth")]
@@ -121,6 +125,7 @@ impl CoreSystem {
     /// quali moduli devono essere inizializzati.
     #[allow(unreachable_code)]
     pub fn run(&self) -> Result<(), CoreError> {
+
         match self.config.app_type {
             ApplicationType::WebApp => {
                 info!("Configurazione per WebApp");

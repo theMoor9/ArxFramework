@@ -17,7 +17,7 @@ pub mod model {
     #[derive(Debug, Clone)]
     pub enum ProjectStatus {
         Active,
-        Paused,
+        Disabled,
         Completed,
     }
     

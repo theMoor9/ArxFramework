@@ -34,22 +34,22 @@ pub enum Commands {
     },
     Database {
         /// Disabilita l'utilizzo del database
-        #[arg(short = 'd', long = "disable_database")]
+        #[arg(short = 'd', long = "disable_database"), default_value_t = true]
         disable_database: bool,
 
-        #[arg(short = 'url', long = "database_url")]
+        #[arg(short = 'url', long = "database_url"), default_value_t = None]
         database_url: Option<String>,
 
-        #[arg(short = 'c', long = "max_connections", default_value_t = None)]
+        #[arg(short = 'c', long = "max_connections", default_value_t = 20)]
         max_connections: Option<u32>,
 
-        #[arg(short = 'r', long = "retry_attempts", default_value_t = None)]
+        #[arg(short = 'r', long = "retry_attempts", default_value_t = 5)]
         retry_attempts: Option<u32>,
 
-        #[arg(short = 'i', long = "max_idle_time", default_value_t = None)]
+        #[arg(short = 'i', long = "max_idle_time", default_value_t = 20)]
         max_idle_time: Option<u64>,
 
-        #[arg(short = 't', long = "connection_timeout", default_value_t = None)]
+        #[arg(short = 't', long = "connection_timeout", default_value_t = 1)]
         connection_timeout: Option<u64>,
     }
     Help{
@@ -76,12 +76,12 @@ pub enum Commands {
         arx database #Define Database\n 
         \n
         Options:\n
-        --disable_database <Bool> or --d <Bool>                         # Disable Database, Default: None\n
+        --disable_database <Bool> or --d <Bool>                         # Disable Database, Default: true\n
         --database_url Option<String>  or --url Option<String>          # Set Database URL, Default: None\n
-        --max_connections Option<u32> or --c Option<u32>                # Set Max Connections, Default: None\ \n
-        --retry_attempts Option<u32> or --r Option<u32>                 # Set Retry Attempts, Default: None\\n
-        --max_idle_time Option<u64> or --i Option<u64>                  # Set Max Idle Time, Default: None\\n
-        --connection_timeout Option<u64> or --t Option<u64>             # Set Connection Timeout, Default: None\\n"
+        --max_connections Option<u32> or --c Option<u32>                # Set Max Connections, Default: 20\ \n
+        --retry_attempts Option<u32> or --r Option<u32>                 # Set Retry Attempts, Default: 5\\n
+        --max_idle_time Option<u64> or --i Option<u64>                  # Set Max Idle Time, Default: 30\\n
+        --connection_timeout Option<u64> or --t Option<u64>             # Set Connection Timeout, Default: 1\\n"
     },
 }
 
