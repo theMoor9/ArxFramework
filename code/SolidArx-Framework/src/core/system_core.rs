@@ -23,9 +23,14 @@ use log::{info, error};
 
 
 /// Sezione di importin per la gestione della connessione al database
+// Importa la funzione per la connessione al database
 use crate::network::connection_management::ConnectionManager;
+// Importa la funzione per lo scrapeing delle tabelle dal codice
+use crate::crud::models::table_scraper::scrape;
 // Importa la funzione per la generazione delle tables nel database
 use crate::crud::models::table_generator::generate_tables;
+
+
 /*DEV: IL data base si inizializza in new() ricevendo nel costruttore le configurazione dal cli del main */
 
 

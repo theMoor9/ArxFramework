@@ -36,6 +36,12 @@ impl Default for CoreConfig {
             max_threads: 4,
         }
     }
+    fn new(app_type: ApplicationType, max_threads: u8) -> Self {
+        CoreConfig {
+            app_type,
+            max_threads,
+        }
+    }
 }
 
 // Esempio di come estendere la configurazione globale

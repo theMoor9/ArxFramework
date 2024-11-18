@@ -1,8 +1,9 @@
 use solid_arx::cli::{parse_arguments,Commands};
 use solid_arx::core::system_core::CoreSystem;
 use solid_arx::config::{
-    global_config::{CoreConfig},
+    global_config::CoreConfig,
     memory_config::MemoryConfig,
+    database_config::DatabaseConfig
 };
 use solid_arx::monitoring::logger::setup_logging;
 use log::info;
@@ -15,7 +16,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     let cli_args = parse_arguments().expect("Errore nel parsing degli argomenti CLI");
 
     // Gestione del comando Init
-    let config_tuple = match cli_args.command {
+    let core_config_tuple = match cli_args.command {
         Commands::Init { app_type, memory_scale, max_threads,buffer_size, pool_size } => {
             info!("Inizializzazione del progetto con i seguenti parametri:");
             info!("Tipo di applicazione: {:?}", app_type.clone());
@@ -25,10 +26,9 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             info!("Pool size: {}", pool_size);
 
             // Genera la configurazione basata sui parametri passati dal CLI
-            let core_config = CoreConfig {
-                app_type:app_type.clone(),
-                max_threads,
-            };
+            let core_config = CoreConfig::new(app_type.clone(), max_threads); // Configurazione del CoreSystem{
+
+
             use solid_arx::core::memory_management::define_pool_size;
             use solid_arx::core::memory_management::define_buffer_size;
             use solid_arx::core::memory_management::define_multiplier;
@@ -37,25 +37,43 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             let defined_ms = define_multiplier(app_type.clone(), memory_scale); // Imposta il valore di default per memory_scale
 
             // Configurazione della memoria
-            let memory_config = MemoryConfig {
-                pool_size: defined_ps,
-                buffer_size: defined_bs,
-                memory_scale: defined_ms,
-            };
+            let memory_config = MemoryConfig::new(defined_ps, defined_bs, defined_ms); // Configurazione della memoria
 
             info!("Configurazione della memoria completata: pool_size={}, buffer_size={}", memory_config.pool_size, memory_config.buffer_size);
 
             (core_config,memory_config) // Restituisci la configurazione
         },
-        Commands::Help { message }=> {
-            println!("{}", message);
-            return Ok(());
+        _ => {
+            panic!("Comando non riconosciuto");
         }
     };
      
+    let database_config = match cli_args.command {
+        Commands::Database { disable_database, database_url, max_connections, retry_attempts, max_idle_time, connection_timeout } => {
+            info!("Configurazione del database con i seguenti parametri:");
+            info!("Disabilita database: {}", disable_database);
+            info!("Database URL: {:?}", database_url);
+            info!("Max connections: {:?}", max_connections);
+            info!("Retry attempts: {:?}", retry_attempts);
+            info!("Max idle time: {:?}", max_idle_time);
+            info!("Connection timeout: {:?}", connection_timeout);
+
+            DatabaseConfig::new(
+                disable_database, 
+                database_url, 
+                max_connections, 
+                etry_attempts, 
+                max_idle_time, 
+                onnection_timeout
+            )
+        },
+        _ => {
+            panic!("Comando non riconosciuto");
+        }
+    }; 
 
     // Inizializza il CoreSystem con la configurazione ottenuta
-    let core_system = CoreSystem::new(config_tuple.0, config_tuple.1).expect("Errore nell'inizializzazione del Core System");
+    let core_system = CoreSystem::new(core_config_tuple.0, core_config_tuple.1, database_config).expect("Errore nell'inizializzazione del Core System");
 
     // Esegui il core system
     core_system.run()?;

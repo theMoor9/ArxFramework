@@ -17,14 +17,14 @@ pub struct ConnectionConfig {
 
 /// Enum per definire i diversi tipi di sistemi di database supportati.
 /// Ogni variante contiene una `ConnectionConfig` per il rispettivo tipo di database.
-pub enum DatabaseType {
+pub enum DatabaseConfig {
     PostgreSQL(ConnectionConfig),
     SQLite(ConnectionConfig),
     MongoDB(ConnectionConfig),
 }
 
-impl DatabaseType {
-    /// Crea una nuova istanza di `DatabaseType` in base alla configurazione dell'applicazione.
+impl DatabaseConfig {
+    /// Crea una nuova istanza di `DatabaseConfig` in base alla configurazione dell'applicazione.
     /// Restituisce un `Result` che contiene un errore se nessuna configurazione è definita per l'app corrente.
     pub fn new(database_url, max_connections, retry_attempts, max_idle_time, connection_timeout) -> Result<Self, &'static str> {
 
@@ -95,7 +95,7 @@ impl DatabaseType {
 
         // Configurazione per applicazioni Web, utilizzando PostgreSQL
         #[cfg(feature = "webapp")]
-        return Ok(DatabaseType::PostgreSQL(ConnectionConfig {
+        return Ok(DatabaseConfig::PostgreSQL(ConnectionConfig {
             database_url,
             apply_max_connections,
             apply_retry_attempts,
@@ -104,7 +104,7 @@ impl DatabaseType {
         }));
         // Configurazione per API backend, utilizzando PostgreSQL
         #[cfg(feature = "api_backend")]
-        return Ok(DatabaseType::PostgreSQL(ConnectionConfig {
+        return Ok(DatabaseConfig::PostgreSQL(ConnectionConfig {
             database_url,
             apply_max_connections,
             apply_retry_attempts,
@@ -113,7 +113,7 @@ impl DatabaseType {
         }));
         // Configurazione per applicazioni desktop, utilizzando SQLite
         #[cfg(feature = "desktop")]
-        return Ok(DatabaseType::SQLite(ConnectionConfig {
+        return Ok(DatabaseConfig::SQLite(ConnectionConfig {
             database_url: "sqlite://desktop_app.db".to_string(),
             apply_max_connection,
             apply_retry_attempts,
@@ -122,7 +122,7 @@ impl DatabaseType {
         }));
         // Configurazione per applicazioni embedded, utilizzando SQLite
         #[cfg(feature = "automation")]
-        return Ok(DatabaseType::MongoDB(ConnectionConfig {
+        return Ok(DatabaseConfig::MongoDB(ConnectionConfig {
             database_url: "mongodb://localhost:27017/automation_db".to_string(),
             apply_max_connections,
             apply_retry_attempts,
@@ -131,7 +131,7 @@ impl DatabaseType {
         }));
         // Configurazione per applicazioni embedded, utilizzando SQLite
         #[cfg(feature = "embedded")]
-        return Ok(DatabaseType::SQLite(ConnectionConfig {
+        return Ok(DatabaseConfig::SQLite(ConnectionConfig {
             database_url: "sqlite://embedded_app.db".to_string(),
             apply_max_connections,
             apply_retry_attempts,
@@ -147,7 +147,7 @@ impl DatabaseType {
     pub fn log_status(&self) {
         match self {
             // Cattura ogni variante di database e logga i rispettivi dettagli di configurazione
-            DatabaseType::PostgreSQL(config) | DatabaseType::SQLite(config) | DatabaseType::MongoDB(config) => {
+            DatabaseConfig::PostgreSQL(config) | DatabaseConfig::SQLite(config) | DatabaseConfig::MongoDB(config) => {
                 info!("Database URL: {}", config.database_url);
                 // Log del numero massimo di connessioni, se definito
                 if let Some(max_conn) = config.max_connections {

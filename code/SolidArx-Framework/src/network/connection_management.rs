@@ -68,7 +68,7 @@ impl ConnectionManager {
     ///
     /// # Ritorna
     /// - `Ok(DbConnection)`: Connessione stabilita con successo.
-    /// - `Err(Box<dyn Error>)`: Errore se il massimo numero di tentativi è superato.
+    /// - `Err(diesel::ConnectionError)`: Errore se il massimo numero di tentativi è superato.
     async pub fn initialize_connection(&self) -> Result<PgConnection, diesel::ConnectionError> {
         let mut attempts = 0;
         
@@ -104,7 +104,7 @@ impl ConnectionManager {
     ///
     /// # Ritorna
     /// - `Ok(())`: Se la connessione è stabilita con successo.
-    /// - `Err(Box<dyn Error>)`: Se si verifica un errore durante il tentativo di connessione.
+    /// - `Err(ConnectionErrors)`: Se si verifica un errore durante il tentativo di connessione.
     async fn connect(&self) -> Result<DbConnection, ConnectionErrors> {
 
         match self.config.database_type {

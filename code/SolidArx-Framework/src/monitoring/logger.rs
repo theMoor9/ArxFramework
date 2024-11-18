@@ -1,7 +1,10 @@
 use fern::Dispatch;
 use chrono::Local;
 use log::{info, warn, error};
+use std::sync::Once;
 
+// Flag per assicurarsi che la configurazione del logger venga eseguita solo una volta
+static LOGGER_SETUP: Once = Once::new();
 /// Configura il sistema di logging usando `fern`.
 ///
 /// I log vengono scritti sia sulla console che su file.
@@ -12,20 +15,24 @@ use log::{info, warn, error};
 /// * `Ok(())` se l'inizializzazione ha successo.
 /// * `Err(fern::InitError)` se ci sono problemi nell'inizializzazione del logging.
 pub fn setup_logging() -> Result<(), fern::InitError> {
-    Dispatch::new()
-        .format(|out, message, record| {
-            out.finish(format_args!(
-                "[{}][{}][{}] {}",
-                Local::now().format("%Y-%m-%d %H:%M:%S"),
-                record.target(),
-                record.level(),
-                message
-            ))
-        })
-        .level(log::LevelFilter::Info)  // Livello di log globale, può essere configurato
-        .chain(std::io::stdout())       // Scrittura del log nella console
-        .chain(fern::log_file("monitoring/logs/arx_framework.log")?)  // Scrittura su file
-        .apply()?;  // Applica la configurazione
+    // Configura il logger solo la prima volta che viene chiamato
+    LOGGER_SETUP.call_once(|| {
+        Dispatch::new()
+            .format(|out, message, record| {
+                out.finish(format_args!(
+                    "[{}][{}][{}] {}",
+                    Local::now().format("%Y-%m-%d %H:%M:%S"),
+                    record.target(),
+                    record.level(),
+                    message
+                ))
+            })
+            .level(log::LevelFilter::Info)  // Livello di log globale, può essere configurato
+            .chain(std::io::stdout())       // Scrittura del log nella console
+            .chain(fern::log_file("monitoring/logs/arx_framework.log")?)  // Scrittura su file
+            .apply()?;  // Applica la configurazione
+    });
+    
     Ok(())
 }
 

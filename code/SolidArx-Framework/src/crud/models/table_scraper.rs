@@ -3,6 +3,13 @@ use std::path::Path;
 use syn::{self, Item, ItemStruct, ItemMod};
 use std::collections::HashMap;
 
+
+enum DbType {
+    Postgres,
+    SQLite,
+    MongoDB,
+}
+
 /// Funzione che esegue il parsing di un modulo Rust e restituisce le struct trovate all'interno.
 /// 
 /// # Argomenti
@@ -40,7 +47,7 @@ fn parse_mod_items(item_mod: &ItemMod) -> Result<Vec<ItemStruct>, String> {
 /// 
 /// # Ritorna
 /// Una stringa che rappresenta il tipo SQL corrispondente.
-fn map_rust_type_to_sql(type_name: &str) -> &str {
+fn map_to_sql(type_name: &str) -> &str {
     match type_name {
         // Tipi numerici
         "u32" | "i32" => "INTEGER",
@@ -66,7 +73,42 @@ fn map_rust_type_to_sql(type_name: &str) -> &str {
     }
 }
 
-/// Funzione che genera un messaggio per ogni struct trovata in un file `.rs`.
+/// Funzione che mappa i tipi Rust a tipi MongoDB corrispondenti.
+/// 
+/// # Argomenti
+/// * `type_name` - Il nome del tipo Rust da mappare.
+/// 
+/// # Ritorna
+/// Una stringa che rappresenta il tipo MongoDB corrispondente.
+/// 
+/// # Note
+/// - MongoDB non ha vincoli di tipo rigidi, quindi mappiamo i tipi Rust a tipi generici.
+fn map_to_mongo(type_name: &str) -> &str {
+    match type_name {
+        // Tipi numerici
+        "u32" | "i32" => "int",
+        "u64" | "i64" => "long",
+        "String" => "string",
+        "bool" => "bool",
+        "f32" | "f64" => "double",
+        
+        // Tipi opzionali (nullabili)
+        "Option<u32>" | "Option<i32>" => "int",
+        "Option<String>" => "string",
+        
+        // Tipi personalizzati o complessi
+        "AllocType" => "string",
+        "CrudOperations" => "object",
+        "Box<[u8]>" => "binData",
+        "ExeLogStatus" | "MacroStatus" | "ProjectStatus" => "string",
+        "ExecutionFrequency" => "string",
+        "Option<ProjectMetadata>" => "object",
+        "chrono::NaiveDateTime" => "date",
+        _ => "string",
+    }
+}
+
+/// Funzione che genera un messaggio per ogni struct trovata in un file `.rs`. NON UTILIZZATA
 /// 
 /// # Argomenti
 /// * `struct_name` - Il nome della struct da analizzare.
@@ -74,7 +116,7 @@ fn map_rust_type_to_sql(type_name: &str) -> &str {
 /// 
 /// # Ritorna
 /// Una stringa contenente un messaggio informativo per ciascuna struct.
-fn generate_struct_message(struct_name: &str, fields: &[&syn::Field]) -> Result<String, String> {
+fn generate_struct_debug_message(struct_name: &str, fields: &[&syn::Field]) -> Result<String, String> {
     let mut message = format!("{}\n", struct_name);
 
     // Per ogni campo della struct, aggiungi una descrizione
@@ -151,14 +193,14 @@ fn read_rs_dir(directory: &str) -> Result<Vec<String>, String> {
 
 /// Funzione che esegue lo scraping dei file `.rs` in una cartella e raccoglie le struct e i loro campi.
 /// Ritorna una lista di mappe contenenti il nome delle struct e i rispettivi campi con i loro tipi SQL.
-/// 
+///
 /// # Argomenti
 /// * `directory` - La cartella contenente i file `.rs` da scansionare e analizzare.
-/// 
+///
 /// # Ritorna
 /// Un `Result<Vec<HashMap<String, HashMap<String, String>>>, String>` che contiene
 /// una lista di strutture mappate (nome struct -> campi -> tipi SQL), oppure un messaggio di errore.
-pub fn scrape(directory: &str) -> Result<Vec<HashMap<String, HashMap<String, String>>>, String> {
+pub fn scrape(directory: &str, db: DbType) -> Result<Vec<HashMap<&str, HashMap<&str, &str>>>, String> {
     // Ottieni tutti i file `.rs` dalla cartella specificata
     let files = read_rs_dir(directory)?;
 
@@ -187,7 +229,15 @@ pub fn scrape(directory: &str) -> Result<Vec<HashMap<String, HashMap<String, Str
             let mut fields_map = HashMap::new();
             for field in fields {
                 let field_name = field.ident.as_ref().map(|f| f.to_string()).unwrap_or_else(|| "Unnamed".to_string());
-                let field_type = map_rust_type_to_sql(&field.ty);  // Mappa il tipo Rust al tipo SQL
+                
+                // Mappa il tipo Rust al tipo specifico per il database (SQL, MongoDB, ecc.)
+                let field_type = match db {
+                    DbType::SQLite => map_to_sql(&field.ty),    // Mappa il tipo Rust al tipo SQL (SQLite)
+                    DbType::Postgres => map_to_sql(&field.ty),  // Mappa il tipo Rust al tipo SQL (PostgreSQL)
+                    DbType::MongoDB => map_to_mongo(&field.ty), // Mappa il tipo Rust al tipo MongoDB
+                };
+                
+                // Aggiunge il campo mappato nella struttura
                 fields_map.insert(field_name, field_type);
             }
 
@@ -199,5 +249,6 @@ pub fn scrape(directory: &str) -> Result<Vec<HashMap<String, HashMap<String, Str
         all_structs.push(struct_map);
     }
 
+    // Ritorna il risultato con tutte le strutture e i relativi tipi
     Ok(all_structs)
 }
