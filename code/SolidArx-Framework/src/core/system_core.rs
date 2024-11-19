@@ -15,6 +15,7 @@
 use crate::config::{
     global_config::{CoreConfig, ApplicationType},
     memory_config::MemoryConfig,
+    database_config::DatabaseType,
 };
 
 use crate::core::memory_management::MemoryManager;
@@ -80,7 +81,8 @@ impl std::error::Error for CoreError {}
 /// - memory_manager: Gestore della memoria, che implementa strategie di allocazione in base al tipo di applicazione.
 pub struct CoreSystem {
     config: CoreConfig,
-    _memory_manager: MemoryManager,
+    memory_manager: MemoryManager,
+    connection_manager: ConnectionManager,
 }
 
 macro_rules! init_module {
@@ -104,18 +106,24 @@ impl CoreSystem {
     /// # Parametri shrthand syntax
     /// - config: La configurazione globale che definisce il tipo di applicazione.
     /// - memory_config: La configurazione della memoria che specifica le dimensioni dei buffer e del pool.
+    /// - database_config: La configurazione del database che specifica il tipo di database e le impostazioni di connessione.
     ///
     /// # Ritorna
     /// Un'istanza di CoreSystem o un errore di inizializzazione (CoreError).
-    pub fn new(config: CoreConfig, memory_config: MemoryConfig) -> Result<Self, CoreError> {
+    pub fn new(config: CoreConfig, memory_config: MemoryConfig, database_config: DatabaseType) -> Result<Self, CoreError> {
         info!("Inizializzazione del CoreSystem...");
         let app_type = &config.app_type;
-        let _memory_manager = MemoryManager::new(config.app_type.clone(), memory_config).map_err(|e| {
+        let memory_manager = MemoryManager::new(config.app_type.clone(), memory_config).map_err(|e| {
             error!("Errore nell'inizializzazione del MemoryManager: {}", e);
             CoreError::InitializationError(e.to_string())
         })?;
+        let connection_manager = ConnectionManager::new(database_config).map_err(|e| {
+                    error!("Errore nell'inizializzazione del ConnectionManager: {}", e);
+                    CoreError::InitializationError(e.to_string())
+                })?;
+
         info!("CoreSystem inizializzato con app_type: {:?}",app_type);
-        Ok(CoreSystem { config, _memory_manager })
+        Ok(CoreSystem { config, memory_manager , connection_manager})
     }
 
 
@@ -130,9 +138,33 @@ impl CoreSystem {
     /// quali moduli devono essere inizializzati.
     #[allow(unreachable_code)]
     pub fn run(&self) -> Result<(), CoreError> {
+        info!("Esecuzione del CoreSystem...");
+
+        // Inizializzazione della connessione al database
+        info!("Inizializzazione della connessione al database...");
+        self.connection_manager.initialize_connection().await?;
 
         match self.config.app_type {
             ApplicationType::WebApp => {
+
+                // Generazione delle tabelle nel database
+                info!("Generazione delle tabelle nel database...");
+                // Generazione tabelle default
+                generate_tables(
+                    scrape(
+                        "src/crud/models/default", 
+                    )?, 
+                    self.connection_manager
+                ).await?;
+                // Generazione tabelle dev
+                generate_tables(
+                    scrape(
+                        "src/crud/models/dev", 
+                    )?, 
+                    self.connection_manager
+                ).await?;
+
+
                 info!("Configurazione per WebApp");
                 #[cfg(feature = "auth")]
                 init_module!("Authentication", || auth::initialize())?;

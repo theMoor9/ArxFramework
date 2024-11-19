@@ -8,6 +8,7 @@ use log::{info, error};
 /// - `max_idle_time`: Durata massima per mantenere una connessione inattiva.
 /// - `connection_timeout`: Tempo massimo di attesa per stabilire una connessione.#[derive(Debug, Clone)]
 pub struct ConnectionConfig {
+    pub disable_database: bool,
     pub database_url: String,
     pub max_connections: Option<u32>,
     pub retry_attempts: Option<u32>,
@@ -17,16 +18,16 @@ pub struct ConnectionConfig {
 
 /// Enum per definire i diversi tipi di sistemi di database supportati.
 /// Ogni variante contiene una `ConnectionConfig` per il rispettivo tipo di database.
-pub enum DatabaseConfig {
+pub enum DatabaseType {
     PostgreSQL(ConnectionConfig),
     SQLite(ConnectionConfig),
     MongoDB(ConnectionConfig),
 }
 
-impl DatabaseConfig {
-    /// Crea una nuova istanza di `DatabaseConfig` in base alla configurazione dell'applicazione.
+impl DatabaseType {
+    /// Crea una nuova istanza di `DatabaseType` in base alla configurazione dell'applicazione.
     /// Restituisce un `Result` che contiene un errore se nessuna configurazione è definita per l'app corrente.
-    pub fn new(database_url, max_connections, retry_attempts, max_idle_time, connection_timeout) -> Result<Self, &'static str> {
+    pub fn new(disable_database ,database_url, max_connections, retry_attempts, max_idle_time, connection_timeout) -> Result<Self, &'static str> {
 
         match database_url {
             None => {
@@ -91,12 +92,12 @@ impl DatabaseConfig {
             }
         }
        
-
+        let apply_database_url = database_url.unwrap();
 
         // Configurazione per applicazioni Web, utilizzando PostgreSQL
         #[cfg(feature = "webapp")]
-        return Ok(DatabaseConfig::PostgreSQL(ConnectionConfig {
-            database_url,
+        return Ok(DatabaseType::PostgreSQL(ConnectionConfig {
+            apply_database_url,
             apply_max_connections,
             apply_retry_attempts,
             apply_max_idle_time,       
@@ -104,8 +105,8 @@ impl DatabaseConfig {
         }));
         // Configurazione per API backend, utilizzando PostgreSQL
         #[cfg(feature = "api_backend")]
-        return Ok(DatabaseConfig::PostgreSQL(ConnectionConfig {
-            database_url,
+        return Ok(DatabaseType::PostgreSQL(ConnectionConfig {
+            apply_database_url,
             apply_max_connections,
             apply_retry_attempts,
             apply_max_idle_time,
@@ -113,8 +114,8 @@ impl DatabaseConfig {
         }));
         // Configurazione per applicazioni desktop, utilizzando SQLite
         #[cfg(feature = "desktop")]
-        return Ok(DatabaseConfig::SQLite(ConnectionConfig {
-            database_url: "sqlite://desktop_app.db".to_string(),
+        return Ok(DatabaseType::PostgreSQL(ConnectionConfig {
+            apply_database_url,
             apply_max_connection,
             apply_retry_attempts,
             apply_max_idle_time,
@@ -122,8 +123,8 @@ impl DatabaseConfig {
         }));
         // Configurazione per applicazioni embedded, utilizzando SQLite
         #[cfg(feature = "automation")]
-        return Ok(DatabaseConfig::MongoDB(ConnectionConfig {
-            database_url: "mongodb://localhost:27017/automation_db".to_string(),
+        return Ok(DatabaseType::MongoDB(ConnectionConfig {
+            apply_database_url,
             apply_max_connections,
             apply_retry_attempts,
             apply_max_idle_time,  
@@ -131,15 +132,13 @@ impl DatabaseConfig {
         }));
         // Configurazione per applicazioni embedded, utilizzando SQLite
         #[cfg(feature = "embedded")]
-        return Ok(DatabaseConfig::SQLite(ConnectionConfig {
-            database_url: "sqlite://embedded_app.db".to_string(),
+        return Ok(DatabaseType::SQLite(ConnectionConfig {
+            apply_database_url,
             apply_max_connections,
             apply_retry_attempts,
             apply_max_idle_time,
             apply_connection_timeout,
         }));
-
-        Err("Database configuration not set for the application")
     }
 
     /// Funzione di log che fornisce informazioni di stato sulla connessione al database.
@@ -147,7 +146,7 @@ impl DatabaseConfig {
     pub fn log_status(&self) {
         match self {
             // Cattura ogni variante di database e logga i rispettivi dettagli di configurazione
-            DatabaseConfig::PostgreSQL(config) | DatabaseConfig::SQLite(config) | DatabaseConfig::MongoDB(config) => {
+            DatabaseType::PostgreSQL(config) | DatabaseType::SQLite(config) | DatabaseType::MongoDB(config) => {
                 info!("Database URL: {}", config.database_url);
                 // Log del numero massimo di connessioni, se definito
                 if let Some(max_conn) = config.max_connections {

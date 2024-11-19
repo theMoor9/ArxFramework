@@ -29,8 +29,8 @@ pub fn setup_logging() -> Result<(), fern::InitError> {
             })
             .level(log::LevelFilter::Info)  // Livello di log globale, può essere configurato
             .chain(std::io::stdout())       // Scrittura del log nella console
-            .chain(fern::log_file("monitoring/logs/arx_framework.log")?)  // Scrittura su file
-            .apply()?;  // Applica la configurazione
+            .chain(fern::log_file("monitoring/logs/arx_framework.log"))  // Scrittura su file
+            .apply();  // Applica la configurazione
     });
     
     Ok(())

@@ -57,8 +57,24 @@ impl ConnectionManager {
     ///
     /// # Ritorna
     /// Una nuova istanza di `ConnectionManager`
-    pub fn new(config: ConnectionConfig) -> Self {
-        Self { config }  
+    pub fn new(db: DatabaseType) -> Self {
+        match db {
+            DatabaseType::Postgres(connection_config) => {
+                Self { 
+                    config: connection_config,
+                }
+            }
+            DatabaseType::SQLite(connection_config) => {
+                Self { 
+                    config: connection_config,
+                }
+            }
+            DatabaseType::MongoDB(connection_config) => {
+                Self { 
+                    config: connection_config,
+                }
+            }
+        }           
     }
 
     /// Inizializza la connessione al database con un meccanismo di retry per i tentativi falliti.

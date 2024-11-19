@@ -1,6 +1,4 @@
 use std::process::Command;
-use std::env;
-
 fn main() {
     // Verifica se Python è installato
     let python_check = Command::new("python")

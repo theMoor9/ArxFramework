@@ -2,7 +2,7 @@ pub mod model {
 
     use crate::crud::crud_ops::AllocType;
     use crate::crud::crud_ops::CrudOperations;
-
+    
     #[cfg(feature = "api")]
     #[derive(Debug, Clone)]
     pub struct ApiKey {

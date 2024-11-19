@@ -95,23 +95,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "arx_framework"
-version = "0.1.0"
-dependencies = [
- "cfg-if",
- "chrono",
- "clap",
- "colored",
- "diesel",
- "dotenvy",
- "fern",
- "lazy_static",
- "log",
- "mongodb",
- "once_cell",
-]
-
-[[package]]
 name = "async-trait"
 version = "0.1.83"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1575,6 +1558,23 @@ checksum = "ce305eb0b4296696835b71df73eb912e0f1ffd2556a501fcede6e0c50349191c"
 dependencies = [
  "libc",
  "windows-sys 0.52.0",
+]
+
+[[package]]
+name = "solid_arx"
+version = "0.1.0"
+dependencies = [
+ "cfg-if",
+ "chrono",
+ "clap",
+ "colored",
+ "diesel",
+ "dotenvy",
+ "fern",
+ "lazy_static",
+ "log",
+ "mongodb",
+ "once_cell",
 ]
 
 [[package]]

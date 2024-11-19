@@ -19,6 +19,7 @@ pub enum ApplicationType {
     None,
 }
 
+
 /// Configurazione globale del sistema.
 ///
 /// Questo struct contiene le impostazioni principali del sistema, come il tipo di applicazione

@@ -1,4 +1,4 @@
-use crate::crud::models::table_scraper::{scrape};
+use crate::network::connection_management::{ConnectionManager, DbConnection};
 use diesel::{PgConnection, SqliteConnection};
 use mongodb::{Client, bson::{doc, Bson}};
 use std::collections::HashMap;
@@ -106,11 +106,11 @@ fn map_to_bson(type_name: &str) -> Bson {
         // Tipi personalizzati o complessi
         "AllocType" => Bson::String(String::new()),
         "CrudOperations" => Bson::Document(doc! { "type": "object" }),
-        "Box<[u8]>" => Bson::Binary(vec![]),
+        "Box<[u8]>" => Bson::Binary(Binary),
         "ExeLogStatus" | "MacroStatus" | "ProjectStatus" => Bson::String(String::new()),
         "ExecutionFrequency" => Bson::String(String::new()),
         "Option<ProjectMetadata>" => Bson::Document(doc! { "type": "object" }),
-        "chrono::NaiveDateTime" => Bson::DateTime(chrono::Utc::now()), // O un valore di default
+        "chrono::NaiveDateTime" => Bson::DateTime(DateTime), // O un valore di default
         _ => Bson::String(String::new()), // Default per tipi sconosciuti
     }
 }
@@ -162,7 +162,7 @@ async fn create_mongodb_table(
 pub async fn generate_tables(
     structs: Vec<HashMap<&str, HashMap<&str, &str>>>, 
     connection_manager: &ConnectionManager
-) -> Result<(), Box<dyn std::error::Error>> {
+) -> Result<(), TableGeneratorError> {
     // Ottiene la connessione al database tramite il connection manager
     let connection = connection_manager.connect().await?;
 
@@ -175,7 +175,7 @@ pub async fn generate_tables(
                 let fields = struct_info.clone();
                 // Crea la tabella in PostgreSQL
                 create_postgresql_table(&pg_conn, table_name, &fields)?;
-                info!("Tabella {} creata su PostgreSQL", table_name);
+                info!("Tabella {:?} creata su PostgreSQL", table_name);
             }
         }
         DbConnection::SQLite(sqlite_conn) => {
@@ -184,7 +184,7 @@ pub async fn generate_tables(
                 let fields = struct_info.clone();
                 // Crea la tabella in SQLite
                 create_sqlite_table(&sqlite_conn, table_name, &fields)?;
-                info!("Tabella {} creata su SQLite", table_name);
+                info!("Tabella {:?} creata su SQLite", table_name);
             }
         }
         DbConnection::MongoDB(mongo_client) => {
@@ -192,8 +192,8 @@ pub async fn generate_tables(
                 let collection_name = struct_info.get("name");
                 let fields = struct_info.clone();
                 // Crea la collezione in MongoDB
-                create_mongodb_table(&mongo_client, "my_db", collection_name, &fields).await?;
-                info!("Collezione {} creata su MongoDB", collection_name);
+                create_mongodb_table(&mongo_client, "models", collection_name, &fields).await?;
+                info!("Collezione {:?} creata su MongoDB", collection_name);
             }
         }
     }

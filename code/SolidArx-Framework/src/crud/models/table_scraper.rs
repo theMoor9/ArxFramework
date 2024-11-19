@@ -2,13 +2,7 @@ use std::fs::{self, DirEntry};
 use std::path::Path;
 use syn::{self, Item, ItemStruct, ItemMod};
 use std::collections::HashMap;
-
-
-enum DbType {
-    Postgres,
-    SQLite,
-    MongoDB,
-}
+use crate::config::network_config::DatabaseType ;
 
 /// Funzione che esegue il parsing di un modulo Rust e restituisce le struct trovate all'interno.
 /// 
@@ -18,6 +12,10 @@ enum DbType {
 /// # Ritorna
 /// Un `Result<Vec<ItemStruct>, String>` che contiene una lista di struct trovate nel modulo,
 /// oppure un messaggio di errore in caso di fallimento del parsing.
+/// 
+/// # Note
+/// Lo scraping dei file `.rs` viene fatto in maniera selettiva grazie alle feature implementate nel codice dei modelli
+/// Se la struct non è stata attivata dalla feature corretta, non verrà inclusa nella mappa risultante.
 fn parse_mod_items(item_mod: &ItemMod) -> Result<Vec<ItemStruct>, String> {
     let mut structs = Vec::new();
 
@@ -122,7 +120,7 @@ fn generate_struct_debug_message(struct_name: &str, fields: &[&syn::Field]) -> R
     // Per ogni campo della struct, aggiungi una descrizione
     for field in fields {
         let field_name = field.ident.as_ref().map(|f| f.to_string()).unwrap_or_else(|| "Unnamed".to_string());
-        let field_type = map_rust_type_to_sql(&field.ty);
+        let field_type = map_to_sql(&field.ty);
         message.push_str(&format!("{}\n{}\n", field_name, field_type));
     }
 
@@ -200,7 +198,11 @@ fn read_rs_dir(directory: &str) -> Result<Vec<String>, String> {
 /// # Ritorna
 /// Un `Result<Vec<HashMap<String, HashMap<String, String>>>, String>` che contiene
 /// una lista di strutture mappate (nome struct -> campi -> tipi SQL), oppure un messaggio di errore.
-pub fn scrape(directory: &str, db: DbType) -> Result<Vec<HashMap<&str, HashMap<&str, &str>>>, String> {
+/// 
+/// # Note
+/// Lo scraping dei file `.rs` viene fatto in maniera selettiva grazie alle feature implementate nel codice dei modelli
+/// Se la struct non è stata attivata dalla feature corretta, non verrà inclusa nella mappa risultante.
+pub fn scrape(directory: &str) -> Result<Vec<HashMap<&str, HashMap<&str, &str>>>, String> {
     // Ottieni tutti i file `.rs` dalla cartella specificata
     let files = read_rs_dir(directory)?;
 
@@ -231,12 +233,13 @@ pub fn scrape(directory: &str, db: DbType) -> Result<Vec<HashMap<&str, HashMap<&
                 let field_name = field.ident.as_ref().map(|f| f.to_string()).unwrap_or_else(|| "Unnamed".to_string());
                 
                 // Mappa il tipo Rust al tipo specifico per il database (SQL, MongoDB, ecc.)
-                let field_type = match db {
-                    DbType::SQLite => map_to_sql(&field.ty),    // Mappa il tipo Rust al tipo SQL (SQLite)
-                    DbType::Postgres => map_to_sql(&field.ty),  // Mappa il tipo Rust al tipo SQL (PostgreSQL)
-                    DbType::MongoDB => map_to_mongo(&field.ty), // Mappa il tipo Rust al tipo MongoDB
-                };
-                
+                #[cfg(any(feature = "webapp", feature = "desktop", feature = "api_backend"))]
+                DatabaseType::Postgres => map_to_sql(&field.ty)  // Mappa il tipo Rust al tipo SQL (PostgreSQL)
+                #[cfg(any(feature = "embedded"))]
+                DatabaseType::SQLite => map_to_sql(&field.ty)    // Mappa il tipo Rust al tipo SQL (SQLite)
+                #[cfg(feature = "automation")]
+                DatabaseType::MongoDB => map_to_mongo(&field.ty) // Mappa il tipo Rust al tipo MongoDB
+
                 // Aggiunge il campo mappato nella struttura
                 fields_map.insert(field_name, field_type);
             }
