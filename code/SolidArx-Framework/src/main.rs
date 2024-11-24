@@ -46,7 +46,7 @@ fn handle_database(
     cli_args: &solid_arx::cli::Cli,
 ) -> Result<DatabaseType, Box<dyn std::error::Error>> {
     if let Commands::Database {
-        disable_database,
+        database_type,
         database_url,
         max_connections,
         retry_attempts,
@@ -55,7 +55,7 @@ fn handle_database(
     } = &cli_args.command
     {
         info!("Configurazione del database:");
-        info!("Disabilita Database: {}", disable_database);
+        info!("Database: {}", database_type);
         info!("Database URL: {:?}", database_url);
         info!("Max Connections: {:?}", max_connections);
         info!("Retry Attempts: {:?}", retry_attempts);
@@ -63,7 +63,7 @@ fn handle_database(
         info!("Connection Timeout: {:?}", connection_timeout);
 
         return Ok(DatabaseType::new(
-            disable_database,
+            database_type,
             database_url,
             max_connections,
             retry_attempts,

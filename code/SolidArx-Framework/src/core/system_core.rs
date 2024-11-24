@@ -144,26 +144,25 @@ impl CoreSystem {
         info!("Inizializzazione della connessione al database...");
         self.connection_manager.initialize_connection().await?;
 
+        // Generazione delle tabelle nel database
+        info!("Generazione delle tabelle nel database...");
+        // Generazione tabelle default
+        generate_tables(
+            scrape(
+                "src/crud/models/default", 
+            )?, 
+            self.connection_manager
+        ).await?;
+        // Generazione tabelle dev
+        generate_tables(
+            scrape(
+                "src/crud/models/dev", 
+            )?, 
+            self.connection_manager
+        ).await?;
+
         match self.config.app_type {
             ApplicationType::WebApp => {
-
-                // Generazione delle tabelle nel database
-                info!("Generazione delle tabelle nel database...");
-                // Generazione tabelle default
-                generate_tables(
-                    scrape(
-                        "src/crud/models/default", 
-                    )?, 
-                    self.connection_manager
-                ).await?;
-                // Generazione tabelle dev
-                generate_tables(
-                    scrape(
-                        "src/crud/models/dev", 
-                    )?, 
-                    self.connection_manager
-                ).await?;
-
 
                 info!("Configurazione per WebApp");
                 #[cfg(feature = "auth")]

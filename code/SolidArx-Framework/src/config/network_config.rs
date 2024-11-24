@@ -22,6 +22,7 @@ pub enum DatabaseType {
     PostgreSQL(ConnectionConfig),
     SQLite(ConnectionConfig),
     MongoDB(ConnectionConfig),
+    None,
 }
 
 impl DatabaseType {

@@ -1,5 +1,9 @@
 use clap::{Parser, Subcommand};
-use crate::config::global_config::ApplicationType; 
+use std::str::FromStr;
+use crate::config::global_config::{
+    ApplicationType,
+    DatabaseType,
+}; 
 
 /// CLI per ArxFramework
 #[derive(Parser)]
@@ -10,47 +14,81 @@ pub struct Cli {
     pub command: Commands,
 }
 
+/// Converte il CLI input in un tipo di database
+impl FromStr for DatabaseType {
+    type Err = String;
+
+    fn from_str(input: &str) -> Result<Self, Self::Err> {
+        match input.to_lowercase().as_str() {
+            "postgresql" | "postgre" | "pgs" => Ok(DatabaseType::PostgreSQL(ConnectionConfig::default())),
+            "sqlite" | "sl" => Ok(DatabaseType::SQLite(ConnectionConfig::default())),
+            "mongodb" | "mongo" | "mg" => Ok(DatabaseType::MongoDB(ConnectionConfig::default())),
+            "none" | "None" => Ok(DatabaseType::None),
+            _ => Err(format!("Tipo di database non riconosciuto: {}", input)),
+        }
+    }
+}
+
+/// Converte il ClI input in un tipo di applicazione
+
+impl FromStr for ApplicationType {
+
+    type Err = String;
+
+    fn from_str(input: &str) -> Result<Self, Self::Err> {
+        match input.to_lowercase().as_str() {
+            "webapp" | "web" | "wa" => Ok(ApplicationType::WebApp),
+            "apibackend" | "api" | "ab" => Ok(ApplicationType::ApiBackend),
+            "desktopapp" | "desktop" | "da" => Ok(ApplicationType::DesktopApp),
+            "automationscript" | "automation" | "as" => Ok(ApplicationType::AutomationScript),
+            "embeddedsystem" | "embedded" | "es" => Ok(ApplicationType::EmbeddedSystem),
+            _ => Err(format!("Tipo di applicazione non riconosciuto: {}", input)),
+        }
+    }
+
+}
+
 /// Comandi supportati da Arx
 #[derive(Subcommand)]
 pub enum Commands {
     /// Inizializza un nuovo progetto con un tipo di applicazione specifico
     Init {
         /// Il tipo di applicazione da inizializzare (WebApp, ApiBackend, DesktopApp, etc.)
-        #[arg(short = 'a', long = "app_type")]
+        #[arg(short = 'a', long = "app-type")]
         app_type: ApplicationType,
         /// Memory multiplier per mole di memoria
         /// Usato per genrare variabile di config per il modulo crud_ops.rs
-        #[arg(short = 'm', long = "memory_scale", default_value_t = 1)] // Valore di default: 1.0 
+        #[arg(short = 'm', long = "memory-scale", default_value_t = 1)] // Valore di default: 1.0 
         memory_scale: u8, 
         /// Numero massimo di thread per l'applicazione
-        #[arg(short = 't', long = "max_threads", default_value_t = 8)] // Valore di default: 8
+        #[arg(short = 't', long = "max-threads", default_value_t = 8)] // Valore di default: 8
         max_threads: u8,
         /// Buffer size per la memoria
-        #[arg(short = 'b', long = "buffer_size", default_value_t = 0)] // Valore di default: 1024
+        #[arg(short = 'b', long = "buffer-size", default_value_t = 0)] // Valore di default: 1024
         buffer_size: usize,
         /// Pool size per la memoria
-        #[arg(short = 'p', long = "pool_size", default_value_t = 0)] // Valore di default: 8
+        #[arg(short = 'p', long = "pool-size", default_value_t = 0)] // Valore di default: 8
         pool_size: usize,
     },
     Database {
         /// Disabilita l'utilizzo del database
-        #[arg(short = 'd', long = "disable_database"), default_value_t = true]
-        disable_database: bool,
+        #[arg(short = 'd', long = "database-type"), default_value_t = DatabaseType::None]
+        database_type: DatabaseType,
 
-        #[arg(short = 'url', long = "database_url"), default_value_t = None]
-        database_url: Option<String>,
+        #[arg(short = 'url', long = "database-url"), default_value_t = None]
+        database_url: String,
 
-        #[arg(short = 'c', long = "max_connections", default_value_t = 20)]
-        max_connections: Option<u32>,
+        #[arg(short = 'c', long = "max-connections", default_value_t = 20)]
+        max_connections: u32,
 
-        #[arg(short = 'r', long = "retry_attempts", default_value_t = 5)]
-        retry_attempts: Option<u32>,
+        #[arg(short = 'r', long = "retry-attempts", default_value_t = 5)]
+        retry_attempts: u32,
 
-        #[arg(short = 'i', long = "max_idle_time", default_value_t = 20)]
-        max_idle_time: Option<u64>,
+        #[arg(short = 'i', long = "max-idle-time", default_value_t = 20)]
+        max_idle_time: u64,
 
-        #[arg(short = 't', long = "connection_timeout", default_value_t = 1)]
-        connection_timeout: Option<u64>,
+        #[arg(short = 't', long = "connection-timeout", default_value_t = 1)]
+        connection_timeout: u64,
     }
     Help{
         "HELP\n
@@ -76,7 +114,7 @@ pub enum Commands {
         arx database #Define Database\n 
         \n
         Options:\n
-        --disable_database <Bool> or --d <Bool>                         # Disable Database, Default: true\n
+        --database_type <Bool> or --d <Bool>                         # Disable Database, Default: true\n
         --database_url Option<String>  or --url Option<String>          # Set Database URL, Default: None\n
         --max_connections Option<u32> or --c Option<u32>                # Set Max Connections, Default: 20\ \n
         --retry_attempts Option<u32> or --r Option<u32>                 # Set Retry Attempts, Default: 5\\n
