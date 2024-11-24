@@ -1,11 +1,8 @@
 /// Il modulo `ConnectionManager` gestisce la connessione a vari database in base alla configurazione specificata.
 /// Supporta PostgreSQL, SQLite e MongoDB, con funzionalità di retry per tentativi di connessione falliti.
 
-#[cfg(feature = "automation")] 
 use mongodb::{Client, options::ClientOptions}; 
-#[cfg(any(feature = "desktop", feature = "embedded"))]
 use diesel::sqlite::SqliteConnection;
-#[cfg(any(feature = "webapp", feature = "api_backend"))]
 use diesel::pg::PgConnection;
 use log::{error, info};
 use std::time::Duration;
@@ -74,6 +71,10 @@ impl ConnectionManager {
                     config: connection_config,
                 }
             }
+            DatabaseType::None => {
+                error!("Database non configurato.");
+                panic!("Database non configurato.");
+            }
         }           
     }
 
@@ -124,21 +125,18 @@ impl ConnectionManager {
     async fn connect(&self) -> Result<DbConnection, ConnectionErrors> {
 
         match self.config.database_type {
-            #[cfg(any(feature = "webapp", feature = "api_backend"))]
             DatabaseType::Postgres => {
                 PgConnection::establish(&self.config.database_url)
                     .map(DbConnection::Postgres)
                     .map_err(|e| ConnectionErrors::Postgres(e.to_string()))
                 info!("Connessione stabilita con successo al database PostgreSQL.");
             }
-            #[cfg(any(feature = "desktop", feature = "embedded"))]
             DatabaseType::SQLite => {
                 SqliteConnection::establish(&self.config.database_url)
                     .map(DbConnection::SQLite)
                     .map_err(|e| ConnectionErrors::SQLite(e.to_string()))
                 info!("Connessione stabilita con successo al database SQLite.");
             }
-            #[cfg(feature = "automation")]
             DatabaseType::MongoDB => {
                 // Parsing delle opzioni di connessione MongoDB dalla URL
                 let client_options = ClientOptions::parse(&self.config.database_url)
@@ -147,6 +145,14 @@ impl ConnectionManager {
                 let client = Client::with_options(client_options)
                     .map_err(|e| ConnectionErrors::Mongo(e.to_string()))?;
                 Ok(DbConnection::MongoDB(client))
+            }
+            DatabaseType::None => {
+                error!("Database non configurato.");
+                panic!("Database non configurato.");
+            }
+            _ => {
+                error!("Tipo di database non supportato.");
+                Err(ConnectionErrors::UnknownError("Tipo di database non supportato.".to_string()))
             }
         }
     }

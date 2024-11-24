@@ -202,7 +202,7 @@ fn read_rs_dir(directory: &str) -> Result<Vec<String>, String> {
 /// # Note
 /// Lo scraping dei file `.rs` viene fatto in maniera selettiva grazie alle feature implementate nel codice dei modelli
 /// Se la struct non è stata attivata dalla feature corretta, non verrà inclusa nella mappa risultante.
-pub fn scrape(directory: &str) -> Result<Vec<HashMap<&str, HashMap<&str, &str>>>, String> {
+pub fn scrape(directory: &str, db_type: DatabaseType) -> Result<Vec<HashMap<&str, HashMap<&str, &str>>>, String> {
     // Ottieni tutti i file `.rs` dalla cartella specificata
     let files = read_rs_dir(directory)?;
 

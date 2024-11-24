@@ -20,7 +20,7 @@ use crate::config::{
 
 use crate::core::memory_management::MemoryManager;
 use crate::monitoring::logger;
-use log::{info, error};
+use log::{info, warn ,error};
 
 
 /// Sezione di importin per la gestione della connessione al database
@@ -117,10 +117,39 @@ impl CoreSystem {
             error!("Errore nell'inizializzazione del MemoryManager: {}", e);
             CoreError::InitializationError(e.to_string())
         })?;
-        let connection_manager = ConnectionManager::new(database_config).map_err(|e| {
+        match database_config {
+            DatabaseType::None => {
+                warn!("Configurazione del database non impostata per l'applicazione");
+            }
+            _ => {
+                let connection_manager = ConnectionManager::new(database_config).map_err(|e| {
                     error!("Errore nell'inizializzazione del ConnectionManager: {}", e);
                     CoreError::InitializationError(e.to_string())
                 })?;
+
+                // Inizializzazione della connessione al database
+                info!("Inizializzazione della connessione al database...");
+                connection_manager.initialize_connection().await?;
+
+                // Generazione delle tabelle nel database
+                info!("Generazione delle tabelle nel database...");
+                // Generazione tabelle default
+                generate_tables(
+                    scrape(
+                        "src/crud/models/default", 
+                    )?, 
+                    connection_manager
+                ).await?;
+                // Generazione tabelle dev
+                generate_tables(
+                    scrape(
+                        "src/crud/models/dev", 
+                    )?, 
+                    connection_manager
+                ).await?;
+            }
+        }
+        
 
         info!("CoreSystem inizializzato con app_type: {:?}",app_type);
         Ok(CoreSystem { config, memory_manager , connection_manager})
@@ -139,27 +168,6 @@ impl CoreSystem {
     #[allow(unreachable_code)]
     pub fn run(&self) -> Result<(), CoreError> {
         info!("Esecuzione del CoreSystem...");
-
-        // Inizializzazione della connessione al database
-        info!("Inizializzazione della connessione al database...");
-        self.connection_manager.initialize_connection().await?;
-
-        // Generazione delle tabelle nel database
-        info!("Generazione delle tabelle nel database...");
-        // Generazione tabelle default
-        generate_tables(
-            scrape(
-                "src/crud/models/default", 
-            )?, 
-            self.connection_manager
-        ).await?;
-        // Generazione tabelle dev
-        generate_tables(
-            scrape(
-                "src/crud/models/dev", 
-            )?, 
-            self.connection_manager
-        ).await?;
 
         match self.config.app_type {
             ApplicationType::WebApp => {

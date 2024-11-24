@@ -8,7 +8,7 @@ use log::{info, error};
 /// - `max_idle_time`: Durata massima per mantenere una connessione inattiva.
 /// - `connection_timeout`: Tempo massimo di attesa per stabilire una connessione.#[derive(Debug, Clone)]
 pub struct ConnectionConfig {
-    pub disable_database: bool,
+    pub database_type_reference: DatabaseType,
     pub database_url: String,
     pub max_connections: Option<u32>,
     pub retry_attempts: Option<u32>,
@@ -28,7 +28,7 @@ pub enum DatabaseType {
 impl DatabaseType {
     /// Crea una nuova istanza di `DatabaseType` in base alla configurazione dell'applicazione.
     /// Restituisce un `Result` che contiene un errore se nessuna configurazione è definita per l'app corrente.
-    pub fn new(disable_database ,database_url, max_connections, retry_attempts, max_idle_time, connection_timeout) -> Result<Self, &'static str> {
+    pub fn new(database_type_reference ,database_url, max_connections, retry_attempts, max_idle_time, connection_timeout) -> Result<Self, &'static str> {
 
         match database_url {
             None => {
