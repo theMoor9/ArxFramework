@@ -55,7 +55,7 @@ fn handle_database(
     } = &cli_args.command
     {
         info!("Configurazione del database:");
-        info!("Database: {}", database_type);
+        info!("Database: {}", database_type_reference);
         info!("Database URL: {:?}", database_url);
         info!("Max Connections: {:?}", max_connections);
         info!("Retry Attempts: {:?}", retry_attempts);
@@ -63,7 +63,7 @@ fn handle_database(
         info!("Connection Timeout: {:?}", connection_timeout);
 
         return Ok(DatabaseType::new(
-            database_type,
+            database_type_reference,
             database_url,
             max_connections,
             retry_attempts,
