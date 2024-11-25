@@ -1,26 +1,28 @@
-# ArxFramework
+# SolidArx-Framework
 
 ## Introduction
-ArxFramework è un framework modulare e flessibile progettato per supportare lo sviluppo di diverse tipologie di applicazioni, tra cui applicazioni web, API backend, applicazioni desktop, sistemi di automazione e scripting, e sistemi embedded.
 
-Caratteristiche principali:
+**SolidArx** is a Framework which acts as a modular and flexible library that takes the form of a "Boilerplate" once configured, facilitating the development of a designated application. It is designed to support the development of various types of applications, including web applications, API backends, desktop applications, automation and scripting systems, and embedded systems.
 
-1. Architettura Modulare: Composto da moduli specializzati come core system, autenticazione, CRUD, gestione file, monitoraggio e altri, ciascuno ottimizzato per il proprio dominio.
-2. Multilingua: Principalmente implementato in Rust per prestazioni e sicurezza, con integrazioni Python per flessibilità e machine learning.
-3. Versatilità: Supporta cinque tipi principali di applicazioni, adattandosi alle esigenze specifiche di ciascuna.
-4. Core System Robusto: Un sistema centrale in Rust che gestisce operazioni fondamentali come la gestione della memoria e la concorrenza.
-5. CLI Configurabile: Un'interfaccia a linea di comando per una facile configurazione e inizializzazione del sistema.
-6. Integrazione Frontend: Supporto per frontend dinamici utilizzando Svelte.
-7. Capacità Avanzate: Include moduli per machine learning, integrazione blockchain e automazione dei task.
-8. Logging e Monitoraggio: Sistema integrato per il logging e il monitoraggio delle prestazioni.
-9. Gestione File e Risorse: Modulo dedicato per operazioni efficienti su file e risorse.
-10. Documentazione e Template: Include documentazione completa e template per diversi tipi di applicazioni.
+### Key Features:
 
-ArxFramework mira a fornire una base solida e flessibile per lo sviluppo di applicazioni, combinando l'efficienza di Rust con la versatilità di Python e altri strumenti moderni. È progettato per essere facilmente estensibile e adattabile a diverse esigenze di progetto, dalla prototipazione rapida allo sviluppo di sistemi complessi e ad alte prestazioni.
+1. **Modular Architecture**: Composed of specialized modules like the core system, authentication, CRUD, file management, monitoring, and others, each optimized for its domain and easily configurable.
+2. **Multi-language**: Primarily implemented in **Rust** for performance and security, with **Python** integrations for flexibility, especially in machine learning operations.
+3. **Versatility**: ArxFramework adapts to the needs of five main types of applications, allowing specific customizations through configuration.
+4. **Robust Core System**: A central system in **Rust** that manages fundamental operations such as memory management, concurrency, and other base operations that can be extended.
+5. **Frontend Integration**: Support for dynamic frontends using **Svelte**, allowing the creation of modern interfaces with ease.
+6. **Advanced Capabilities**: Includes modules for **machine learning**, **blockchain** integration, and task automation.
+7. **Logging and Monitoring**: Integrated logging and performance monitoring system, essential for tracking the application's behavior.
+8. **File and Resource Management**: A dedicated module for efficient file and resource management, configurable based on the application in use.
+9. **Documentation and Templates**: Provides comprehensive documentation and **templates** that facilitate module configuration and the integration of custom models.
+
+### Scope
+
+ArxFramework offers a solid and flexible foundation for the development of modular applications. By combining the efficiency of **Rust** with the versatility of **Python** and other modern tools, the framework is designed to be easily extensible and adaptable. Thanks to its CLI-based configuration and **templates**, it allows the creation of tailored applications, from rapid prototyping to building complex, high-performance systems, maximizing potential through the customized integration of modules.
 
 ---
 
-**Table of contents**
+**Table of Contents**
 
 - [Type of Applications](#Type-of-Applications)
 - [Functionality and Unique Technologies](#Functionality-and-Unique-Technologies)
@@ -32,78 +34,77 @@ ArxFramework mira a fornire una base solida e flessibile per lo sviluppo di appl
 
 # Type of Applications
 
-1. **Applicazioni Web**: App che girano su browser, possono essere single-page applications (SPA) o app multi-pagina.
-2. **API Backend**: Servizi che forniscono dati e funzioni ad altre applicazioni (mobile, web, desktop) tramite un'API REST o GraphQL.
-3. **App Desktop**: Applicazioni che girano direttamente su sistemi operativi come Windows, macOS o Linux, con funzionalità offline e gestione di risorse locali.
-4. **Automazione e Scripting**: Tool o script che automatizzano processi specifici, come estrazione dati, analisi o task ripetitivi.
-5. **Sistemi Embedded o Performance-Critical**: App che richiedono prestazioni elevate, come sistemi IoT, microservizi o app per hardware specifici.
+1. **Web Applications**: Apps that run in browsers, can be single-page applications (SPA) or multi-page apps.
+2. **API Backend**: Services that provide data and functions to other applications (mobile, web, desktop) through a REST or GraphQL API.
+3. **Desktop Applications**: Applications that run directly on operating systems like Windows, macOS, or Linux, with offline functionality and local resource management.
+4. **Automation and Scripting**: Tools or scripts that automate specific processes, such as data extraction, analysis, or repetitive tasks.
+5. **Embedded or Performance-Critical Systems**: Apps that require high performance, such as IoT systems, microservices, or applications for specific hardware.
 
 ---
 
 # Functionality and Unique Technologies
 
-## Tabella della Struttura Modulare per 5 Soluzioni
+## Modular Structure Table for 5 Solutions
 
-| Modulo                     | Web App | API Backend | App Desktop | Automazione e Scripting | Sistemi Embedded |
-| -------------------------- | ------- | ----------- | ----------- | ----------------------- | ---------------- |
-| Core Sistema (Rust)        | ✓       | ✓           | ✓           | ✓                       | ✓                |
-| Autenticazione e Sicurezza | ✓       | ✓           | ✓           | ○                       | ○                |
-| Gestione CRUD              | ✓       | ✓           | ✓           | ○                       | ○                |
-| API Layer                  | ✓       | ✓           | ○           | ○                       | ○                |
-| Gestione file/risorse      | ○       | ○           | ✓           | ✓                       | ○                |
-| Monitoraggio e logging     | ✓       | ✓           | ✓           | ✓                       | ✓                |
-| Task Automation            | ○       | ○           | ○           | ✓                       | ○                |
-| Frontend Dinamico          | ✓       | ○           | ✓           | ○                       | ○                |
-| Integrazione Blockchain    | ○       | ○           | ○           | ○                       | ○                |
-| Machine Learning           | ○       | ○           | ○           | ○                       | ○                |
+| Module                    | Web App | API Backend | Desktop App | Automation & Scripting | Embedded Systems |
+| ------------------------- | ------- | ----------- | ----------- | ---------------------- | ---------------- |
+| Core System (Rust)        | ✓       | ✓           | ✓           | ✓                      | ✓                |
+| Authentication & Security | ✓       | ✓           | ✓           | ○                      | ○                |
+| CRUD Management           | ✓       | ✓           | ✓           | ○                      | ○                |
+| API Layer                 | ✓       | ✓           | ○           | ○                      | ○                |
+| Network                   | ✓<br>   | ✓<br>       | ✓<br>       | ✓<br>                  | ✓<br>            |
+| File/Resource Management  | ○       | ○           | ✓           | ✓                      | ○                |
+| Monitoring & Logging      | ✓       | ✓           | ✓           | ✓                      | ✓                |
+| Task Automation           | ○       | ○           | ○           | ✓                      | ○                |
+| Dynamic Frontend          | ✓       | ○           | ✓           | ○                      | ○                |
+| Blockchain Integration    | ✓       | ✓           | ✓           | ✓                      | ✓                |
+| Machine Learning          | ✓       | ✓           | ✓           | ✓                      | ✓                |
 
-Legenda:
+Legend:
 
-- ✓ : Modulo tipicamente utilizzato in questa soluzione
-- ○ : Modulo opzionale o utilizzato in base a requisiti specifici
+- ✓: Typically used in this solution
+- ○: Optional module or used based on specific requirements
 
-### CLI setup
-Il cli sarà responsabile  della configurazione del tipo di applicazione tramite la variabile di config nel main. Da cui dipenderanno i seguenti moduli:
+### Expanded Module Details for Development
 
-### Dettagli Espansi dei Moduli per lo Sviluppo
+| Module                    | Primary Language      | Support Language | Wrapping | Main Framework/Libraries |
+| ------------------------- | --------------------- | ---------------- | -------- | ------------------------ |
+| Core System               | Rust                  | -                | -        | tokio (async runtime)    |
+| Authentication & Security | Rust                  | Python           | Yes      | jsonwebtoken, bcrypt     |
+| CRUD Management           | Rust                  | -                | -        | diesel (ORM)             |
+| API Layer                 | Rust (warp/actix-web) | Python (FastAPI) | No       | serde (serialization)    |
+| Network                   | Rust<br>              | -<br>            | -        | Diesel,Tokio,pyo3        |
+| File/Resource Management  | Rust                  | -                | -        | std::fs, tokio::fs       |
+| Monitoring & Logging      | Rust                  | -                | -        | tracing, prometheus      |
+| Task Automation           | Rust                  | Python           | Yes      | rayon (parallelism)      |
+| Dynamic Frontend          | Svelte (TypeScript)   | -                | -        | SvelteKit, DaisyUI (CSS) |
+| Blockchain Integration    | Rust                  | Python           | Yes      | Solana web3              |
+| Machine Learning          | Python                | Rust             | Yes      | PyTorch, scikit-learn    |
 
-| Modulo                     | Linguaggio Principale | Linguaggio di Supporto | Wrapping | Framework/Librerie Principali |
-| -------------------------- | --------------------- | ---------------------- | -------- | ----------------------------- |
-| Core Sistema               | Rust                  | -                      | -        | tokio (async runtime)         |
-| Autenticazione e Sicurezza | Rust                  | Python                 | Sì       | jsonwebtoken, bcrypt          |
-| Gestione CRUD              | Rust                  | -                      | -        | diesel (ORM)                  |
-| API Layer                  | Rust (warp/actix-web) | Python (FastAPI)       | No       | serde (serializzazione)       |
-| Gestione file/risorse      | Rust                  | -                      | -        | std::fs, tokio::fs            |
-| Monitoraggio e logging     | Rust                  | -                      | -        | tracing, prometheus           |
-| Task Automation            | Rust                  | Python                 | Sì       | rayon (parallelismo)          |
-| Frontend Dinamico          | Svelte (TypeScript)   | -                      | -        | SvelteKit, DaisyUI(CSS)       |
-| Integrazione Blockchain    | Rust                  | Python                 | Sì       | Solana web3                   |
-| Machine Learning           | Python                | Rust                   | Sì       | PyTorch, scikit-learn         |
+Additional Notes:
 
+- For each module, consider implementing unit and integration tests.
+- Document internal and external APIs for each module.
+- Implement a flexible configuration system for each module.
+- Consider using Docker containers to standardize the development and deployment environment.
 
-Note Aggiuntive:
+### Support Languages (Optional)
 
-- Per ogni modulo, considerare l'implementazione di test unitari e di integrazione.
-- Documentare le API interne ed esterne di ciascun modulo.
-- Implementare un sistema di configurazione flessibile per ciascun modulo.
-- Considerare l'uso di container Docker per la standardizzazione dell'ambiente di sviluppo e deployment.
+#### Distinction Between Wrapping and Non-Wrapping Approaches
 
-## Linguaggi di Supporto
-### Distinzione tra Approcci Wrapping e Non-Wrapping
-
-1. **Approccio Wrapping** (es. Autenticazione e Sicurezza): Il codice Rust viene incapsulato in funzioni Python per un uso più agevole. Esempio Rust (con PyO3):
+1. **Wrapping Approach** (e.g., Authentication and Security): Rust code is encapsulated in Python functions for easier use. Example Rust (with PyO3):
     
     ```Rust
 	#[pyfunction] 
 	fn verify_password(password: &str, hash: &str) -> PyResult<bool> {     
-		// Implementazione Rust    
+		// Rust Implementation    
 		Ok(true) 
 		// placeholder 
 	}
 	```
     
-    Esempio Python:
-    
+    Python Example:
+	
     ```Python
 	from rust_auth import verify_password 
 	
@@ -111,18 +112,18 @@ Note Aggiuntive:
 		stored_hash = get_stored_hash(username)    
 		return verify_password(password, stored_hash)
 	```
-	    
-1. **Approccio Unwrapped** (es. Task Automation): Rust e Python cooperano, con Python che orchestra e chiama funzioni Rust quando necessario. Esempio Rust (con PyO3):
+    
+2. **Unwrapped Approach** (e.g., Task Automation): Rust and Python cooperate, with Python orchestrating and calling Rust functions when needed. Example Rust (with PyO3):
     
     ```Rust
 	#[pyfunction] 
 	fn process_data(data: Vec<f64>) -> PyResult<Vec<f64>> {
-	     // Elaborazione intensiva in Rust    
+	     // EIntensive processing in Rust    
 	     Ok(data.iter().map(|&x| x * 2.0).collect()) 
 	}
 	```
     
-    Esempio Python:
+    Python Example:
     
     ```Rust
 	import rust_processor 
@@ -132,12 +133,11 @@ Note Aggiuntive:
 		processed = rust_processor.process_data(data)    
 		save_results(processed)
 	```
-    
+	
+- In the first approach, Rust functionality is “wrapped” in a Python interface.
+- In the second, Python directly uses Rust functions as part of a larger workflow.
 
-- Nel primo approccio, la funzionalità Rust è "avvolta" in un'interfaccia Python.
-- Nel secondo, Python utilizza direttamente le funzioni Rust come parte di un flusso di lavoro più ampio.
-
->Occorre applicare le metodologie in relazione alla tabella antecedente.
+> Apply these methodologies in relation to the earlier table.
 
 ---
 
@@ -145,9 +145,180 @@ Note Aggiuntive:
 
 ```sh
 ArxFramework/
+├── core/                 # Core System (Rust)
+├── auth/                 # Authentication and Security (Rust, optional Python)
+├── crud/                 # CRUD Management (Rust)
+| └── models/               # Models folder
+├── api/                  # API Layer (Primary Rust, optional Python FastAPI)
+├── network/              # Handles networking
+├── file_management/      # File/Resource Management (Rust)
+├── monitoring/           # Monitoring and logging (Rust)
+| └── logs/               # Logs folder
+├── task_automation/      # Task Automation (Primary Rust, secondary Python)
+├── blockchain/           # Blockchain Integration (Rust)
+├── frontend/             # Hosts the front end
+├── ml/                   # Machine Learning (Primary Python, secondary Rust)
+├── docs/                 # Framework documentation
+├── config/               # Global configurations
+├── src/                  # Source
+├── tests/                # Unit tests
+└── README.md             # Main framework documentation
+
+```
+
+**core/**
+
+- `system_core.rs`: Central system management
+- `memory_management.rs`: Memory optimization
+
+**auth/**
+
+- `auth_core.rs`: Core authentication functionality
+- `auth_wrapper.py`: Python wrapper for integrations
+
+**crud/**
+
+- **models/**: Directory containing `.rs` models built following the default procedure for integration
+    - `user_model.rs`: Model containing the `struct` that defines it and the `enum` indicating the properties inheritable from `crud_ops.rs`.
+    - `article_model.rs`: As described for `user_model.rs`
+    - other models...
+- `crud_ops.rs`: General CRUD operations
+
+**api/**
+
+- `api_server.rs`: Main API server
+- `routes.rs`: API route definitions
+- `fastapi_integration.py`: Integration with FastAPI
+
+**network/**
+
+- `connection_manager.rs`: Manages active connections and the connection pool.  
+	- Functions to establish, maintain, and close persistent connections.  
+	- Retry handling for failed connections.
+
+- `load_balancer.rs`: Implements various load-balancing algorithms.  
+	- Data structures to monitor the load on each server (e.g., the number of active connections).  
+	- Functions to distribute requests based on the chosen balancing algorithm.
+
+ - `resource_pool.rs`: Centrally manages network resources, such as connections.  
+	- Connection pooling to minimize latency.  
+	- Configurable options to limit the maximum number of simultaneous connections
+
+**file_management/**
+
+- `file_ops.rs`: File operations
+- `resource_manager.rs`: Resource management
+
+**monitoring/**
+
+- **logs/**: Contains log files for respective modules
+- `logger.rs`: Logging system
+- `metrics.rs`: Metrics collection and reporting
+
+**task_automation/**
+
+- `task_core.rs`: Core functions for automation
+- `automation_scripts.py`: Python automation scripts
+
+**blockchain/**
+
+- `blockchain_integration.rs`: Blockchain interface
+- `smart_contracts.rs`: Smart contract management
+
+**frontend/** Hosts the frontend
+
+- `App.svelte`: Root Svelte component
+- `index.js`: Application entry point
+- `components/`: Reusable components directory
+
+**ml/**
+
+- `ml_models.py`: ML model implementation
+- `data_processing.rs`: High-performance data processing
+
+**docs/**
+
+- Documentation files for each module
+
+**tests/**
+
+- Contains unit tests.
+
+**config/**
+
+- `global_config.rs`: Configuration file for the entire framework
+- `network_config.rs`: Guess what
+
+**src/**
+
+- `main.rs`: Framework entry point and CLI encapsulator.
+- `lib.rs`: Contains references to all module folders (_crates_).
+](module_proprieties.md)
+
+---
+
+# How to Use ArxFramework
+
+##### You can find useful infos about the modules [here](./docs/module-templates) 
+
+## Setup
+
+ArxFramework is designed to help you create projects with predefined templates for various types of applications: Web App, API Backend, Desktop App, Automation and Scripting, and Embedded Systems. Follow the steps below to install and use the framework effectively.
+
+#### **Step 1: Install the CLI Tool**
+
+To start using ArxFramework, you need to install the CLI tool globally on your system using Cargo.
+
+```sh
+cargo install arx_framework
+```
+
+This command will:
+
+- Download and build the ArxFramework CLI tool (called `arx`).
+- Install the `arx` binary in Cargo’s bin directory (`~/.cargo/bin` on Linux/macOS or `%USERPROFILE%\.cargo\bin` on Windows).
+
+#### **Step 2: Verify Installation**
+
+After installation, ensure that the `arx` command is available in your terminal. You may need to add Cargo’s bin directory to your system’s PATH variable if it isn’t already.
+
+To verify that the installation was successful:
+
+```sh
+arx --version
+```
+
+This command will print the version of the installed `arx` CLI tool.
+
+#### **Step 3: Initialize a New Project**
+
+Now you can create a new project by running the `arx init` command. This command will set up the entire framework structure for the application type you choose.
+
+1. **Create a new directory for your project**:
+    
+    ```sh
+	mkdir mio_nuovo_progetto 
+	cd mio_nuovo_progetto
+	```
+    
+2. **Run the `arx init` command** with the application type (`--AppType`), where `--AppType` can be `webapp`, `api_backend`, `desktop_app`, `automation`, or `embedded`:
+    
+    ```sh
+	arx init --AppType webapp
+	```
+    
+    This command will generate a project structure tailored to the specified application type.
+
+#### **Step 4: Project Structure**
+
+Once the project is initialized, you will have a pre-configured directory structure based on the type of application you selected. For example, for a web app, the structure might look like this:
+
+```sh
+ArxFramework/
 ├── core/                 # Core Sistema (Rust)
 ├── auth/                 # Autenticazione e Sicurezza (Rust, Python opzionale)
 ├── crud/                 # Gestione CRUD (Rust)
+| └── models/               # Cartella dei modelli
 ├── api/                  # API Layer (Rust primario, Python FastAPI opzionale)
 ├── file_management/      # Gestione file/risorse (Rust)
 ├── monitoring/           # Monitoraggio e logging (Rust)
@@ -158,138 +329,74 @@ ArxFramework/
 ├── ml/                   # Machine Learning (Python primario, Rust secondario)
 ├── docs/                 # Documentazione del framework
 ├── config/               # Configurazioni globali
-├── src/ 
+├── src/                  # Source
 ├── tests/                # Test unitari 
 └── README.md             # Documentazione principale del framework
 ```
 
-**core/**
-- `system_core.rs`: Gestione centrale del sistema
-- `memory_management.rs`: Ottimizzazione della memoria
+Each folder contains specific modules to help you start developing your application.
 
-**auth/**
-- `auth_core.rs`: Funzionalità core di autenticazione
-- `auth_wrapper.py`: Wrapper Python per integrazioni
+#### **Step 5: Configure and Customize**
 
-**crud/**
-- `crud_operations.rs`: Operazioni CRUD generiche
-- `models.rs`: Definizioni dei modelli dati
+1. **Update the `Cargo.toml`**: Depending on your project, you may want to customize the dependencies or features within the `Cargo.toml` file.
+    
+2. **Modify or Add Functionality**:
+    
+    - You can modify or extend the models and components located in the `modules/` directory to suit the specific needs of your application.
+    - For any customization, follow the documented structure inside each module.
+    
+3. **Command Line Arguments**: The CLI tool allows you to pass various arguments to customize the project initialization. Refer to the CLI documentation (`arx --help`) to explore the available options.
+    
 
-**api/**
-- `api_server.rs`: Server API principale
-- `routes.rs`: Definizione dei percorsi API
-- `fastapi_integration.py`: Integrazione con FastAPI
+#### **Step 6: Build and Run**
 
-**file_management/**
-- `file_ops.rs`: Operazioni su file
-- `resource_manager.rs`: Gestione risorse
+Once your project is configured and customized, you can build and run it using Cargo:
 
-**monitoring/**
-- **logs/**: Contiene tutti i file di log dei rispettivi moduli
-- `logger.rs`: Sistema di logging
-- `metrics.rs`: Raccolta e reporting metriche
+```sh
+cargo build cargo run
+```
 
-**task_automation/**
-- `task_core.rs`: Funzioni core per automazione
-- `automation_scripts.py`: Script di automazione Python
+This command will compile the project and run the application based on the configuration specified during initialization.
 
-**blockchain/**
-- `blockchain_integration.rs`: Interfaccia blockchain
-- `smart_contracts.rs`: Gestione smart contract
+#### **Step 7: Add More Features or Modify Components**
 
-**frontend/**
-Ospita il frontend
-- `App.svelte`: Componente root Svelte
-- `index.js`: Entry point dell'applicazione
-- `components/`: Cartella componenti riutilizzabili
+- You can further customize the framework by adding new models or extending existing ones in the `crud/` or `core/` folders.
+- Use the macros provided in the `crud_ops.rs` file to implement additional CRUD functionality for new models.
 
-**ml/**
-- `ml_models.py`: Implementazione modelli ML
-- `data_processing.rs`: Elaborazione dati performante
+#### **Step 8: Continuous Development**
 
-**docs/**
-- File di documentazione per ogni modulo
+- Use a version control system like Git to manage changes to your project.
+- During development, continue to customize the generated modules to meet the needs of your application.
 
-**tests/**
-- Contiene i test unitari.
+### Example Workflow
 
-**config/**
-- `global_config.rs`File di configurazione per l'intero framework
+1. **Install the CLI**:
+    
+    ```sh
+	cargo install arx_framework
+	```
+    
+2. **Create a new directory and initialize a web app**:
+    
+    ```sh
+	mkdir mia_webapp
+	cd mia_webapp 
+	arx init --AppType webapp
+	```
+    
+3. **Build and run your new web app**:
+    
+    ```sh
+	cargo build cargo run
+	```
+    
 
-**src/**
-- `main.rs` Il main è costruito in gran parte dagli elementi  delle standard procedures riportate nella sezione [Scope](#Scope)
-- `cli.rs` [Link al tameplate del CLI](./main-integration-procedures/cli.md)
-- `lib.rs` Qui sono riportate tutte le cartelle( *crates* ) contenenti moduli
-	
----
+This will launch your web application with the pre-configured structure of ArxFramework.
 
-# Scope
-
->Ogni modulo ha il compito di processare task in base ad un input restituendo un output di status di avvenuta operazione al fine di avere uno script collettore delle operazioni.
-
-## 1. Core Sistema
->Pertinente per: Tutte le applicazioni
-
-**CAMBIARE**
-Questo file contiene le strutture e le funzioni principali per l'inizializzazione e il controllo del core del sistema. Definisce i tipi di applicazione supportati, gestisce la configurazione globale, implementa il logging di base e fornisce un'interfaccia per le operazioni di sistema che si adattano al tipo di applicazione in uso. È il punto di entrata principale per l'interazione con il core del framework.
-
-[Development](ArxFramework/module-development-templates/core-system.md)
-
-[Customization]()
-
-## 2. Autenticazione e Sicurezza 2 Versioni
->Pertinente per: Web App, API Backend, App Desktop
-
-
-## 3. Gestione CRUD 2 Versioni
->Pertinente per: Web App, API Backend, App Desktop
-
-
-## 4. API Layer 3 Versioni
-
->Pertinente per: Web App, API Backend, App Desktop, Sistemi Embedded
-
-
-## 5. Gestione File/Risorse 3 Versioni
-
->Pertinente per: Tutte le applicazioni
-
-## 6. Monitoraggio e Logging 2 Versioni
-
->Pertinente per: Tutte le applicazioni
-
-
-## 7. Task Automation 2 Versioni
-
->Pertinente per: Automazione e Scripting, Sistemi Embedded
-
-
-## 8. Integrazione Blockchain 2 Versioni
-
->Pertinente per: Web App, API Backend, App Desktop
-
-
-## 9. Frontend Dinamico 2 Versioni
-
->Pertinente per: Web App, App Desktop
-
-
-## 10. Machine Learning 3 Versioni
-
->Pertinente per: Web App, API Backend, Automazione e Scripting, Sistemi Embedded
+## Project Scalability
+Implementation of new system's components
 
 
 ---
 
-# HOW to USE
-
-1. Tramite il cli si configura la stuttura base per una delle applicazioni disponibili
-2. 
-
----
-	
-# Author
-Kenneth Boldrini
-
-# License
-This repository is licensed. See the [LICENSE](./LICENSE) file for more details.
+**Author**: Kenneth Boldrini
