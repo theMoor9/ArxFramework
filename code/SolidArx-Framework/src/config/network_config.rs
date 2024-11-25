@@ -18,6 +18,7 @@ pub struct ConnectionConfig {
 
 /// Enum per definire i diversi tipi di sistemi di database supportati.
 /// Ogni variante contiene una `ConnectionConfig` per il rispettivo tipo di database.
+#[derive(Debug, Clone)]
 pub enum DatabaseType {
     PostgreSQL(ConnectionConfig),
     SQLite(ConnectionConfig),

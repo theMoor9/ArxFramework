@@ -82,7 +82,7 @@ impl std::error::Error for CoreError {}
 pub struct CoreSystem {
     config: CoreConfig,
     memory_manager: MemoryManager,
-    connection_manager: ConnectionManager,
+    connection_manager: Option<ConnectionManager>,
 }
 
 macro_rules! init_module {
@@ -117,42 +117,22 @@ impl CoreSystem {
             error!("Errore nell'inizializzazione del MemoryManager: {}", e);
             CoreError::InitializationError(e.to_string())
         })?;
-        match database_config {
+        let connection_manager = match database_config.clone() {
             DatabaseType::None => {
                 warn!("Configurazione del database non impostata per l'applicazione");
+                None
             }
             _ => {
-                let connection_manager = ConnectionManager::new(database_config).map_err(|e| {
+                 ConnectionManager::new(database_config).map_err(|e| {
                     error!("Errore nell'inizializzazione del ConnectionManager: {}", e);
                     CoreError::InitializationError(e.to_string())
                 })?;
-
-                // Inizializzazione della connessione al database
-                info!("Inizializzazione della connessione al database...");
-                connection_manager.initialize_connection().await?;
-
-                // Generazione delle tabelle nel database
-                info!("Generazione delle tabelle nel database...");
-                // Generazione tabelle default
-                generate_tables(
-                    scrape(
-                        "src/crud/models/default", 
-                    )?, 
-                    connection_manager
-                ).await?;
-                // Generazione tabelle dev
-                generate_tables(
-                    scrape(
-                        "src/crud/models/dev", 
-                    )?, 
-                    connection_manager
-                ).await?;
             }
         }
         
 
         info!("CoreSystem inizializzato con app_type: {:?}",app_type);
-        Ok(CoreSystem { config, memory_manager , connection_manager})
+        Ok(CoreSystem { config, memory_manager , Some<connection_manager>})
     }
 
 
@@ -168,6 +148,30 @@ impl CoreSystem {
     #[allow(unreachable_code)]
     pub fn run(&self) -> Result<(), CoreError> {
         info!("Esecuzione del CoreSystem...");
+
+        
+
+        match self.connection_manager {
+            Some(cm) => {
+                // Inizializzazione della connessione al database
+                info!("Inizializzazione della connessione al database...");
+                cm.initialize_connection().await?;
+
+                let default_path = "src/crud/models/default";
+                let dev_path = "src/crud/models/dev";   
+                let db_type = cm.manager.config.database_type_reference.clone();
+
+                // Generazione delle tabelle nel database
+                info!("Generazione delle tabelle nel database...");
+                // Generazione tabelle default
+                generate_tables(scrape(default_path, db_type)?, cm,).await?;
+                // Generazione tabelle dev
+                generate_tables(scrape(dev_path, db_type)?, cm,).await?;
+            }
+            None => {
+                warn!("Configurazione del database non impostata per l'applicazione");
+            }
+        }
 
         match self.config.app_type {
             ApplicationType::WebApp => {
