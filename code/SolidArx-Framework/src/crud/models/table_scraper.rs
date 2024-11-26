@@ -233,12 +233,12 @@ pub fn scrape(directory: &str, db_type: DatabaseType) -> Result<Vec<HashMap<&str
                 let field_name = field.ident.as_ref().map(|f| f.to_string()).unwrap_or_else(|| "Unnamed".to_string());
                 
                 // Mappa il tipo Rust al tipo specifico per il database (SQL, MongoDB, ecc.)
-                #[cfg(any(feature = "webapp", feature = "desktop", feature = "api_backend"))]
-                DatabaseType::Postgres => map_to_sql(&field.ty)  // Mappa il tipo Rust al tipo SQL (PostgreSQL)
-                #[cfg(any(feature = "embedded"))]
-                DatabaseType::SQLite => map_to_sql(&field.ty)    // Mappa il tipo Rust al tipo SQL (SQLite)
-                #[cfg(feature = "automation")]
-                DatabaseType::MongoDB => map_to_mongo(&field.ty) // Mappa il tipo Rust al tipo MongoDB
+                match db_type {
+                    DatabaseType::Postgres => map_to_sql(&field.ty),
+                    DatabaseType::SQLite => map_to_sql(&field.ty),
+                    DatabaseType::MongoDB => map_to_mongo(&field.ty),
+                    DatabaseType::None => panic!("Operazione impossibile, Database non configurato"), // Default a stringa se non specificato
+                };
 
                 // Aggiunge il campo mappato nella struttura
                 fields_map.insert(field_name, field_type);
