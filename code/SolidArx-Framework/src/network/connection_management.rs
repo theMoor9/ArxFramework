@@ -101,7 +101,8 @@ impl ConnectionManager {
                     error!("Tentativo {} fallito: {}", attempts, e);
 
                     // Controlla se il numero massimo di tentativi è stato raggiunto
-                    if attempts >= self.config.max_retries {
+                    if attempts >= self.config.        max_attempts: u32,
+                    .unwrap() {
                         error!("Superato il numero massimo di tentativi di connessione.");
                         return Err(Box::new(e));
                     }
@@ -124,22 +125,22 @@ impl ConnectionManager {
     /// - `Err(ConnectionErrors)`: Se si verifica un errore durante il tentativo di connessione.
     async fn connect(&self) -> Result<DbConnection, ConnectionErrors> {
 
-        match self.config.database_type {
+        match self.config.database_type_reference {
             DatabaseType::Postgres => {
-                PgConnection::establish(&self.config.database_url)
+                PgConnection::establish(&self.config.database_url.unwrap())
                     .map(DbConnection::Postgres)
                     .map_err(|e| ConnectionErrors::Postgres(e.to_string()))
                 info!("Connessione stabilita con successo al database PostgreSQL.");
             }
             DatabaseType::SQLite => {
-                SqliteConnection::establish(&self.config.database_url)
+                SqliteConnection::establish(&self.config.database_url.unwrap())
                     .map(DbConnection::SQLite)
                     .map_err(|e| ConnectionErrors::SQLite(e.to_string()))
                 info!("Connessione stabilita con successo al database SQLite.");
             }
             DatabaseType::MongoDB => {
                 // Parsing delle opzioni di connessione MongoDB dalla URL
-                let client_options = ClientOptions::parse(&self.config.database_url)
+                let client_options = ClientOptions::parse(&self.config.database_url.unwrap())
                     .await
                     .map_err(|e| ConnectionErrors::Mongo(e.to_string()))?;
                 let client = Client::with_options(client_options)

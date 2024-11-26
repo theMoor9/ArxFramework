@@ -71,24 +71,35 @@ pub enum Commands {
         pool_size: usize,
     },
     Database {
+
         /// Disabilita l'utilizzo del database
         #[arg(short = 'd', long = "database-type"), default_value_t = DatabaseType::None]
-        database_type: DatabaseType,
+        database_type_reference: DatabaseType,
 
+        /// URL del database da utilizzare
         #[arg(short = 'url', long = "database-url"), default_value_t = None]
-        database_url: String,
+        database_url: Option<String>,
 
-        #[arg(short = 'c', long = "max-connections", default_value_t = 20)]
-        max_connections: u32,
+        /// Numero massimo di connessioni simultanee consentite
+        #[arg(short = 'c', long = "max-connections", default_value_t = None)]
+        max_connections: Option<u32>,
 
-        #[arg(short = 'r', long = "retry-attempts", default_value_t = 5)]
-        retry_attempts: u32,
+        /// Numero massimo di tentativi di riconnessione in caso di fallimento
+        #[arg(short = 'r', long = "retry-attempts", default_value_t = None)]
+        max_attempts: Option<u32>,
 
-        #[arg(short = 'i', long = "max-idle-time", default_value_t = 20)]
-        max_idle_time: u64,
+        /// Durata massima per mantenere una connessione inattiva
+        #[arg(short = 'i', long = "max-idle-time", default_value_t = None)]
+        max_idle_time: Option<u64>,
 
-        #[arg(short = 't', long = "connection-timeout", default_value_t = 1)]
-        connection_timeout: u64,
+        /// Tempo massimo di attesa per stabilire una connessione
+        #[arg(short = 't', long = "connection-timeout", default_value_t = None)]
+        connection_timeout: Option<u64>,
+
+        // I campi sono utilizzati in:
+        // - `config/network_config.rs` per la configurazione della connessione al database
+        // - `network/connection_management.rs` per la gestione delle connessioni al database
+        // - `core/system_core.rs` nella funzione run() per lo scraping dei dati
     }
     Help{
         "HELP\n
@@ -116,10 +127,12 @@ pub enum Commands {
         Options:\n
         --database_type <Bool> or --d <Bool>                         # Disable Database, Default: true\n
         --database_url Option<String>  or --url Option<String>          # Set Database URL, Default: None\n
-        --max_connections Option<u32> or --c Option<u32>                # Set Max Connections, Default: 20\ \n
-        --retry_attempts Option<u32> or --r Option<u32>                 # Set Retry Attempts, Default: 5\\n
-        --max_idle_time Option<u64> or --i Option<u64>                  # Set Max Idle Time, Default: 30\\n
-        --connection_timeout Option<u64> or --t Option<u64>             # Set Connection Timeout, Default: 1\\n"
+        --max_connections Option<u32> or --c Option<u32>                # Set Max Connections, Default: None\ \n
+        --retry_attempts Option<u32> or --r Option<u32>                 # Set Retry Attempts, Default: None\\n
+        --max_idle_time Option<u64> or --i Option<u64>                  # Set Max Idle Time, Default: None\\n
+        --connection_timeout Option<u64> or --t Option<u64>             # Set Connection Timeout, Default: None\n\n
+        
+        Default None implica gestione predefinita da parte del codice\\n"
     },
 }
 

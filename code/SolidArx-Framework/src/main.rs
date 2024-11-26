@@ -68,7 +68,7 @@ fn handle_database(
             max_connections,
             retry_attempts,
             max_ile_time,
-            *connection_timeout,
+            connection_timeout,
         ));
     }
 }

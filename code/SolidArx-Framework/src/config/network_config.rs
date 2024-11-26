@@ -1,5 +1,6 @@
 use std::time::Duration;
 use log::{info, error};
+use cfg_if::cfg_if;
 
 /// Struttura che rappresenta le configurazioni specifiche per ogni tipo di database
 /// - `database_url`: URL del database da utilizzare.
@@ -9,7 +10,7 @@ use log::{info, error};
 /// - `connection_timeout`: Tempo massimo di attesa per stabilire una connessione.#[derive(Debug, Clone)]
 pub struct ConnectionConfig {
     pub database_type_reference: DatabaseType,
-    pub database_url: String,
+    pub database_url: Option<String>,
     pub max_connections: Option<u32>,
     pub retry_attempts: Option<u32>,
     pub max_idle_time: Option<u64>,       // Durata massima per mantenere una connessione inattiva
@@ -31,13 +32,22 @@ impl DatabaseType {
     /// Restituisce un `Result` che contiene un errore se nessuna configurazione è definita per l'app corrente.
     pub fn new(database_type_reference ,database_url, max_connections, retry_attempts, max_idle_time, connection_timeout) -> Result<Self, &'static str> {
 
-        match database_url {
-            None => {
-                error!("Database URL not set for the application");
-                return Err("Database URL not set for the application try use the CLI command to set the database URL.\
-                            Type 'Arx Help' for more information");
+        // Sezione di controllo delle variabili costruttore
+        // Imposta valori di default specifici per ogni app se non definiti
+        match database_type_reference {
+            DatabaseType::None => {
+                error!("Database non impostato per l' applicazione. Utilizzare il comando CLI per impostare l'URL del database.\
+                            Digitare 'Arx Help' per ulteriori informazioni");
+                return Err("Database non impostato per l' applicazione. Utilizzare il comando CLI per impostare l'URL del database.\
+                            Digitare 'Arx Help' per ulteriori informazioni");
             }
-            Some(url) => {
+            _ => {
+                if database_url == None {
+                    error!("Database URL non impostato per l' applicazione. Utilizzare il comando CLI per impostare l'URL del database.\
+                            Digitare 'Arx Help' per ulteriori informazioni");
+                    return Err("Database URL non impostato per l' applicazione. Utilizzare il comando CLI per impostare l'URL del database.\
+                            Digitare 'Arx Help' per ulteriori informazioni");
+                }   
                 if max_connection == None {
                     #[cfg(feature = "webapp")]
                     apply_max_connections = Some(100);
@@ -94,53 +104,55 @@ impl DatabaseType {
             }
         }
        
+       // unwrap() per ottenere il valore Option<T> come T
         let apply_database_url = database_url.unwrap();
 
         // Configurazione per applicazioni Web, utilizzando PostgreSQL
-        #[cfg(feature = "webapp")]
-        return Ok(DatabaseType::PostgreSQL(ConnectionConfig {
-            apply_database_url,
-            apply_max_connections,
-            apply_retry_attempts,
-            apply_max_idle_time,       
-            apply_connection_timeout,   
-        }));
+        if #[cfg(feature = "webapp")] {
+            return Ok(DatabaseType::PostgreSQL(ConnectionConfig {
+                apply_database_url,
+                apply_max_connections,
+                apply_retry_attempts,
+                apply_max_idle_time,       
+                apply_connection_timeout,   
+            }));
         // Configurazione per API backend, utilizzando PostgreSQL
-        #[cfg(feature = "api_backend")]
-        return Ok(DatabaseType::PostgreSQL(ConnectionConfig {
-            apply_database_url,
-            apply_max_connections,
-            apply_retry_attempts,
-            apply_max_idle_time,
-            apply_connection_timeout,
-        }));
+        } else if #[cfg(feature = "api_backend")] {
+            return Ok(DatabaseType::PostgreSQL(ConnectionConfig {
+                apply_database_url,
+                apply_max_connections,
+                apply_retry_attempts,
+                apply_max_idle_time,
+                apply_connection_timeout,
+            }));
         // Configurazione per applicazioni desktop, utilizzando SQLite
-        #[cfg(feature = "desktop")]
-        return Ok(DatabaseType::PostgreSQL(ConnectionConfig {
-            apply_database_url,
-            apply_max_connection,
-            apply_retry_attempts,
-            apply_max_idle_time,
-            apply_connection_timeout,
-        }));
+        } else if #[cfg(feature = "desktop")] {
+            return Ok(DatabaseType::PostgreSQL(ConnectionConfig {
+                apply_database_url,
+                apply_max_connection,
+                apply_retry_attempts,
+                apply_max_idle_time,
+                apply_connection_timeout,
+            }));
         // Configurazione per applicazioni embedded, utilizzando SQLite
-        #[cfg(feature = "automation")]
-        return Ok(DatabaseType::MongoDB(ConnectionConfig {
-            apply_database_url,
-            apply_max_connections,
-            apply_retry_attempts,
-            apply_max_idle_time,  
-            apply_connection_timeout,
-        }));
+        } else if #[cfg(feature = "automation")] {
+            return Ok(DatabaseType::MongoDB(ConnectionConfig {
+                apply_database_url,
+                apply_max_connections,
+                apply_retry_attempts,
+                apply_max_idle_time,  
+                apply_connection_timeout,
+            }));
         // Configurazione per applicazioni embedded, utilizzando SQLite
-        #[cfg(feature = "embedded")]
-        return Ok(DatabaseType::SQLite(ConnectionConfig {
-            apply_database_url,
-            apply_max_connections,
-            apply_retry_attempts,
-            apply_max_idle_time,
-            apply_connection_timeout,
-        }));
+        } else if #[cfg(feature = "embedded")] {    
+            return Ok(DatabaseType::SQLite(ConnectionConfig {
+                apply_database_url,
+                apply_max_connections,
+                apply_retry_attempts,
+                apply_max_idle_time,
+                apply_connection_timeout,
+            }));
+        }
     }
 
     /// Funzione di log che fornisce informazioni di stato sulla connessione al database.
