@@ -122,12 +122,12 @@ impl CoreSystem {
                 warn!("Configurazione del database non impostata per l'applicazione");
                 None
             }
-            _ => {
-                 ConnectionManager::new(database_config).map_err(|e| {
-                    error!("Errore nell'inizializzazione del ConnectionManager: {}", e);
-                    CoreError::InitializationError(e.to_string())
-                })?;
-            }
+            _ => Some({
+                    ConnectionManager::new(database_config).map_err(|e| {
+                        error!("Errore nell'inizializzazione del ConnectionManager: {}", e);
+                        CoreError::InitializationError(e.to_string())
+                    })?;
+                })
         }
         
 

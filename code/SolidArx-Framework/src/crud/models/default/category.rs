@@ -39,6 +39,6 @@ pub mod model {
                     }
                 }
             }    
-        }s
+        }
     }
 }

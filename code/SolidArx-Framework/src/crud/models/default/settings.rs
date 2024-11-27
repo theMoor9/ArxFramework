@@ -9,7 +9,7 @@ pub mod model {
         Seppur ridondante in relazione al `crud_ops` è necessario per rendere 
         la generazione delle tables selettiva per `table_scraper.rs` 
         */
-        if#[cfg(feature = "desktop")] {
+        if #[cfg(feature = "desktop")] {
             
             use crate::crud::crud_ops::AllocType;
             use crate::crud::crud_ops::CrudOperations;

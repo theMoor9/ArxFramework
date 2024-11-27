@@ -41,39 +41,29 @@ enum DbConnection {
 /// Struttura `ConnectionManager`
 /// 
 /// La struttura principale per la gestione delle connessioni.
-/// Contiene un campo `config` che memorizza i dettagli della configurazione del database.
+/// Contiene un campo `database` che memorizza i dettagli della configurazione del database.
 pub struct ConnectionManager {
-    config: ConnectionConfig,
+    database: DatabaseType,
 }
 
 impl ConnectionManager {
     /// Crea una nuova istanza di `ConnectionManager` con la configurazione fornita.
     ///
     /// # Parametri
-    /// - `config`: Configurazione della connessione di tipo `ConnectionConfig`.
+    /// - `database`: Configurazione della connessione di tipo `ConnectionConfig`.
     ///
     /// # Ritorna
     /// Una nuova istanza di `ConnectionManager`
     pub fn new(db: DatabaseType) -> Self {
         match db {
-            DatabaseType::Postgres(connection_config) => {
-                Self { 
-                    config: connection_config,
-                }
-            }
-            DatabaseType::SQLite(connection_config) => {
-                Self { 
-                    config: connection_config,
-                }
-            }
-            DatabaseType::MongoDB(connection_config) => {
-                Self { 
-                    config: connection_config,
-                }
-            }
             DatabaseType::None => {
                 error!("Database non configurato.");
                 panic!("Database non configurato.");
+            }
+            _ => {
+                Self { 
+                    database: db,
+                }
             }
         }           
     }
@@ -100,17 +90,40 @@ impl ConnectionManager {
                     attempts += 1;
                     error!("Tentativo {} fallito: {}", attempts, e);
 
-                    // Controlla se il numero massimo di tentativi è stato raggiunto
-                    if attempts >= self.config.        max_attempts: u32,
-                    .unwrap() {
-                        error!("Superato il numero massimo di tentativi di connessione.");
-                        return Err(Box::new(e));
+                    /* 
+                    Controlla se il numero di tentativi è superiore al massimo
+                    estrapolando tramite un match il contenuto dell enum DatabaseType in self.database
+                    */
+                    match &self.database {
+                        DatabaseType::PostgreSQL(config) 
+                        | DatabaseType::SQLite(config) 
+                        | DatabaseType::MongoDB(config) => {
+                            if attempts >= config.max_attempts {
+                                error!("Superato il numero massimo di tentativi di connessione.");
+                                return Err(Box::new(e));
+                            }
+                        }
+                        DatabaseType::None => {
+                            error!("Nessun database configurato.");
+                            return Err(Box::new(e));
+                        }
                     }
 
-                    // Attende per il periodo definito in `retry_timeout` con backoff esponenziale
-                    let backoff = self.config.retry_timeout.unwrap().as_secs() * (attempts as u64);
+                    /* 
+                    Attende per il periodo definito in `retry_timeout` con backoff esponenziale
+                    Stessa meccanica di estrapolazione del contenuto dell'enum DatabaseType in self.database
+                    */
+                    let backoff = match &self.database{
+                        DatabaseType::PostgreSQL(config) 
+                        | DatabaseType::SQLite(config) 
+                        | DatabaseType::MongoDB(config) => config.retry_timeout.unwrap().as_secs() * (attempts as u64);
+                        DatabaseType::None => {
+                            error!("Nessun database configurato.");
+                            return Err(Box::new(e));
+                        }
                     info!("Ritenterò tra {} secondi...", backoff);
                     sleep(Duration::from_secs(backoff)).await;
+                    }
                 }
             }
         }
@@ -125,22 +138,22 @@ impl ConnectionManager {
     /// - `Err(ConnectionErrors)`: Se si verifica un errore durante il tentativo di connessione.
     async fn connect(&self) -> Result<DbConnection, ConnectionErrors> {
 
-        match self.config.database_type_reference {
-            DatabaseType::Postgres => {
-                PgConnection::establish(&self.config.database_url.unwrap())
+        match self.database {
+            DatabaseType:: PostgreSQL(connection_config) => {
+                PgConnection::establish(connection_config.database_url.unwrap())
                     .map(DbConnection::Postgres)
                     .map_err(|e| ConnectionErrors::Postgres(e.to_string()))
                 info!("Connessione stabilita con successo al database PostgreSQL.");
             }
-            DatabaseType::SQLite => {
-                SqliteConnection::establish(&self.config.database_url.unwrap())
+            DatabaseType::SQLite(connection_config) => {
+                SqliteConnection::establish(connection_config.database_url.unwrap())
                     .map(DbConnection::SQLite)
                     .map_err(|e| ConnectionErrors::SQLite(e.to_string()))
                 info!("Connessione stabilita con successo al database SQLite.");
             }
-            DatabaseType::MongoDB => {
+            DatabaseType::MongoDB(connection_config) => {
                 // Parsing delle opzioni di connessione MongoDB dalla URL
-                let client_options = ClientOptions::parse(&self.config.database_url.unwrap())
+                let client_options = ClientOptions::parse(connection_config.database_url.unwrap())
                     .await
                     .map_err(|e| ConnectionErrors::Mongo(e.to_string()))?;
                 let client = Client::with_options(client_options)

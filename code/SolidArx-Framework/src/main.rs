@@ -45,31 +45,36 @@ fn handle_init(
 fn handle_database(
     cli_args: &solid_arx::cli::Cli,
 ) -> Result<DatabaseType, Box<dyn std::error::Error>> {
-    if let Commands::Database {
-        database_type,
-        database_url,
-        max_connections,
-        retry_attempts,
-        max_idle_time,
-        connection_timeout,
-    } = &cli_args.command
-    {
-        info!("Configurazione del database:");
-        info!("Database: {}", database_type_reference);
-        info!("Database URL: {:?}", database_url);
-        info!("Max Connections: {:?}", max_connections);
-        info!("Retry Attempts: {:?}", retry_attempts);
-        info!("Max Idle Time: {:?}", max_idle_time);
-        info!("Connection Timeout: {:?}", connection_timeout);
 
-        return Ok(DatabaseType::new(
-            database_type_reference,
-            database_url,
-            max_connections,
-            retry_attempts,
-            max_ile_time,
-            connection_timeout,
-        ));
+    match cli_args.command {
+        Commands::Database { database_type } => {
+            match database_type {
+                Some(database_type) => {
+                    info!("Configurazione del database:");
+                    info!("Database: {}", database_type_reference);
+                    info!("Database URL: {:?}", database_url);
+                    info!("Max Connections: {:?}", max_connections);
+                    info!("Retry Attempts: {:?}", retry_attempts);
+                    info!("Max Idle Time: {:?}", max_idle_time);
+                    info!("Connection Timeout: {:?}", connection_timeout);
+                    return Ok(DatabaseType::new(
+                        database_type_reference,
+                        database_url,
+                        max_connections,
+                        retry_attempts,
+                        max_ile_time,
+                        connection_timeout,
+                    ));
+                }
+                None => {
+                    info!("Database Type: None");
+                    return Ok(DatabaseType::None)
+                }
+            }
+        }
+        _ => {
+            return Err("Comando Database non trovato".into());
+        }
     }
 }
 
@@ -88,13 +93,18 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     // Ottenere le configurazioni (Init, Database) con valori di default
     let (core_config, memory_config) = handle_init(&cli_args)?;
-    let database_config = handle_database(&cli_args)?;
+    let database_config = match handle_database(&cli_args)?{
+        Ok(database_config) => database_config,
+        Err(e) => {
+            Ok(DatabaseType::None)
+        }
+    };
 
     // Inizializza il CoreSystem con la configurazione ottenuta
     let core_system = CoreSystem::new(
         core_config, 
         memory_config, 
-        database_config
+        database_config,
         ).expect("Errore nell'inizializzazione del Core System");
 
     // Esegui il core system
