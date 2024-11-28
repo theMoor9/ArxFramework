@@ -40,7 +40,7 @@ clap = { version = "4.5.20", features = ["derive"] }  # Per il parsing del CLI
 once_cell = "1.17.1"  # Per la gestione di valori statici
 lazy_static = "1.4"  # Per la gestione di valori statici
 log = "0.4.22" 
-diesel = { version = "2.2.4", features = ["postgres", "r2d2", "chrono"] }
+diesel = { version = "2.2.4", features = ["postgres", "r2d2", "chrono", "sqlite"] }
 dotenvy = "0.15"  # Per gestire le variabili di ambiente
 cfg-if = "1.0.0"  # Per definire condizioni di compilazione
 mongodb = "3.1.0" # Per la connessione a MongoDB

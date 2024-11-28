@@ -1,5 +1,9 @@
 use crate::network::connection_management::{ConnectionManager, DbConnection};
-use diesel::{PgConnection, SqliteConnection};
+use diesel::{
+    PgConnection, 
+    sqlite::SqliteConnection,
+    RunQueryDsl,
+};
 use mongodb::{Client, bson::{doc, Bson}};
 use std::collections::HashMap;
 use log::{info};
@@ -33,7 +37,7 @@ impl From<mongodb::error::Error> for TableGeneratorError {
 fn create_table<F>(
     connection: F, 
     table_name: &str, 
-    fields: &HashMap<String, String>
+    fields: &HashMap<&str, &str>
 ) -> Result<(), TableGeneratorError>
 where
     F: FnOnce(&str) -> Result<usize, diesel::result::Error>,
@@ -57,15 +61,15 @@ where
 /// - `table_name`: Nome della tabella da creare.
 /// - `fields`: Mappa dei campi della tabella con i relativi tipi.
 fn create_postgresql_table(
-    connection: &PgConnection, 
+    connection: &mut PgConnection, 
     table_name: &str, 
-    fields: &HashMap<String, String>
+    fields: &HashMap<&str, &str>
 ) -> Result<(), TableGeneratorError> {
     create_table(
         |query| diesel::sql_query(query).execute(connection), 
         table_name, 
         fields
-    )
+    );
     info!("Tablella PostgreSQL {} creata", table_name);
     Ok(())
 }
@@ -77,20 +81,32 @@ fn create_postgresql_table(
 /// - `table_name`: Nome della tabella da creare.
 /// - `fields`: Mappa dei campi della tabella con i relativi tipi.
 fn create_sqlite_table(
-    connection: &SqliteConnection, 
+    connection: &mut SqliteConnection, 
     table_name: &str, 
-    fields: &HashMap<String, String>
+    fields: &HashMap<&str, &str>
 ) -> Result<(), TableGeneratorError> {
     create_table(
         |query| diesel::sql_query(query).execute(connection), 
         table_name, 
         fields
-    )
+    );
     info!("Tablella SQLite {} creata", table_name);
     Ok(())
 }
 
-// Mappa il tipo Rust in una rappresentazione BSON di MongoDB
+/// Mappa il tipo Rust in una rappresentazione BSON di MongoDB
+/// 
+/// # Parametri
+/// - `type_name`: Nome del tipo Rust da mappare.
+/// 
+/// # Ritorna
+/// Un valore BSON corrispondente al tipo Rust fornito.
+/// 
+/// # Note
+/// Si usa `Bson::String(String::new())` per strutture ed enum generalmente semplici per ridurre la complessità e migliorare le prestazioni. 
+/// Questa scelta evita overhead di memoria e semplifica la serializzazione/deserializzazione, mantenendo la flessibilità per future modifiche.
+/// Quando necessario, i dati possono essere facilmente mappati a strutture più complesse tramite Serde.
+
 fn map_to_bson(type_name: &str) -> Bson {
     match type_name {
         "u32" | "i32" => Bson::Int32(0), // Usa un valore di esempio (può essere modificato)
@@ -100,17 +116,17 @@ fn map_to_bson(type_name: &str) -> Bson {
         "f32" | "f64" => Bson::Double(0.0),
         
         // Tipi opzionali (nullabili)
-        "Option<u32>" | "Option<i32>" => Bson::Int32(0),
+        "Option<u32>" | "Option<i32>" => Bson::String(String::new()),
         "Option<String>" => Bson::String(String::new()),
         
         // Tipi personalizzati o complessi
         "AllocType" => Bson::String(String::new()),
-        "CrudOperations" => Bson::Document(doc! { "type": "object" }),
-        "Box<[u8]>" => Bson::Binary(Binary),
+        "CrudOperations" => Bson::String(String::new()),
+        "Box<[u8]>" =>  Bson::String(String::new()),
         "ExeLogStatus" | "MacroStatus" | "ProjectStatus" => Bson::String(String::new()),
         "ExecutionFrequency" => Bson::String(String::new()),
-        "Option<ProjectMetadata>" => Bson::Document(doc! { "type": "object" }),
-        "chrono::NaiveDateTime" => Bson::DateTime(DateTime), // O un valore di default
+        "Option<ProjectMetadata>" => Bson::String(String::new()),
+        "chrono::NaiveDateTime" => Bson::String(String::new()),
         _ => Bson::String(String::new()), // Default per tipi sconosciuti
     }
 }
@@ -143,7 +159,7 @@ async fn create_mongodb_table(
 
     // Inserisce un documento di esempio nella collezione
     collection
-        .insert_one(doc! { "example": document }, None)
+        .insert_one(doc! { "example": document })
         .await
         .map_err(TableGeneratorError::from)?; // Conversione dell'errore MongoDB
     info!("Collezione MongoDB {} creata", collection_name);
@@ -164,7 +180,7 @@ pub async fn generate_tables(
     connection_manager: &ConnectionManager
 ) -> Result<(), TableGeneratorError> {
     // Ottiene la connessione al database tramite il connection manager
-    let connection = connection_manager.connect().await?;
+    let mut connection = connection_manager.connect().await?;
 
     // Gestisce la connessione al database e crea le tabelle in base al tipo di DB
     match connection {
@@ -172,28 +188,52 @@ pub async fn generate_tables(
             for struct_info in structs {
                 // Estrae il nome della tabella dalla mappa
                 let table_name = struct_info.get("name");
-                let fields = struct_info.clone();
+                let table_name_str = match table_name {
+                    Some(table) => *table.get("name").unwrap_or(&"default_table"),  // Trova "name" nel HashMap
+                    None => "default_table",  // Se table_name è None, usa "default_table"
+                };
+                // Estrai i campi dalla mappa
+                let fields = struct_info
+                    .get("fields") // Trova il sotto-HashMap corrispondente a "fields"
+                    .cloned() // Clona per ottenere una copia
+                    .unwrap_or_else(HashMap::new); // Usa un HashMap vuoto se non esist
                 // Crea la tabella in PostgreSQL
-                create_postgresql_table(&pg_conn, table_name, &fields)?;
-                info!("Tabella {:?} creata su PostgreSQL", table_name);
+                create_postgresql_table(&mut pg_conn, table_name_str, &fields)?;
+                info!("Tabella {:?} creata su PostgreSQL", table_name_str);
             }
         }
         DbConnection::SQLite(sqlite_conn) => {
             for struct_info in structs {
                 let table_name = struct_info.get("name");
-                let fields = struct_info.clone();
+                let table_name_str = match table_name {
+                    Some(table) => *table.get("name").unwrap_or(&"default_table"),  // Trova "name" nel HashMap
+                    None => "default_table",  // Se table_name è None, usa "default_table"
+                };
+                // Estrai i campi dalla mappa
+                let fields = struct_info
+                    .get("fields") // Trova il sotto-HashMap corrispondente a "fields"
+                    .cloned() // Clona per ottenere una copia
+                    .unwrap_or_else(HashMap::new); // Usa un HashMap vuoto se non esist
                 // Crea la tabella in SQLite
-                create_sqlite_table(&sqlite_conn, table_name, &fields)?;
-                info!("Tabella {:?} creata su SQLite", table_name);
+                create_sqlite_table(&mut sqlite_conn, table_name_str, &fields)?;
+                info!("Tabella {:?} creata su SQLite", table_name_str);
             }
         }
         DbConnection::MongoDB(mongo_client) => {
             for struct_info in structs {
                 let collection_name = struct_info.get("name");
-                let fields = struct_info.clone();
+                let collection_name_str = match collection_name {
+                    Some(collection) => *collection.get("name").unwrap_or(&"default_table"),
+                    None => "default_table",
+                };
+                // Estrai i campi dalla mappa
+                let fields = struct_info
+                    .get("fields") // Trova il sotto-HashMap corrispondente a "fields"
+                    .cloned() // Clona per ottenere una copia
+                    .unwrap_or_else(HashMap::new); // Usa un HashMap vuoto se non esist
                 // Crea la collezione in MongoDB
-                create_mongodb_table(&mongo_client, "models", collection_name, &fields).await?;
-                info!("Collezione {:?} creata su MongoDB", collection_name);
+                create_mongodb_table(&mut mongo_client, "models", collection_name_str, &fields).await?;
+                info!("Collezione {} creata su MongoDB", collection_name_str);
             }
         }
     }

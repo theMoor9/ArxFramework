@@ -32,7 +32,7 @@ impl std::fmt::Display for ConnectionErrors {
 
 impl std::error::Error for ConnectionErrors {}
 
-enum DbConnection {
+pub enum DbConnection {
     Postgres(PgConnection),
     SQLite(SqliteConnection),
     MongoDB(Client),
@@ -45,6 +45,7 @@ enum DbConnection {
 pub struct ConnectionManager {
     database: DatabaseType,
 }
+
 
 impl ConnectionManager {
     /// Crea una nuova istanza di `ConnectionManager` con la configurazione fornita.
@@ -136,7 +137,7 @@ impl ConnectionManager {
     /// # Ritorna
     /// - `Ok(())`: Se la connessione è stabilita con successo.
     /// - `Err(ConnectionErrors)`: Se si verifica un errore durante il tentativo di connessione.
-    async fn connect(&self) -> Result<DbConnection, ConnectionErrors> {
+    async pub fn connect(&self) -> Result<DbConnection, ConnectionErrors> {
 
         match self.database {
             DatabaseType:: PostgreSQL(connection_config) => {
