@@ -4,7 +4,10 @@ use diesel::{
     sqlite::SqliteConnection,
     RunQueryDsl,
 };
-use mongodb::{Client, bson::{doc, Bson}};
+use mongodb::{
+    Client, 
+    bson::{doc, Bson}
+};
 use std::collections::HashMap;
 use log::{info};
 
@@ -131,43 +134,64 @@ fn map_to_bson(type_name: &str) -> Bson {
     }
 }
 
-/// Crea una collezione in MongoDB, aggiungendo un documento di esempio.
+/// Crea una collezione in MongoDB e inserisce un documento di esempio basato sui campi forniti.
 ///
 /// # Parametri
-/// - `client`: Client MongoDB per eseguire le operazioni.
+/// - `client`: Istanza di `mongodb::Client` per connettersi al database.
 /// - `database_name`: Nome del database MongoDB.
 /// - `collection_name`: Nome della collezione da creare.
-/// - `fields`: Mappa dei campi della collezione con i relativi tipi.
-/// 
+/// - `fields`: Mappa dei campi della collezione con i relativi tipi rappresentati come stringhe.
+///
+/// # Descrizione
+/// Questa funzione genera un documento di esempio basato sui campi forniti nella mappa `fields`.
+/// I tipi vengono convertiti in BSON utilizzando la funzione `map_to_bson`, 
+/// con valori predefiniti per rappresentare ogni tipo.
+///
+/// Il documento generato viene poi inserito nella collezione specificata.
+///
+/// # Esempio
+/// ```rust
+/// let mut fields = HashMap::new();
+/// fields.insert("id", "u32");
+/// fields.insert("name", "String");
+///
+/// create_mongodb_table(&client, "my_database", "my_collection", &fields).await?;
+/// ```
+///
 /// # Ritorna
-/// Un risultato che indica se la creazione della collezione è andata a buon fine o meno.
+/// - `Ok(())`: Se la creazione della collezione e l'inserimento del documento sono avvenuti con successo.
+/// - `Err(TableGeneratorError)`: Se si verifica un errore durante l'operazione.
 async fn create_mongodb_table(
-    client: &Client, 
-    database_name: &str, 
-    collection_name: &str, 
-    fields: &HashMap<&str, &str>
+    client: &mongodb::Client,
+    database_name: &str,
+    collection_name: &str,
+    fields: &HashMap<&str, &str>,
 ) -> Result<(), TableGeneratorError> {
     // Ottiene il database e la collezione
     let db = client.database(database_name);
     let collection = db.collection(collection_name);
 
     // Crea un documento di esempio dai campi forniti
-    let document = fields.iter().map(|(field, field_type)| {
-        // Tratta ogni tipo come stringa per ora
-        (field, map_to_bson(field_type))
-    }).collect::<Vec<_>>();
+    let document = fields
+        .iter()
+        .map(|(&field, &field_type)| {
+            (field, map_to_bson(field_type)) // Usa la tua funzione personalizzata
+        })
+        .collect::<HashMap<&str, Bson>>();
 
     // Inserisce un documento di esempio nella collezione
     collection
-        .insert_one(doc! { "example": document })
+        .insert_one(document) // Usa direttamente il documento generato
         .await
         .map_err(TableGeneratorError::from)?; // Conversione dell'errore MongoDB
-    info!("Collezione MongoDB {} creata", collection_name);
+    info!("Collezione MongoDB '{}' creata con successo", collection_name);
     Ok(())
 }
 
 
-/// Funzione principale per generare le tabelle nel database selezionato.
+
+/// Funzione principale per generare le tabelle nel database selezionato attravers
+/// le funzioni implementate.
 ///
 /// # Parametri
 /// - `structs`: Vettore di hash map contenenti i dettagli delle tabelle da creare.
@@ -177,7 +201,7 @@ async fn create_mongodb_table(
 /// Un risultato che indica se la generazione delle tabelle è andata a buon fine o meno.
 pub async fn generate_tables(
     structs: Vec<HashMap<&str, HashMap<&str, &str>>>, 
-    connection_manager: &ConnectionManager
+    connection_manager: ConnectionManager
 ) -> Result<(), TableGeneratorError> {
     // Ottiene la connessione al database tramite il connection manager
     let mut connection = connection_manager.connect().await?;
