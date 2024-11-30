@@ -26,14 +26,6 @@ pub enum DatabaseType {
     None,
 }
 
-/// Enum per definire i diversi tipi di database supportati.
-#[derive(Debug, Clone)]
-pub enum DatabaseTypeRef {
-    PostgreSQL,
-    SQLite,
-    MongoDB,
-    None,
-}
 
 impl DatabaseType {
     /// Crea una nuova istanza di `DatabaseType` in base alla configurazione dell'applicazione.

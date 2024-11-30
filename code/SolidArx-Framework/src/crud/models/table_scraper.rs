@@ -1,8 +1,9 @@
-use std::fs::{self, DirEntry};
-use std::path::Path;
-use syn::{self, Item, ItemStruct, ItemMod};
+use std::fs;
+use syn::{self, Item, ItemStruct, ItemMod, parse_file};
 use std::collections::HashMap;
 use crate::config::network_config::DatabaseType ;
+// Importa il modulo per  per ottenere la rappresentazione del tipo come una stringa
+use quote::ToTokens; 
 
 /// Funzione che esegue il parsing di un modulo Rust e restituisce le struct trovate all'interno.
 /// 
@@ -106,26 +107,6 @@ fn map_to_mongo(type_name: &str) -> &str {
     }
 }
 
-/// Funzione che genera un messaggio per ogni struct trovata in un file `.rs`. NON UTILIZZATA
-/// 
-/// # Argomenti
-/// * `struct_name` - Il nome della struct da analizzare.
-/// * `fields` - I campi della struct da includere nel messaggio.
-/// 
-/// # Ritorna
-/// Una stringa contenente un messaggio informativo per ciascuna struct.
-fn generate_struct_debug_message(struct_name: &str, fields: &[&syn::Field]) -> Result<String, String> {
-    let mut message = format!("{}\n", struct_name);
-
-    // Per ogni campo della struct, aggiungi una descrizione
-    for field in fields {
-        let field_name = field.ident.as_ref().map(|f| f.to_string()).unwrap_or_else(|| "Unnamed".to_string());
-        let field_type = map_to_sql(&field.ty);
-        message.push_str(&format!("{}\n{}\n", field_name, field_type));
-    }
-
-    Ok(message)
-}
 
 /// Funzione che esegue il parsing di un file `.rs` e restituisce tutte le struct presenti al suo interno.
 /// 
@@ -141,7 +122,7 @@ fn parse_rs_file(file_path: &str) -> Result<Vec<ItemStruct>, String> {
         .map_err(|e| format!("Errore nella lettura del file: {}", e))?;
     
     // Parsea il contenuto del file usando la libreria `syn` per ottenere la sintassi AST
-    let syntax = syn::parse_file(&file_content)
+    let syntax = parse_file(&file_content)
         .map_err(|e| format!("Errore nel parsing del file: {}", e))?;
     
     // Filtra gli item del file per ottenere solo quelli di tipo struct
@@ -202,56 +183,52 @@ fn read_rs_dir(directory: &str) -> Result<Vec<String>, String> {
 /// # Note
 /// Lo scraping dei file `.rs` viene fatto in maniera selettiva grazie alle feature implementate nel codice dei modelli
 /// Se la struct non è stata attivata dalla feature corretta, non verrà inclusa nella mappa risultante.
-pub fn scrape(directory: &str, db_type: DatabaseType) -> Result<Vec<HashMap<&str, HashMap<&str, &str>>>, String> {
-    // Ottieni tutti i file `.rs` dalla cartella specificata
+pub fn scrape(directory: &str, db_type: DatabaseType) -> Result<Vec<HashMap<String, HashMap<String, String>>>, String> {
     let files = read_rs_dir(directory)?;
-
-    // Vettore per raccogliere le strutture
     let mut all_structs = Vec::new();
 
-    // Itera su ciascun file trovato
     for file_path in files {
         println!("Elaborando il file: {}", file_path);
-        
-        // Parsea ciascun file per ottenere le struct presenti
         let structs = parse_rs_file(&file_path)?;
 
         if structs.is_empty() {
             println!("Nessuna struct trovata nel file: {}", file_path);
         }
 
-        // Per ogni struct trovata, genera una mappa con il nome della struct e i campi
         let mut struct_map = HashMap::new();
         
         for item in structs.iter() {
-            let struct_name = item.ident.to_string();  // Nome della struct
-            let fields = item.fields.iter().collect::<Vec<_>>();  // Campi della struct
+            let struct_name = item.ident.to_string();
+            let struct_name_ref: String = struct_name.clone(); // Uso di String
 
-            // Crea una mappa per i campi della struct
+            let fields = item.fields.iter().collect::<Vec<_>>();
             let mut fields_map = HashMap::new();
             for field in fields {
-                let field_name = field.ident.as_ref().map(|f| f.to_string()).unwrap_or_else(|| "Unnamed".to_string());
-                
-                // Mappa il tipo Rust al tipo specifico per il database (SQL, MongoDB, ecc.)
-                match db_type {
-                    DatabaseType::Postgres => map_to_sql(&field.ty),
-                    DatabaseType::SQLite => map_to_sql(&field.ty),
-                    DatabaseType::MongoDB => map_to_mongo(&field.ty),
-                    DatabaseType::None => panic!("Operazione impossibile, Database non configurato"), // Default a stringa se non specificato
+                let field_name = field
+                    .ident
+                    .as_ref()
+                    .map(|f| f.to_string()) // Convertito in String
+                    .unwrap_or("Unnamed".to_string());
+
+                let field_type_str = field.ty.to_token_stream().to_string();
+                let field_type = match db_type {
+                    DatabaseType::PostgreSQL(_) => map_to_sql(&field_type_str),
+                    DatabaseType::SQLite(_) => map_to_sql(&field_type_str),
+                    DatabaseType::MongoDB(_) => map_to_mongo(&field_type_str),
+                    DatabaseType::None => panic!("Operazione impossibile, Database non configurato"),
                 };
 
-                // Aggiunge il campo mappato nella struttura
-                fields_map.insert(field_name, field_type);
+                let field_type_clone = field_type.to_string(); // Uso di String per evitare riferimenti
+                let field_name_ref: String = field_name.clone(); // Converte in String
+
+                fields_map.insert(field_name_ref, field_type_clone);
             }
 
-            // Inserisce la struct con i relativi campi nella mappa
-            struct_map.insert(struct_name, fields_map);
+            struct_map.insert(struct_name_ref, fields_map);
         }
 
-        // Aggiunge struct_map al vettore all_structs
         all_structs.push(struct_map);
     }
 
-    // Ritorna il risultato con tutte le strutture e i relativi tipi
     Ok(all_structs)
 }

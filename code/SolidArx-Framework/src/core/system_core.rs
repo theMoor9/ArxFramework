@@ -159,14 +159,13 @@ impl CoreSystem {
 
                 let default_path = "src/crud/models/default";
                 let dev_path = "src/crud/models/dev";   
-                let db_type = cm.manager.config.database_type_reference.clone();
 
                 // Generazione delle tabelle nel database
                 info!("Generazione delle tabelle nel database...");
                 // Generazione tabelle default
-                generate_tables(scrape(default_path, db_type)?, cm,).await?;
+                generate_tables(scrape(default_path, cm.clone())?, cm,).await?;
                 // Generazione tabelle dev
-                generate_tables(scrape(dev_path, db_type)?, cm,).await?;
+                generate_tables(scrape(dev_path, cm.clone())?, cm,).await?;
             }
             None => {
                 warn!("Configurazione del database non impostata per l'applicazione");

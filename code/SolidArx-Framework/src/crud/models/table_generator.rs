@@ -4,10 +4,7 @@ use diesel::{
     sqlite::SqliteConnection,
     RunQueryDsl,
 };
-use mongodb::{
-    Client, 
-    bson::{doc, Bson}
-};
+use mongodb::bson::Bson;
 use std::collections::HashMap;
 use log::{info};
 
@@ -200,16 +197,27 @@ async fn create_mongodb_table(
 /// # Ritorna
 /// Un risultato che indica se la generazione delle tabelle è andata a buon fine o meno.
 pub async fn generate_tables(
-    structs: Vec<HashMap<&str, HashMap<&str, &str>>>, 
+    structs: Vec<HashMap<String, HashMap<String, String>>>, 
     connection_manager: ConnectionManager
 ) -> Result<(), TableGeneratorError> {
     // Ottiene la connessione al database tramite il connection manager
     let mut connection = connection_manager.connect().await?;
 
+    // Converte il Vec<HashMap<String, HashMap<String, String>>> in Vec<HashMap<&str, HashMap<&str, &str>>>
+    let structs_converted: Vec<HashMap<&str, HashMap<&str, &str>>> = structs.into_iter().map(|struct_info| {
+        struct_info.into_iter().map(|(key, value)| {
+            let key_ref: &str = &key;  // Converte la chiave esterna
+            let value_ref: HashMap<&str, &str> = value.into_iter().map(|(inner_key, inner_value)| {
+                (inner_key.as_str(), inner_value.as_str())  // Converte le chiavi e i valori interni
+            }).collect();
+            (key_ref, value_ref)
+        }).collect()
+    }).collect();
+
     // Gestisce la connessione al database e crea le tabelle in base al tipo di DB
     match connection {
         DbConnection::Postgres(pg_conn) => {
-            for struct_info in structs {
+            for struct_info in structs_converted {
                 // Estrae il nome della tabella dalla mappa
                 let table_name = struct_info.get("name");
                 let table_name_str = match table_name {
@@ -227,7 +235,7 @@ pub async fn generate_tables(
             }
         }
         DbConnection::SQLite(sqlite_conn) => {
-            for struct_info in structs {
+            for struct_info in structs_converted {
                 let table_name = struct_info.get("name");
                 let table_name_str = match table_name {
                     Some(table) => *table.get("name").unwrap_or(&"default_table"),  // Trova "name" nel HashMap
@@ -244,7 +252,7 @@ pub async fn generate_tables(
             }
         }
         DbConnection::MongoDB(mongo_client) => {
-            for struct_info in structs {
+            for struct_info in structs_converted {
                 let collection_name = struct_info.get("name");
                 let collection_name_str = match collection_name {
                     Some(collection) => *collection.get("name").unwrap_or(&"default_table"),
