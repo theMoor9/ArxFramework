@@ -1,4 +1,8 @@
-use crate::network::connection_management::{ConnectionManager, DbConnection};
+use crate::network::connection_management::{
+    ConnectionManager, 
+    DbConnection, 
+    DatabaseConnection
+};
 use diesel::{
     PgConnection, 
     sqlite::SqliteConnection,
@@ -10,9 +14,15 @@ use log::{info};
 
 // Definisce un errore personalizzato per la generazione delle tabelle
 enum TableGeneratorError {
+    DieselConnectionError(diesel::ConnectionError),
     DieselError(diesel::result::Error),
     MongoError(mongodb::error::Error),
     UnknownError(String),
+}
+impl From<diesel::ConnectionError> for TableGeneratorError {
+    fn from(err: diesel::ConnectionError) -> Self {
+        TableGeneratorError::DieselConnectionError(err)
+    }
 }
 impl From<diesel::result::Error> for TableGeneratorError {
     fn from(err: diesel::result::Error) -> Self {
@@ -201,14 +211,20 @@ pub async fn generate_tables(
     connection_manager: ConnectionManager
 ) -> Result<(), TableGeneratorError> {
     // Ottiene la connessione al database tramite il connection manager
-    let mut connection = connection_manager.connect().await?;
+    let connection = match connection_manager.connect().await {
+        Ok(conn) => conn,
+        Err(err) => return Err(TableGeneratorError::from(err)),
+    };
 
     // Converte il Vec<HashMap<String, HashMap<String, String>>> in Vec<HashMap<&str, HashMap<&str, &str>>>
-    let structs_converted: Vec<HashMap<&str, HashMap<&str, &str>>> = structs.into_iter().map(|struct_info| {
-        struct_info.into_iter().map(|(key, value)| {
-            let key_ref: &str = &key;  // Converte la chiave esterna
-            let value_ref: HashMap<&str, &str> = value.into_iter().map(|(inner_key, inner_value)| {
-                (inner_key.as_str(), inner_value.as_str())  // Converte le chiavi e i valori interni
+    let structs_converted: Vec<HashMap<&str, HashMap<&str, &str>>> = structs.iter().map(|struct_info| {
+        struct_info.iter().map(|(key, value)| {
+            let key_ref: &str = key.as_str();
+            let value_ref: HashMap<&str, &str> = value.iter().map(|(inner_key, inner_value)| {
+                (
+                    inner_key.as_str(),
+                    inner_value.as_str(),
+                )
             }).collect();
             (key_ref, value_ref)
         }).collect()
@@ -216,7 +232,7 @@ pub async fn generate_tables(
 
     // Gestisce la connessione al database e crea le tabelle in base al tipo di DB
     match connection {
-        DbConnection::Postgres(pg_conn) => {
+        DbConnection::Postgres(mut pg_conn) => {
             for struct_info in structs_converted {
                 // Estrae il nome della tabella dalla mappa
                 let table_name = struct_info.get("name");
@@ -234,7 +250,7 @@ pub async fn generate_tables(
                 info!("Tabella {:?} creata su PostgreSQL", table_name_str);
             }
         }
-        DbConnection::SQLite(sqlite_conn) => {
+        DbConnection::SQLite(mut sqlite_conn) => {
             for struct_info in structs_converted {
                 let table_name = struct_info.get("name");
                 let table_name_str = match table_name {
@@ -251,7 +267,7 @@ pub async fn generate_tables(
                 info!("Tabella {:?} creata su SQLite", table_name_str);
             }
         }
-        DbConnection::MongoDB(mongo_client) => {
+        DbConnection::MongoDB(mut mongo_client) => {
             for struct_info in structs_converted {
                 let collection_name = struct_info.get("name");
                 let collection_name_str = match collection_name {

@@ -2,14 +2,18 @@
 /// Supporta PostgreSQL, SQLite e MongoDB, con funzionalità di retry per tentativi di connessione falliti.
 
 use mongodb::{Client, options::ClientOptions}; 
-use diesel::sqlite::SqliteConnection;
-use diesel::pg::PgConnection;
+use diesel::{
+    pg::PgConnection, 
+    sqlite::SqliteConnection,
+    Connection,
+    ConnectionError,
+    result::Error,
+};
 use log::{error, info};
-use std::time::Duration;
-use tokio::time::sleep;
 use async_trait::async_trait;
+use tokio::time::{sleep, Duration};
 
-use crate::config::network_config::{ConnectionConfig, DatabaseType};
+use crate::config::network_config::{DatabaseType};
 
 /// Enum per rappresentare errori di connessione al database
 #[derive(Debug)]
@@ -50,11 +54,13 @@ pub struct ConnectionManager {
     database: DatabaseType,
 }
 
+/// Struttura `ConnectionManager`
+/// Si implementa diesel::Connection per poter rendere compatibile la struttura con async_trait
 #[async_trait]
 pub trait DatabaseConnection {
     fn new(db: DatabaseType) -> Self;
-    fn initialize_connection(&self) -> Result<PgConnection, diesel::ConnectionError>;
-    fn connect(&self) -> Result<DbConnection, ConnectionErrors>;
+    async fn initialize_connection<'a>(&'a self) -> Result<DbConnection, diesel::ConnectionError>;
+    async fn connect(&self) -> Result<DbConnection, diesel::ConnectionError>;
 }
 
 #[async_trait]
@@ -88,12 +94,12 @@ impl DatabaseConnection for ConnectionManager {
     /// # Ritorna
     /// - `Ok(DbConnection)`: Connessione stabilita con successo.
     /// - `Err(diesel::ConnectionError)`: Errore se il massimo numero di tentativi è superato.
-    async fn initialize_connection(&self) -> Result<PgConnection, ConnectionErrors> {
+    async fn initialize_connection<'a>(&'a self) -> Result<DbConnection, diesel::ConnectionError> {
         let mut attempts = 0;
         
         loop {
             // Tenta di stabilire la connessione
-            match self.connect() {
+            match self.connect().await {
                 Ok(connection) => {
                     info!("Connessione stabile.");
                     return Ok(connection);
@@ -110,14 +116,14 @@ impl DatabaseConnection for ConnectionManager {
                         DatabaseType::PostgreSQL(config) 
                         | DatabaseType::SQLite(config) 
                         | DatabaseType::MongoDB(config) => {
-                            if attempts >= config.retry_attempts {
+                            if attempts >= config.retry_attempts.unwrap() {
                                 error!("Superato il numero massimo di tentativi di connessione.");
-                                return ConnectionErrors::Init(e.to_string());
+                                return Err(ConnectionError::BadConnection(e.to_string()));
                             }
                         }
                         DatabaseType::None => {
                             error!("Nessun database configurato.");
-                            return ConnectionErrors::Init(e.to_string());
+                            return Err(ConnectionError::CouldntSetupConfiguration(Error::NotFound));
                         }
                     }
 
@@ -128,10 +134,10 @@ impl DatabaseConnection for ConnectionManager {
                     let backoff = match &self.database{
                         DatabaseType::PostgreSQL(config) 
                         | DatabaseType::SQLite(config) 
-                        | DatabaseType::MongoDB(config) => config.connection_timeout.unwrap().as_secs() * (attempts as u64),
+                        | DatabaseType::MongoDB(config) => config.connection_timeout.unwrap() * (attempts as u64),
                         DatabaseType::None => {
                             error!("Nessun database configurato.");
-                            return ConnectionErrors::Init(e.to_string());
+                            return Err(ConnectionError::CouldntSetupConfiguration(Error::NotFound));
                         }
                     };
                     info!("Ritenterò tra {} secondi...", backoff);
@@ -148,37 +154,36 @@ impl DatabaseConnection for ConnectionManager {
     ///
     /// # Ritorna
     /// - `Ok(())`: Se la connessione è stabilita con successo.
-    /// - `Err(ConnectionErrors)`: Se si verifica un errore durante il tentativo di connessione.
-    async fn connect(&self) -> Result<DbConnection, ConnectionErrors> {
-        match self.database {
+    /// - `Err(ConnectionError)`: Se si verifica un errore durante il tentativo di connessione.
+    #[allow(unreachable_code)]
+    async fn connect(&self) -> Result<DbConnection, diesel::ConnectionError> {
+        match self.database.clone() {
             DatabaseType:: PostgreSQL(connection_config) => {
-                PgConnection::establish(connection_config.database_url.unwrap())
+                let result = PgConnection::establish(&connection_config.database_url.unwrap())
                     .map(DbConnection::Postgres)
-                    .map_err(|e| ConnectionErrors::Postgres(e.to_string()))?;
+                    .map_err(|e| ConnectionError::BadConnection(e.to_string()))?;
                 info!("Connessione stabilita con successo al database PostgreSQL.");
+                Ok(result)
             }
             DatabaseType::SQLite(connection_config) => {
-                SqliteConnection::establish(connection_config.database_url.unwrap())
+                let result = SqliteConnection::establish(&connection_config.database_url.unwrap())
                     .map(DbConnection::SQLite)
-                    .map_err(|e| ConnectionErrors::SQLite(e.to_string()))?;
+                    .map_err(|e| ConnectionError::BadConnection(e.to_string()))?;
                 info!("Connessione stabilita con successo al database SQLite.");
+                Ok(result)
             }
             DatabaseType::MongoDB(connection_config) => {
                 // Parsing delle opzioni di connessione MongoDB dalla URL
                 let client_options = ClientOptions::parse(connection_config.database_url.unwrap())
                     .await
-                    .map_err(|e| ConnectionErrors::Mongo(e.to_string()))?;
+                    .map_err(|e| ConnectionError::BadConnection(e.to_string()))?;
                 let client = Client::with_options(client_options)
-                    .map_err(|e| ConnectionErrors::Mongo(e.to_string()))?;
+                    .map_err(|e| ConnectionError::BadConnection(e.to_string()))?;
                 Ok(DbConnection::MongoDB(client))
             }
             DatabaseType::None => {
                 error!("Database non configurato.");
                 panic!("Database non configurato.");
-            }
-            _ => {
-                error!("Tipo di database non supportato.");
-                Err(ConnectionErrors::UnknownError("Tipo di database non supportato.".to_string()))
             }
         }
     }
